@@ -4,8 +4,10 @@ import { Outlet } from "react-router"
 import { Navbar } from "flowbite-react"
 import Signup from "../components/auth/Signup"
 import Signin from "../components/auth/Signin"
+import Register from "../components/auth/Register"
 
 export default function LandingNav() {
+  const [openRegisterModal, SetRegisterModal] = useState(false)
   const [openSignupModal, SetSignupModal] = useState(false)
   const [openSigninModal, SetSigninModal] = useState(false)
   return (
@@ -16,11 +18,13 @@ export default function LandingNav() {
           <h1 className="text-2xl font-bold text-blue-500">HiLCoE</h1>
         </Navbar.Brand>
 
+        <Register openRegisterModal={openRegisterModal} SetRegisterModal={SetRegisterModal} />
         <Signup openSignupModal={openSignupModal} SetSignupModal={SetSignupModal} />
         <Signin openSigninModal={openSigninModal} SetSigninModal={SetSigninModal} />
         <div>
+          <button onClick={() => SetRegisterModal(true)}>Register</button>
           <button onClick={() => SetSignupModal(true)}>Signup</button>
-          <button onClick={() => SetSignupModal(true)}>Login</button>
+          <button onClick={() => SetSigninModal(true)}>Login</button>
         </div>
       </Navbar>
       <Outlet />
