@@ -6,6 +6,7 @@ export interface ITeacher {
     phone: number;
     role: string;
     restricted: boolean;
+    interviewDate: Date;
     notifications: any[];
 }
 
@@ -16,7 +17,7 @@ export interface IRegistrationTeacher {
     phone: string;
     aboutYou: string;
     department: string;
-    academicRecord: File | null;
+    interviewDate: Date;
 }
 
 export interface ISignupTeacher {
