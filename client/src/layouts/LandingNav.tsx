@@ -15,7 +15,7 @@ export default function LandingNav() {
       <Navbar fluid rounded>
         {/* Left Logo */}
         <Navbar.Brand href="/">
-          <h1 className="text-2xl font-bold text-blue-500">HiLCoE</h1>
+          <h1 className="text-2xl font-extrabold  text-teal-600">HiLPortal</h1>
         </Navbar.Brand>
 
         <Register openRegisterModal={openRegisterModal} SetRegisterModal={SetRegisterModal} />
