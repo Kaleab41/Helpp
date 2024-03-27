@@ -53,7 +53,7 @@ router.post(
 
   (req, res) => {
     // Check if the provided email already exists
-    console.log(req.body)
+    console.log(req.body);
     teacherModel
       .findOne({ email: req.body.email })
       .then((existingEmail) => {
@@ -74,7 +74,7 @@ router.post(
                 const files = req.files;
                 const uploadedCV = req.body.curriculumVitae;
                 const uploadedQualifications = req.body.qualifications;
-                const uploadedCertifications = req.body.certification
+                const uploadedCertifications = req.body.certification;
 
                 // Create and save the new teacher
                 const newTeacher = new teacherModel({
@@ -393,37 +393,25 @@ router.post("/uploadattendance", upload.single("file"), async (req, res) => {
 
     const fileName = req.file.originalname;
     const fileNameParts = fileName.split("-");
-    const batch = fileNameParts[1]; // Assuming batch name is in the second part
-    const courseCode = fileNameParts[2]; // Assuming course code is in the third part
+    const instructorName = fileNameParts[0].trim();
+    const courseCode = fileNameParts[1].trim();
+    const batch = fileNameParts[2].trim().split(".")[0];
 
     // Load the attendance Excel file
     const workbook = xlsx.readFile(req.file.path);
-
-    // Assuming the attendance data is in the first sheet and has columns "ID" and "Attendance"
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const attendanceData = xlsx.utils.sheet_to_json(worksheet);
 
     // Iterate over each attendance record and update attendance in the grade model
     for (const record of attendanceData) {
-      const { ID, Attendance } = record;
+      const { "Student ID": studentID, Attendance } = record;
 
-      // Update attendance for the student's grade using the ID, batch, and course code
-      let updatedGrade = await gradeModel.findOneAndUpdate(
-        { id: ID, batch: batch, course: courseCode },
-        { $set: { "attendance.0": { date: new Date(), status: Attendance } } },
-        { new: true } // Return the updated document
+      // Find the student's grade using ID, instructor, and batch
+      let existingGrade = await gradeModel.findOneAndUpdate(
+        { id: studentID, instructor: instructorName, batch: batch },
+        { $set: { attendance: [{ date: new Date(), status: Attendance }] } },
+        { upsert: true, new: true }
       );
-
-      // If grade document doesn't exist, create a new one
-      if (!updatedGrade) {
-        updatedGrade = new gradeModel({
-          id: ID,
-          batch: batch,
-          course: courseCode,
-          attendance: [{ date: new Date(), status: Attendance }],
-        });
-        await updatedGrade.save();
-      }
     }
 
     // Delete the uploaded file after processing
@@ -437,6 +425,7 @@ router.post("/uploadattendance", upload.single("file"), async (req, res) => {
     return res.status(500).json({ error: "Internal server error." });
   }
 });
+
 router.post("/approveGradeChangeRequest", async (req, res) => {
   try {
     const { requestId } = req.body;
@@ -458,7 +447,7 @@ router.post("/approveGradeChangeRequest", async (req, res) => {
     // Fetch the existing grade from the grade model
     const existingGrade = await gradeModel.findOne({
       id: changeRequest.sender, // Use sender as the id
-      course: changeRequest.course
+      course: changeRequest.course,
     });
     if (!existingGrade) {
       return res.status(404).json({ error: "Existing grade not found" });
@@ -469,20 +458,33 @@ router.post("/approveGradeChangeRequest", async (req, res) => {
       mid: existingGrade.mid,
       final: existingGrade.final,
       assessment: existingGrade.assessment,
-      grade: existingGrade.grade
+      grade: existingGrade.grade,
     };
 
     // Update the grade model based on the change request values
     const updateFields = {};
-    if (changeRequest.mid !== null && changeRequest.mid !== existingGrade.mid) updateFields.mid = changeRequest.mid;
-    if (changeRequest.final !== null && changeRequest.final !== existingGrade.final) updateFields.final = changeRequest.final;
-    if (changeRequest.assessment !== null && changeRequest.assessment !== existingGrade.assessment) updateFields.assessment = changeRequest.assessment;
-    if (changeRequest.grade !== null && changeRequest.grade !== existingGrade.grade) updateFields.grade = changeRequest.grade;
+    if (changeRequest.mid !== null && changeRequest.mid !== existingGrade.mid)
+      updateFields.mid = changeRequest.mid;
+    if (
+      changeRequest.final !== null &&
+      changeRequest.final !== existingGrade.final
+    )
+      updateFields.final = changeRequest.final;
+    if (
+      changeRequest.assessment !== null &&
+      changeRequest.assessment !== existingGrade.assessment
+    )
+      updateFields.assessment = changeRequest.assessment;
+    if (
+      changeRequest.grade !== null &&
+      changeRequest.grade !== existingGrade.grade
+    )
+      updateFields.grade = changeRequest.grade;
 
     await gradeModel.findOneAndUpdate(
       {
         id: changeRequest.sender, // Use sender as the id
-        course: changeRequest.course
+        course: changeRequest.course,
       },
       { $set: updateFields }
     );
@@ -491,25 +493,37 @@ router.post("/approveGradeChangeRequest", async (req, res) => {
     changeRequest.approved = true;
 
     // Remove the approved request from the changeRequests array
-    teacher.changeRequests = teacher.changeRequests.filter(req => req.requestId !== requestId);
+    teacher.changeRequests = teacher.changeRequests.filter(
+      (req) => req.requestId !== requestId
+    );
 
     // Save the updated teacher document
     await teacher.save();
 
     // Capture the changed grades
     const changedGrades = {
-      mid: updateFields.mid !== undefined ? updateFields.mid : previousGrades.mid,
-      final: updateFields.final !== undefined ? updateFields.final : previousGrades.final,
-      assessment: updateFields.assessment !== undefined ? updateFields.assessment : previousGrades.assessment,
-      grade: updateFields.grade !== undefined ? updateFields.grade : previousGrades.grade
+      mid:
+        updateFields.mid !== undefined ? updateFields.mid : previousGrades.mid,
+      final:
+        updateFields.final !== undefined
+          ? updateFields.final
+          : previousGrades.final,
+      assessment:
+        updateFields.assessment !== undefined
+          ? updateFields.assessment
+          : previousGrades.assessment,
+      grade:
+        updateFields.grade !== undefined
+          ? updateFields.grade
+          : previousGrades.grade,
     };
 
     return res.status(200).json({
       message: "Grade change request approved and removed successfully",
       changedGrades: {
         previous: previousGrades,
-        current: changedGrades
-      }
+        current: changedGrades,
+      },
     });
   } catch (error) {
     console.error("Error approving grade change request:", error);
@@ -529,7 +543,9 @@ router.get("/gradechangeRequests", async (req, res) => {
 
     // Check if there are any change requests for the teacher
     if (!teacher.changeRequests || teacher.changeRequests.length === 0) {
-      return res.status(404).json({ message: "No change requests found for this teacher" });
+      return res
+        .status(404)
+        .json({ message: "No change requests found for this teacher" });
     }
 
     // Retrieve the change requests for the teacher
@@ -543,7 +559,6 @@ router.get("/gradechangeRequests", async (req, res) => {
   // res.json({
   //   requestQuery: req.query
   // })
-}
-);
+});
 
 module.exports = router;
