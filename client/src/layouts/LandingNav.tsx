@@ -23,8 +23,8 @@ export default function LandingNav() {
         <Signin openSigninModal={openSigninModal} SetSigninModal={SetSigninModal} />
         <div>
           <button onClick={() => SetRegisterModal(true)}>Register</button>
-          <button onClick={() => SetSignupModal(true)}>Signup</button>
-          <button onClick={() => SetSigninModal(true)}>Login</button>
+          <button onClick={() => SetSignupModal(true)}>Sign-up</button>
+          <button onClick={() => SetSigninModal(true)}>Sign-in</button>
         </div>
       </Navbar>
       <Outlet />

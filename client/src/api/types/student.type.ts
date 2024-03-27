@@ -25,7 +25,7 @@ export interface IRegistrationStudent {
     guardianPhone: string;
     aboutYou: string;
     department: string;
-    academicRecord: string;
+    academicRecord: File | null;
 }
 
 export interface ISignupStudent {
