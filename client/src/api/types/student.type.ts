@@ -38,29 +38,10 @@ export interface ISignInStudent {
     password: string;
 }
 
-export interface IUploadPayment {
-    id: string;
-    paymentReceipt: {
-        type: string;
-        src: string;
-    };
-}
-
-export interface IGradeChangeRequest {
-    studentId: string;
-    teacherId: string;
+export interface IChangeRequest {
+    requestId: string;
+    sender: string;
     message: string;
-}
-
-export interface IGradeChangeRequest {
-    teacherId: string;
-    studentId: string;
-    message: string;
-    mid?: number;
-    final?: number;
-    assessment?: number;
-    grade?: string;
     approved: boolean;
-    course: string;
+    time: number;
 }
-

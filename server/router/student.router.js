@@ -276,7 +276,7 @@ router.get("/grades", (req, res) => {
   const { id } = req.query;
 
   if (!id) {
-    return res  
+    return res
       .status(400)
       .json({ error: "ID is required in the request body" });
   }
@@ -368,7 +368,7 @@ router.post("/gradeChangeRequest", async (req, res) => {
     // Save the updated teacher document
     await teacher.save();
 
-    return res.status(200).json({ changeRequest });
+    return res.status(200).json(changeRequest);
   } catch (error) {
     console.error("Error submitting grade change request:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -376,7 +376,7 @@ router.post("/gradeChangeRequest", async (req, res) => {
 });
 
 router.get("/material", async (req, res) => {
-  const {batch}  = req.query;
+  const { batch } = req.query;
   try {
 
     // Find the material by ID
@@ -393,7 +393,7 @@ router.get("/material", async (req, res) => {
   }
 });
 router.get("/getnotification", (req, res) => {
-  const {id} = req.query;
+  const { id } = req.query;
 
   // Find the student by ID
   studentModel
