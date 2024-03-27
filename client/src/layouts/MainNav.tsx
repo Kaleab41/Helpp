@@ -4,7 +4,7 @@ import User from "../components/navbar/User"
 import NavItems from "../components/navbar/NavItems"
 
 export default function MainNav() {
-  const isAuthenticated = true
+  const isAuthenticated = false
   return (
     <>
       {!isAuthenticated ? (
