@@ -1,3 +1,21 @@
+export interface IStudent {
+    id: string;
+    batch: string;
+    name: string;
+    gender: string;
+    email: string;
+    password: string | null;
+    phone: number;
+    guardianPhone: string;
+    guardianName: string;
+    department: string;
+    aboutYou: string;
+    academicRecord: string;
+    role: string;
+    restricted: boolean;
+    notifications: any[];
+}
+
 export interface IRegistrationStudent {
     name: string;
     gender: string;
@@ -7,7 +25,7 @@ export interface IRegistrationStudent {
     guardianPhone: string;
     aboutYou: string;
     department: string;
-    file: string;
+    academicRecord: string;
 }
 
 export interface ISignupStudent {
