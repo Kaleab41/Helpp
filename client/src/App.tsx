@@ -1,5 +1,5 @@
 import "./App.css"
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import {
   LandingPage,
   AdminDash,
@@ -13,6 +13,7 @@ import {
 } from "./pages/index"
 import MainNav from "./layouts/MainNav"
 import LandingNav from "./layouts/LandingNav"
+import Error404 from "./pages/Error404"
 
 function App() {
   return (
@@ -30,6 +31,9 @@ function App() {
           <Route path="/student/material" element={<Material />} />
           <Route path="/student/grade" element={<Grade />} />
           <Route path="/student/payment" element={<Payment />} />
+        </Route>
+        <Route element={<LandingNav />}>
+          <Route path="*" element={<Error404 />}></Route>
         </Route>
       </Routes>
     </main>
