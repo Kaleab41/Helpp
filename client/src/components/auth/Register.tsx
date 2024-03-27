@@ -1,9 +1,10 @@
-import { Button, Label, Modal, TextInput } from "flowbite-react"
+import { Button, Modal } from "flowbite-react"
 import { useState } from "react"
 import { IRegistrationStudent } from "../../api/types/student.type.ts"
 import Input from "../form/Input.tsx"
 import Select from "../form/Select.tsx"
 import Textarea from "../form/Textarea.tsx"
+import FileInput from "../form/FileInput.tsx"
 
 type SingupProp = {
   openRegisterModal: boolean
@@ -19,7 +20,7 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
   const [guardianPhone, SetGuardianPhone] = useState<IRegistrationStudent["guardianPhone"]>("")
   const [aboutYou, SetAboutYou] = useState<IRegistrationStudent["aboutYou"]>("")
   const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
-  const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>("")
+  const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
 
   function onCloseModal() {
     SetRegisterModal(false)
@@ -31,7 +32,7 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
     SetGuardianPhone("")
     SetAboutYou("")
     SetDepartment("")
-    SetAcademicRecord("")
+    SetAcademicRecord(null)
   }
 
   const HanldeRegister = async () => {
@@ -106,7 +107,11 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
               SetValue={SetAboutYou}
               value={aboutYou}
             />
-            {/* Input for academic record */}
+            <FileInput
+              name="Acadamic Record"
+              SetValue={SetAcademicRecord}
+              helperText="Upload your acadamic recored "
+            />
             {/* Form Action */}
             <div className="flex justify-center">
               <Button onClick={HanldeRegister}>Register</Button>
