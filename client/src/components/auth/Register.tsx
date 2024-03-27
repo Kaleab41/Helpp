@@ -5,6 +5,7 @@ import Input from "../form/Input.tsx"
 import Select from "../form/Select.tsx"
 import Textarea from "../form/Textarea.tsx"
 import FileInput from "../form/FileInput.tsx"
+import { useCreateStudentMutation } from "../../api/student.slice.ts"
 
 type SingupProp = {
   openRegisterModal: boolean
@@ -22,6 +23,7 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
   const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
 
+  const [create, { }] = useCreateStudentMutation();
   function onCloseModal() {
     SetRegisterModal(false)
     SetName("")
@@ -35,8 +37,30 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
     SetAcademicRecord(null)
   }
 
-  const HanldeRegister = async () => {
-    // Register user
+  const handleRegister = async () => {
+
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append('gender', gender);
+      formData.append('email', email);
+      formData.append('phone', phone);
+      formData.append('guardianName', guardianName);
+      formData.append('guardianPhone', guardianPhone);
+      formData.append('aboutYou', aboutYou);
+      formData.append('department', department);
+      if (academicRecord) {
+        formData.append('academicRecord', academicRecord);
+      }
+      const response = await create(formData).unwrap();
+      if (response) {
+        onCloseModal();
+      }
+    } catch (error) {
+      const _error = (error as any).error
+      console.log({ _error })
+    }
+
   }
 
   return (
@@ -114,7 +138,7 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
             />
             {/* Form Action */}
             <div className="flex justify-center">
-              <Button onClick={HanldeRegister}>Register</Button>
+              <Button type="submit" onClick={handleRegister}>Register</Button>
             </div>
           </div>
         </Modal.Body>

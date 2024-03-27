@@ -6,12 +6,14 @@ import { IChangeRequest, IRegistrationStudent, ISignInStudent, ISignupStudent, I
 const studentApiSlice = studentManagementApi.injectEndpoints({
     endpoints: (builder) => ({
 
-        createStudent: builder.mutation<IStudent, IRegistrationStudent>({
-            query: (body) => ({
-                url: '/student/register',
-                method: 'POST',
-                body,
-            }),
+        createStudent: builder.mutation<IStudent, FormData>({
+            query: (formData) => {
+                return {
+                    url: '/student/register',
+                    method: 'POST',
+                    body: formData,
+                }
+            },
             invalidatesTags: ['student'],
         }),
         signupStudent: builder.mutation<{ message: string }, ISignupStudent>({
