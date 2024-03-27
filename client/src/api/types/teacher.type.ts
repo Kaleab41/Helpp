@@ -18,12 +18,10 @@ export interface IRegistrationTeacher {
     gender: string;
     email: string;
     phone: string;
-    aboutYou: string;
-    department: string;
-    interviewDate: Date;
-    curriculumVitae: File;
-    qualifications: File;
-    certifications: File;
+    interviewDate: Date | null;
+    curriculumVitae: File | null;
+    qualifications: File | null;
+    certifications: File | null;
 }
 
 export interface ISignupTeacher {

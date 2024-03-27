@@ -1,4 +1,5 @@
 import { Label, TextInput } from "flowbite-react"
+
 type InputProp = {
   name: string
   placeholder: string

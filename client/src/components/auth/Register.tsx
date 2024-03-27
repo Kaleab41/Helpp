@@ -5,14 +5,13 @@ import Input from "../form/Input.tsx"
 import Select from "../form/Select.tsx"
 import Textarea from "../form/Textarea.tsx"
 import FileInput from "../form/FileInput.tsx"
-import { useCreateStudentMutation } from "../../api/student.slice.ts"
+import { useCreateStudentMutation } from "../../api/studentApi/student.slice.ts"
+import TeacherRegister from "./Teacher/TeacherRegister.tsx"
 
 type SingupProp = {
   openRegisterModal: boolean
   SetRegisterModal: (value: boolean) => void
 }
-
-type roleState = { role: 'student' } | { role: 'teacher' } | { role: 'admin' };
 
 
 export default function Register({ openRegisterModal, SetRegisterModal }: SingupProp) {
@@ -26,6 +25,7 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
   const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
   
+  const [role, setRole] = useState<string>("student");
 
   const [create, { }] = useCreateStudentMutation();
   function onCloseModal() {
@@ -39,6 +39,7 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
     SetAboutYou("")
     SetDepartment("")
     SetAcademicRecord(null)
+    setRole("student") //default role
   }
 
   const handleRegister = async () => {
@@ -72,6 +73,7 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
       <Modal show={openRegisterModal} size="xl" onClose={onCloseModal} popup>
         <Modal.Header />
         <Modal.Body>
+        {role === "student" &&
           <div className="space-y-6">
             {/* Form Title */}
             <h3 className="text-xl font-medium text-gray-900 dark:text-white">
@@ -144,6 +146,16 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
             <div className="flex justify-center">
               <Button type="submit" onClick={handleRegister}>Register</Button>
             </div>
+
+
+          </div>
+        }
+
+          {role === "teacher" &&
+            <TeacherRegister />
+          }
+          <div className="flex">
+            <Select name="Role" options={["student", "teacher", "admin"]} setValue={setRole}/>
           </div>
         </Modal.Body>
       </Modal>
