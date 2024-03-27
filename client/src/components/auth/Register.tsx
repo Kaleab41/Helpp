@@ -12,6 +12,9 @@ type SingupProp = {
   SetRegisterModal: (value: boolean) => void
 }
 
+type roleState = { role: 'student' } | { role: 'teacher' } | { role: 'admin' };
+
+
 export default function Register({ openRegisterModal, SetRegisterModal }: SingupProp) {
   const [name, SetName] = useState<IRegistrationStudent["name"]>("")
   const [gender, SetGender] = useState<IRegistrationStudent["gender"]>("")
@@ -22,6 +25,7 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
   const [aboutYou, SetAboutYou] = useState<IRegistrationStudent["aboutYou"]>("")
   const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
+  
 
   const [create, { }] = useCreateStudentMutation();
   function onCloseModal() {
