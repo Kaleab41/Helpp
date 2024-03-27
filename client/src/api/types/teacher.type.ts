@@ -8,6 +8,9 @@ export interface ITeacher {
     restricted: boolean;
     interviewDate: Date;
     notifications: any[];
+    curriculumVitae: string;
+    qualifications: string;
+    certifications: string;
 }
 
 export interface IRegistrationTeacher {
@@ -18,6 +21,9 @@ export interface IRegistrationTeacher {
     aboutYou: string;
     department: string;
     interviewDate: Date;
+    curriculumVitae: File;
+    qualifications: File;
+    certifications: File;
 }
 
 export interface ISignupTeacher {
