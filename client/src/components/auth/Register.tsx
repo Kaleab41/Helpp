@@ -154,7 +154,7 @@ export default function Register({ openRegisterModal, SetRegisterModal }: Singup
             value={role}
             SetValue={SetRole}
             name="RegistrationRole"
-            options={["Student", "Teacher", "Admin"]}
+            options={["Student", "Teacher"]}
           />
         </Modal.Body>
       </Modal>
