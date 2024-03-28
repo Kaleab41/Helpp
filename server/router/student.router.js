@@ -318,20 +318,94 @@ router.get("/gradesoptional", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     });
 });
+const studentcourseModel = require("../model/studentcourse.mode");
+// router.get("/courses", async (req, res) => {
+//   try {
+//     // Query the database to find all courses
+//     const courses = await studentcourseModel.find({}, {});
 
+//     // Get the student ID from the request query
+//     const { studentId } = req.query;
+
+//     // If studentId is not provided, return all courses without modification
+//     if (!studentId) {
+//       return res.status(200).json(courses);
+//     }
+
+//     // Find the student's grades
+//     const studentGrades = await gradeModel.find({ id: studentId });
+
+//     // Iterate over courses and update the status based on whether the student has taken the course
+//     const updatedCourses = courses.map((course) => {
+//       // Check if the student has grades for this course
+//       const hasTakenCourse = studentGrades.some(
+//         (grade) => grade.course === course.courseCode
+//       );
+
+//       // If the student has taken the course, update the status
+//       if (hasTakenCourse) {
+//         // Update the status to true in the studentcourseModel
+//         studentcourseModel.updateOne(
+//           { courseCode: course.courseCode, studentId: studentId },
+//           { status: true },
+//           (err, result) => {
+//             if (err) {
+//               console.error("Error updating course status:", err);
+//             }
+//           }
+//         );
+//       }
+
+//       // Return the course with updated status
+//       return { ...course.toJSON(), status: hasTakenCourse };
+//     });
+
+//     // Return the retrieved courses with updated status as the response
+//     res.status(200).json(updatedCourses);
+//   } catch (error) {
+//     // If an error occurs, return an error response
+//     console.error("Error retrieving courses:", error);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// });
 router.get("/courses", async (req, res) => {
   try {
-    // Query the database to find all courses
-    const courses = await courseModel.find({}, {});
+    const studentId = req.query.id;
 
-    // Return the retrieved courses as the response
-    res.status(200).json(courses);
+    // Find all grades associated with the provided student ID
+    const studentGrades = await gradeModel.find({ id: studentId });
+
+    // Extract unique course names from the grades
+    const uniqueCourses = [
+      ...new Set(studentGrades.map((grade) => grade.course)),
+    ];
+
+    // Find all courses
+    const allCourses = await courseModel.find();
+
+    // Update status to true for courses found in the course model
+    const updatedCourses = allCourses.map((course) => {
+      if (uniqueCourses.includes(course.courseid)) {
+        course.status = true;
+      } else {
+        course.status = false;
+      }
+      return course;
+    });
+
+    // Save the updated courses
+    const savedCourses = await Promise.all(
+      updatedCourses.map((course) => course.save())
+    );
+
+    // Return updated courses
+    res.status(200).json(savedCourses);
   } catch (error) {
-    // If an error occurs, return an error response
-    console.error("Error retrieving courses:", error);
+    console.error("Error updating courses:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 router.post("/gradeChangeRequest", async (req, res) => {
   try {
     const {
