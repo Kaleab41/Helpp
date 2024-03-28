@@ -1,4 +1,4 @@
-import studentManagementApi from ".";
+import studentManagementApi from "..";
 import { IChangeGradeRequest, IGrade, IGradeChangeRequest } from "../types/grade.types";
 import { IPaymentReceipt, IUploadPayment } from "../types/payment.types";
 import { IChangeRequest, IRegistrationStudent, ISignInStudent, ISignupStudent, IStudent } from "../types/student.type";
@@ -7,11 +7,25 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
     endpoints: (builder) => ({
 
         createStudent: builder.mutation<IStudent, IRegistrationStudent>({
-            query: (body) => ({
-                url: '/student/register',
-                method: 'POST',
-                body,
-            }),
+            query: (body) => {
+                const formData = new FormData()
+                formData.append("name", body.name)
+                formData.append("gender", body.gender)
+                formData.append("email", body.email)
+                formData.append("phone", body.phone)
+                formData.append("guardianName", body.guardianName)
+                formData.append("guardianPhone", body.guardianPhone)
+                formData.append("aboutYou", body.aboutYou)
+                formData.append("department", body.department)
+                if (body.academicRecord) {
+                    formData.append("academicRecord", body.academicRecord)
+                }
+                return {
+                    url: '/student/register',
+                    method: 'POST',
+                    body: formData,
+                }
+            },
             invalidatesTags: ['student'],
         }),
         signupStudent: builder.mutation<{ message: string }, ISignupStudent>({
