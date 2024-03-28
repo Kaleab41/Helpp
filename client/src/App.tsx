@@ -1,5 +1,5 @@
 import "./App.css"
-import { Routes, Route, Navigate } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import {
   LandingPage,
   AdminDash,
@@ -8,7 +8,6 @@ import {
   CourseList,
   StudentList,
   Material,
-  Grade,
   Payment,
 } from "./pages/index"
 import MainNav from "./layouts/MainNav"
@@ -29,7 +28,6 @@ function App() {
           <Route path="/teacher" element={<TeacherDash />} />
           <Route path="/student" element={<StudentDash />} />
           <Route path="/student/material" element={<Material />} />
-          <Route path="/student/grade" element={<Grade />} />
           <Route path="/student/payment" element={<Payment />} />
         </Route>
         <Route element={<LandingNav />}>

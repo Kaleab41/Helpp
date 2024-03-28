@@ -37,12 +37,6 @@ export default function NavItems() {
             Dashboard
           </Navbar.Link>
           <Navbar.Link
-            href="/student/grade"
-            {...(location.pathname == "/student/grade" ? { active: true } : {})}
-          >
-            Grade
-          </Navbar.Link>
-          <Navbar.Link
             href="/student/material"
             {...(location.pathname == "/student/material" ? { active: true } : {})}
           >

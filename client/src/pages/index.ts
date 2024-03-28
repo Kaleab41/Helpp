@@ -9,6 +9,5 @@ export {default as TeacherDash} from './teacher/TeacherDash'
 
 // Student pages
 export {default as StudentDash} from './student/StudentDash'
-export {default as Grade} from './student/Grade'
 export {default as Material} from './student/Material'
 export {default as Payment} from './student/Payment'
