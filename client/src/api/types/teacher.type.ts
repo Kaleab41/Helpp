@@ -34,3 +34,8 @@ export interface ISignInTeacher {
     password: string;
 }
 
+export interface ISendNotificationRequest {
+    batch: string;
+    sender: string;
+    message: string;
+}

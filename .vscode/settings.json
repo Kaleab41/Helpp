@@ -1,8 +1,12 @@
 {
     "cSpell.words": [
+        "allocatedcourses",
         "courseid",
         "gradechange",
+        "sendnotifications",
         "signin",
+        "uploadattendance",
+        "uploadmaterial",
         "uploadpayment"
     ]
 }

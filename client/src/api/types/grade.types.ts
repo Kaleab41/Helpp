@@ -28,3 +28,8 @@ export interface IGradeChangeRequest {
     approved: boolean;
     course: string;
 }
+
+export interface IApproveGradeChangeRequest {
+    teacherId: string;
+    requestId: string;
+}
