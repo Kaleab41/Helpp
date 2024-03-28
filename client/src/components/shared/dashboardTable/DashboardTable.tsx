@@ -1,7 +1,8 @@
-import { Button, Table } from "flowbite-react";
-
+import { Button, Table } from "flowbite-react"
+import { ReactNode } from "react"
 
 interface DashboardProps {
+<<<<<<< HEAD
     headers: string[];
     tableData: Record<string, string>[];
     includedData: string[];
@@ -46,6 +47,35 @@ const DashboardTable = ({ headers, tableData, includedData }: DashboardProps) =>
           </div>
         
     );
+=======
+  headers: string[]
+  tableData: Record<string, string>[]
+  children?: ReactNode
 }
 
-export default DashboardTable;
+const DashboardTable = ({ headers, tableData, children }: DashboardProps) => {
+  return (
+    <div className="overflow-x-auto">
+      <Table>
+        <Table.Head>
+          {headers.map((header: string) => (
+            <Table.HeadCell>{header}</Table.HeadCell>
+          ))}
+        </Table.Head>
+        <Table.Body className="divide-y">
+          {tableData.map((row) => (
+            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+              {Object.keys(row).map((key) => (
+                <Table.Cell>{row[key]}</Table.Cell>
+              ))}
+              <Table.Cell>{children}</Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
+    </div>
+  )
+>>>>>>> c612169 (Added custom custom action button as children)
+}
+
+export default DashboardTable
