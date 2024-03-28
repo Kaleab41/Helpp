@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Button } from "flowbite-react"
 import { IRegistrationTeacher } from "../../../api/types/teacher.type"
-import { useCreateTeacherMutation } from "../../../api/teacherApi/teacher.slice"
+import { useCreateTeacherMutation } from "../../../api/slices/teacher.slice"
 import { Input, FileInput, Select, DateInput } from "../../form/index"
 
 const TeacherRegister = () => {
@@ -16,48 +16,36 @@ const TeacherRegister = () => {
     SetCertifications(null)
   }
 
-  const [create, {}] = useCreateTeacherMutation()
+  const [create, { }] = useCreateTeacherMutation()
 
   const [name, SetName] = useState<IRegistrationTeacher["name"]>("")
   const [gender, SetGender] = useState<IRegistrationTeacher["gender"]>("")
   const [email, SetEmail] = useState<IRegistrationTeacher["email"]>("")
   const [phone, SetPhone] = useState<IRegistrationTeacher["phone"]>("")
-  const [interviewDate, SetInterviewDate] = useState<IRegistrationTeacher["interviewDate"]>(null)
+  const [interviewDate, SetInterviewDate] = useState<IRegistrationTeacher["interviewDate"]>(new Date())
   const [curriculumVitae, SetCurriculumVitae] = useState<IRegistrationTeacher["curriculumVitae"]>(null)
   const [qualifications, SetQualifications] = useState<IRegistrationTeacher["qualifications"]>(null)
   const [certifications, SetCertifications] = useState<IRegistrationTeacher["certifications"]>(null)
 
   const handleRegister = async () => {
     try {
-      // Do we need FormData? Can't we just return an IRegistration Teacher Object from a function that gets all these values on submit?
-      const formData = new FormData()
-      formData.append("name", name)
-      formData.append("gender", gender)
-      formData.append("email", email)
-      formData.append("phone", phone)
-      formData.append("interviewDate", interviewDate?.toDateString() ?? " ")
-
-      if (curriculumVitae) {
-        formData.append("curriculumVitae", curriculumVitae)
-      }
-
-      if (qualifications) {
-        formData.append("qualifications", qualifications)
-      }
-
-      if (certifications) {
-        formData.append("certifications", certifications)
-      }
-      const response = await create(formData).unwrap()
+      const response = await create({
+        name,
+        gender,
+        email,
+        phone,
+        interviewDate,
+        curriculumVitae,
+        qualifications,
+        certifications,
+      }).unwrap()
       if (response) {
-        EmptyInputs()
+        // EmptyInputs()
       }
     } catch (error) {
       const _error = (error as any).error
       console.log({ _error })
     }
-
-    // Kalesh patch the above in once you create the correct mutation for registering teachers
   }
   return (
     <>

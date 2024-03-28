@@ -1,7 +1,7 @@
 import { Button } from "flowbite-react"
 import { IRegistrationStudent } from "../../../api/types/student.type"
 import { useState } from "react"
-import { useCreateStudentMutation } from "../../../api/studentApi/student.slice.ts"
+import { useCreateStudentMutation } from "../../../api/slices/student.slice.ts"
 import { Input, Select, FileInput, Textarea } from "../../form/index.tsx"
 
 export default function StudentRegister() {
@@ -15,22 +15,20 @@ export default function StudentRegister() {
   const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
 
-  const [create, {}] = useCreateStudentMutation()
+  const [create, { }] = useCreateStudentMutation()
   const handleRegister = async () => {
     try {
-      const formData = new FormData()
-      formData.append("name", name)
-      formData.append("gender", gender)
-      formData.append("email", email)
-      formData.append("phone", phone)
-      formData.append("guardianName", guardianName)
-      formData.append("guardianPhone", guardianPhone)
-      formData.append("aboutYou", aboutYou)
-      formData.append("department", department)
-      if (academicRecord) {
-        formData.append("academicRecord", academicRecord)
-      }
-      const response = await create(formData).unwrap()
+      const response = await create({
+        name,
+        gender,
+        email,
+        phone,
+        guardianName,
+        guardianPhone,
+        aboutYou,
+        department,
+        academicRecord,
+      }).unwrap()
       if (response) {
         onCloseModal()
       }
