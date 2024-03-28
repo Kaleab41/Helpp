@@ -84,7 +84,7 @@ const uploadpayment = multer({
 });
 
 // Handle POST request to register a new student with file upload for academic record
-router.post("/register", upload.single('academicRecord'), (req, res) => {
+router.post("/register", upload.single("academicRecord"), (req, res) => {
   // Check if the provided email already exists
   studentModel
     .findOne({ email: req.body.email })
@@ -334,7 +334,16 @@ router.get("/courses", async (req, res) => {
 });
 router.post("/gradeChangeRequest", async (req, res) => {
   try {
-    const { studentId, teacherId, message, course, mid, final, assessment, grade } = req.body;
+    const {
+      studentId,
+      teacherId,
+      message,
+      course,
+      mid,
+      final,
+      assessment,
+      grade,
+    } = req.body;
 
     // Find the student by ID
     const student = await studentModel.findOne({ id: studentId });
@@ -359,7 +368,7 @@ router.post("/gradeChangeRequest", async (req, res) => {
       mid: mid,
       final: final,
       assessment: assessment,
-      grade: grade
+      grade: grade,
     };
 
     // Add the grade change request to the teacher's changeRequests array
@@ -378,7 +387,6 @@ router.post("/gradeChangeRequest", async (req, res) => {
 router.get("/material", async (req, res) => {
   const { batch } = req.query;
   try {
-
     // Find the material by ID
     const material = await materialModel.find({ batch });
     if (!material) {

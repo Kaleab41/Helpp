@@ -5,6 +5,7 @@ const newSchema = new mongoose.Schema({
   studentName: String,
   courseid: String,
   instructor: String,
+  instructorID: String,
   course: String,
   grade: String,
   mid: Number,
@@ -13,10 +14,12 @@ const newSchema = new mongoose.Schema({
   total: Number,
   file: String,
   batch: String,
-  attendance: [{
-    date: Date,
-    status: String // Assuming status is a string value
-  }]
+  attendance: [
+    {
+      date: Date,
+      status: String, // Assuming status is a string value
+    },
+  ],
 });
 
 module.exports = mongoose.model("grade", newSchema);

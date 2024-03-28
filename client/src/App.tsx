@@ -15,7 +15,7 @@ import Error404 from "./pages/Error404"
 
 function App() {
   return (
-    <main className="h-screen">
+    <main className="h-screen w-[80%] mx-auto mt-5">
       <Routes>
         <Route element={<LandingNav />}>
           <Route index element={<LandingPage />}></Route>
