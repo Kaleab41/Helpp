@@ -10,4 +10,4 @@ const newSchema = new mongoose.Schema({
   status: Boolean,
 });
 
-module.exports = mongoose.model("course", newSchema);
+module.exports = mongoose.model("studentcourse", newSchema);

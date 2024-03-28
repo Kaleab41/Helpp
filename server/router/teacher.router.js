@@ -188,12 +188,10 @@ router.post("/upload", upload.single("file"), async (req, res) => {
       teacherId: instructorID,
     }));
 
-    res
-      .status(200)
-      .json({
-        message: "Excel data uploaded and grades added successfully",
-        uploadedGrades: responseGrades,
-      });
+    res.status(200).json({
+      message: "Excel data uploaded and grades added successfully",
+      uploadedGrades: responseGrades,
+    });
   } catch (error) {
     console.error("Error uploading file and processing data:", error);
     res.status(500).json({ error: "Internal server error" });
