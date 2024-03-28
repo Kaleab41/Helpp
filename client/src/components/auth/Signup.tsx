@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react"
 import { useState } from "react"
 import { ISignupStudent } from "../../api/types/student.type.ts"
-import Input from "../form/Input.tsx"
+import { Input } from "../form/index.tsx"
 
 type SinginProp = {
   openSignupModal: boolean

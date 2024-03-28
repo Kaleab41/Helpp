@@ -1,11 +1,8 @@
-import Input from "../../form/Input"
-import FileInput from "../../form/FileInput"
-import { IRegistrationTeacher } from "../../../api/types/teacher.type"
 import { useState } from "react"
-import Select from "../../form/Select"
-import DateInput from "../../form/DateInput"
 import { Button } from "flowbite-react"
+import { IRegistrationTeacher } from "../../../api/types/teacher.type"
 import { useCreateTeacherMutation } from "../../../api/teacherApi/teacher.slice"
+import { Input, FileInput, Select, DateInput } from "../../form/index"
 
 const TeacherRegister = () => {
   const EmptyInputs = () => {

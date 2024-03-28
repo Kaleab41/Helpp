@@ -2,10 +2,7 @@ import { Button } from "flowbite-react"
 import { IRegistrationStudent } from "../../../api/types/student.type"
 import { useState } from "react"
 import { useCreateStudentMutation } from "../../../api/studentApi/student.slice.ts"
-import Input from "../../form/Input"
-import Select from "../../form/Select.tsx"
-import FileInput from "../../form/FileInput.tsx"
-import Textarea from "../../form/FileInput.tsx"
+import { Input, Select, FileInput, Textarea } from "../../form/index.tsx"
 
 export default function StudentRegister() {
   const [name, SetName] = useState<IRegistrationStudent["name"]>("")
