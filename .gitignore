@@ -1,0 +1,12 @@
+# Ignore node_modules folder in both client and server directories
+client/node_modules/
+server/node_modules/
+
+# Ignore .env file in the server directory
+server/.env
+
+client/dist
+client/dist-ssr
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
