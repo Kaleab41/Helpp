@@ -1,3 +1,8 @@
 export default function TeacherDash() {
-  return <div>TeacherDash</div>
+  return (
+    <div>
+      Teacher Dash
+    </div>
+  )
+    
 }

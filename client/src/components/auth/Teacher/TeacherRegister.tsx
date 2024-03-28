@@ -26,8 +26,7 @@ const TeacherRegister = () => {
   const [email, SetEmail] = useState<IRegistrationTeacher["email"]>("")
   const [phone, SetPhone] = useState<IRegistrationTeacher["phone"]>("")
   const [interviewDate, SetInterviewDate] = useState<IRegistrationTeacher["interviewDate"]>(null)
-  const [curriculumVitae, SetCurriculumVitae] =
-    useState<IRegistrationTeacher["curriculumVitae"]>(null)
+  const [curriculumVitae, SetCurriculumVitae] = useState<IRegistrationTeacher["curriculumVitae"]>(null)
   const [qualifications, SetQualifications] = useState<IRegistrationTeacher["qualifications"]>(null)
   const [certifications, SetCertifications] = useState<IRegistrationTeacher["certifications"]>(null)
 
