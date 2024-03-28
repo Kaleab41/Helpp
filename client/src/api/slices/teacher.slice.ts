@@ -1,5 +1,5 @@
 import studentManagementApi from "..";
-import { ITeacher, IRegistrationTeacher } from "../types/teacher.type";
+import { ITeacher, IRegistrationTeacher, ISignInTeacher, ISignupTeacher } from "../types/teacher.type";
 
 
 const teacherApiSlice = studentManagementApi.injectEndpoints({
@@ -32,9 +32,29 @@ const teacherApiSlice = studentManagementApi.injectEndpoints({
             },
             invalidatesTags: ['teacher'],
         }),
+        signupTeacher: builder.mutation<{ message: string }, ISignupTeacher>({
+            query: (body) => ({
+                url: '/teacher/signup',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['teacher'],
+
+        }),
+        signinTeacher: builder.mutation<ITeacher, ISignInTeacher>({
+            query: (body) => ({
+                url: '/teacher/signin',
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['teacher'],
+
+        }),
     })
 })
 
 export const {
-    useCreateTeacherMutation
+    useCreateTeacherMutation,
+    useSignupTeacherMutation,
+    useSigninTeacherMutation,
 } = teacherApiSlice

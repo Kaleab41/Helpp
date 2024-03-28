@@ -2,6 +2,9 @@ import { Button, Modal } from "flowbite-react"
 import { useState } from "react"
 import { ISignupStudent } from "../../api/types/student.type.ts"
 import { Input, RoleMenu } from "../form/index.tsx"
+import { useSignupStudentMutation } from "../../api/slices/student.slice.ts"
+import { useSignupTeacherMutation } from "../../api/slices/teacher.slice.ts"
+import { useSignupAdminMutation } from "../../api/slices/admin.slice.ts"
 
 type SinginProp = {
   openSignupModal: boolean
@@ -12,6 +15,12 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
   const [id, SetId] = useState<ISignupStudent["id"]>("")
   const [password, SetPassword] = useState<ISignupStudent["password"]>("")
   const [role, SetRole] = useState<string>("Student")
+
+  const [studentSignup, { }] = useSignupStudentMutation();
+  const [teacherSignup, { }] = useSignupTeacherMutation();
+  const [adminSignup, { }] = useSignupAdminMutation();
+
+
   function onCloseModal() {
     SetSignupModal(false)
     SetRole("Student") //default role
@@ -20,7 +29,37 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
   }
 
   const HanldeSignup = async () => {
-    // Signup user
+    try {
+      switch (role) {
+        case "Student": {
+          const response = await studentSignup({ id, password }).unwrap()
+          if (response) {
+            onCloseModal()
+          }
+          break;
+        }
+        case "Teacher": {
+          const response = await teacherSignup({ email: id, password }).unwrap()
+          if (response) {
+            onCloseModal()
+          }
+          break;
+        }
+        case "Admin": {
+          const response = await adminSignup({ email: id, password }).unwrap()
+          if (response) {
+            onCloseModal()
+          }
+          break
+        }
+        default:
+          break
+      }
+    } catch (error) {
+      const _error = (error as any).data.error
+      console.error({ _error })
+    }
+
   }
 
   return (
@@ -34,8 +73,8 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
 
             {/* Form Component */}
             <Input
-              name={"Id"}
-              placeholder="Enter your id"
+              name={role === "Admin" || role === "Teacher" ? "Email" : "Id"}
+              placeholder={`Enter your ${role === "Admin" || role === "Teacher" ? "Email" : "Id"}`}
               setValue={SetId}
               type="text"
               value={id}

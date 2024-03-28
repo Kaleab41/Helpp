@@ -40,7 +40,7 @@ const TeacherRegister = () => {
         certifications,
       }).unwrap()
       if (response) {
-        // EmptyInputs()
+        EmptyInputs()
       }
     } catch (error) {
       const _error = (error as any).error

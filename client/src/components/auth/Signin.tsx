@@ -2,6 +2,9 @@ import { Button, Modal } from "flowbite-react"
 import { useState } from "react"
 import { ISignInStudent } from "../../api/types/student.type.ts"
 import { Input, RoleMenu } from "../form/index.tsx"
+import { useSigninStudentMutation } from "../../api/slices/student.slice.ts"
+import { useSigninTeacherMutation } from "../../api/slices/teacher.slice.ts"
+import { useSigninAdminMutation } from "../../api/slices/admin.slice.ts"
 
 type SinginProp = {
   openSigninModal: boolean
@@ -10,8 +13,13 @@ type SinginProp = {
 
 export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) {
   const [id, SetId] = useState<ISignInStudent["id"]>("")
-  const [role, SetRole] = useState<string>("Student")
+  const [role, SetRole] = useState<"Student" | "Teacher" | "Admin">("Student")
   const [password, SetPassword] = useState<ISignInStudent["password"]>("")
+
+  const [studentSignin, { }] = useSigninStudentMutation();
+  const [teacherSignin, { }] = useSigninTeacherMutation();
+  const [adminSignin, { }] = useSigninAdminMutation();
+
   function onCloseModal() {
     SetSigninModal(false)
     SetRole("Student") //default role
@@ -20,7 +28,37 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
   }
 
   const HanldeSignin = async () => {
-    // Signin user
+    try {
+      switch (role) {
+        case "Student": {
+          const response = await studentSignin({ id, password }).unwrap()
+          if (response) {
+            onCloseModal()
+          }
+          break;
+        }
+        case "Teacher": {
+          const response = await teacherSignin({ email: id, password }).unwrap()
+          if (response) {
+            onCloseModal()
+          }
+          break;
+        }
+        case "Admin": {
+          const response = await adminSignin({ email: id, password }).unwrap()
+          if (response) {
+            onCloseModal()
+          }
+          break
+        }
+        default:
+          break
+      }
+    } catch (error) {
+      const _error = (error as any).data.error
+      console.error({ _error })
+    }
+
   }
 
   return (
@@ -34,8 +72,8 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
 
             {/* Form Component */}
             <Input
-              name={"Id"}
-              placeholder="Enter your id"
+              name={role === "Admin" || role === "Teacher" ? "Email" : "Id"}
+              placeholder={`Enter your ${role === "Admin" || role === "Teacher" ? "Email" : "Id"}`}
               setValue={SetId}
               type="text"
               value={id}
@@ -55,7 +93,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
           </div>
           <RoleMenu
             value={role}
-            SetValue={SetRole}
+            SetValue={SetRole as any}
             name="RegistrationRole"
             options={["Student", "Teacher", "Admin"]}
           />

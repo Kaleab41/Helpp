@@ -15,7 +15,7 @@ export default function StudentRegister() {
   const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
 
-  const [create, { }] = useCreateStudentMutation()
+  const [create, { }] = useCreateStudentMutation();
   const handleRegister = async () => {
     try {
       const response = await create({
