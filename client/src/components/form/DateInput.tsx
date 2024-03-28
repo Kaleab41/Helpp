@@ -1,16 +1,18 @@
-import { Datepicker, Label } from "flowbite-react";
+import { Datepicker, Label } from "flowbite-react"
 
-
-
-const DateInput = ({ name }: { name: string}) => {
-    return (
-        <div>
-            <div className="mb-2 w-full">
-                <Label htmlFor={name} value={name} />
-            </div>
-                <Datepicker title={"Interview Date"} />
-            </div>
-    )
+type DateInputProps = {
+  name: string
+  SetValue: (value: Date) => void
+}
+const DateInput = ({ name, SetValue }: DateInputProps) => {
+  return (
+    <div>
+      <div className="mb-2 w-full">
+        <Label htmlFor={name} value={name} />
+      </div>
+      <Datepicker onSelectedDateChanged={(date) => SetValue(date)} />
+    </div>
+  )
 }
 
-export default DateInput;
+export default DateInput
