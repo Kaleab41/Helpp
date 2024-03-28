@@ -29,7 +29,7 @@ const TeacherRegister = () => {
 
   const handleRegister = async () => {
     try {
-      // Do we need FormDatat? Can't we just return an IRegistration Teacher Object from a function that gets all these values on submit?
+      // Do we need FormData? Can't we just return an IRegistration Teacher Object from a function that gets all these values on submit?
       const formData = new FormData()
       formData.append("name", name)
       formData.append("gender", gender)
