@@ -7,6 +7,10 @@ interface DashboardProps {
     includedData: string[];
 }
 
+const handleButtonClick = (row: {}) => {
+    console.log(row);
+}
+
 
 const DashboardTable = ({ headers, tableData, includedData }: DashboardProps) => {
     return (
@@ -29,8 +33,10 @@ const DashboardTable = ({ headers, tableData, includedData }: DashboardProps) =>
                                     includedData.some(data => data === key) ? <Table.Cell key={key} className="text-sm odd:font-bold odd:text-black">{row[key]}</Table.Cell> : null
                                 ))
                             }
-                            <Table.Cell>
-                                <Button>Click</Button>
+                            <Table.Cell key={`button-${index}`}>
+                                <Button onClick={() => handleButtonClick(row)}>
+                                    Request Change
+                                </Button>
                             </Table.Cell>
                         </Table.Row>
                     ))
