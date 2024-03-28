@@ -11,7 +11,7 @@ export default function StudentDash() {
 
   return (
 
-    <DashboardTable headers={["Instructor", "Course", "Grade"]} tableData={tableData} includedData={["instructor", "course", "grade"]} />
+    <DashboardTable headers={["Instructor", "Course", "Grade"]} tableData={tableData} />
 
   );
 }

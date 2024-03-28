@@ -2,9 +2,9 @@ import { Label, TextInput } from "flowbite-react"
 
 type InputProp = {
   name: string
-  placeholder: string
+  placeholder?: string
   type: string
-  value: string
+  value: string | number
   setValue: (value: string) => void
 }
 
