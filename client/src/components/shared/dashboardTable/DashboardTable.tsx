@@ -4,15 +4,16 @@ import { Button, Table } from "flowbite-react";
 interface DashboardProps {
     headers: string[];
     tableData: Record<string, string>[];
+    includedData: string[];
 }
 
 
-const DashboardTable = ({ headers, tableData }: DashboardProps) => {
+const DashboardTable = ({ headers, tableData, includedData }: DashboardProps) => {
     return (
         
             <div className="overflow-x-auto">
             <Table>
-              <Table.Head>
+              <Table.Head className="text-base uppercase">
                 {
                     headers.map((header: string) => (
                         <Table.HeadCell>{header}</Table.HeadCell>
@@ -21,11 +22,11 @@ const DashboardTable = ({ headers, tableData }: DashboardProps) => {
               </Table.Head>
               <Table.Body className="divide-y"> 
                 {
-                    tableData.map((row) => (
-                        <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    tableData.map((row, index) => (
+                        <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                             {
                                 Object.keys(row).map((key) => (
-                                    <Table.Cell>{row[key]}</Table.Cell>
+                                    includedData.some(data => data === key) ? <Table.Cell key={key} className="text-sm odd:font-bold odd:text-black">{row[key]}</Table.Cell> : null
                                 ))
                             }
                             <Table.Cell>

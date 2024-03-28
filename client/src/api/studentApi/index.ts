@@ -4,7 +4,7 @@ export const studentManagementApi = createApi({
     reducerPath: 'studentManagementApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8000' }),
     endpoints: () => ({}),
-    tagTypes: ['student', 'student-paymentHistory', 'courses'],
+    tagTypes: ['student', 'student-paymentHistory', 'student-gradeHistory', 'courses'],
 })
 
 export default studentManagementApi

@@ -1,12 +1,17 @@
 import DashboardTable from "../../components/shared/dashboardTable/DashboardTable";
+import { useGetGradeHistoryQuery } from "../../api/studentApi/student.slice";
 
 export default function StudentDash() {
-  return (
-    <DashboardTable headers={["Name", "Date", "Age"]} tableData={[
-      {name: "James", Date: "Date?", Age: "200"},
-      {name: "James", Date: "Date?", Age: "200"},
-      {name: "Fuhad", Date: "Date?", Age: "200"}
 
-    ]}/>
+  const { data: fetchData, isLoading, isSuccess, isError, error } = useGetGradeHistoryQuery("WI1830");
+
+  console.log("Fetch", fetchData);
+
+  const tableData = fetchData || [];
+
+  return (
+    
+    <DashboardTable headers={["Instructor", "Course", "Grade"]} tableData={tableData} includedData={["instructor", "course", "grade"]}/>
+    
   );
 }

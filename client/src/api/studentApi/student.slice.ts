@@ -52,6 +52,8 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
+
+        // Why are there two changeGradeRequests? Was one supposed to be grade history?
         gradeChangeRequest: builder.mutation<IGrade, IGradeChangeRequest>({
             query: (body) => ({
                 url: '/student/gradechangeRequest',
@@ -59,6 +61,12 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
+
+        getGradeHistory: builder.query<Record<string, string>[], string>({
+            query: (studentId) => `/student/grades?id=${studentId}`,
+            providesTags: ['student-gradeHistory']
+        }),
+
         getPaymentHistory: builder.query<IPaymentReceipt[], string>({
             query: (studentId) => `/student/payment?id=${studentId}`,
             providesTags: ['student-paymentHistory']
@@ -78,5 +86,6 @@ export const { useCreateStudentMutation,
     useChangeGradeRequestMutation,
     useGradeChangeRequestMutation,
     useGetPaymentHistoryQuery,
-    useFetchCoursesQuery
+    useFetchCoursesQuery,
+    useGetGradeHistoryQuery
 } = studentApiSlice
