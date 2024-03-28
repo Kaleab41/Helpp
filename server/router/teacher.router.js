@@ -118,7 +118,7 @@ router.post(
   }
 );
 
-router.post("/upload", upload.single("file"), (req, res) => {
+router.post("/upload", upload.single("file"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -141,6 +141,14 @@ router.post("/upload", upload.single("file"), (req, res) => {
     const course = fileNameParts[1].trim();
     const batch = fileNameParts[2].trim().split(".")[0];
 
+    // Find the instructor in the teacher model to get instructor ID
+    const instructor = await teacherModel.findOne({ name: instructorName });
+    if (!instructor) {
+      return res.status(404).json({ error: "Instructor not found" });
+    }
+
+    const instructorID = instructor.id;
+
     // Read the uploaded Excel file
     const workbook = xlsx.readFile(filePath);
     const sheetName = workbook.SheetNames[0];
@@ -148,12 +156,14 @@ router.post("/upload", upload.single("file"), (req, res) => {
     const data = xlsx.utils.sheet_to_json(sheet);
 
     // Process the data and populate fields accordingly
-    data.forEach((row) => {
+    const uploadedGrades = [];
+    for (const row of data) {
       const { Name, ID, Grade, Mid, Final, Assessment, Total } = row;
 
       // Populate fields and save to database
       const newGrade = new gradeModel({
         instructor: instructorName,
+        instructorID: instructorID, // Add instructor ID obtained from teacher model
         course: course,
         batch: batch,
         studentName: Name,
@@ -167,22 +177,32 @@ router.post("/upload", upload.single("file"), (req, res) => {
       });
 
       // Save the grade to the database
-      newGrade.save().then(() => {
-        console.log("Grade uploaded:", row);
-      });
-    });
+      const savedGrade = await newGrade.save();
+      uploadedGrades.push(savedGrade);
+      console.log("Grade uploaded:", row);
+    }
 
     // Delete the uploaded file after processing
     fs.unlinkSync(filePath);
 
+    // Prepare response with added teacherId
+    const responseGrades = uploadedGrades.map((grade) => ({
+      ...grade.toJSON(),
+      teacherId: instructorID,
+    }));
+
     res
       .status(200)
-      .json({ message: "Excel data uploaded and grades added successfully" });
+      .json({
+        message: "Excel data uploaded and grades added successfully",
+        uploadedGrades: responseGrades,
+      });
   } catch (error) {
     console.error("Error uploading file and processing data:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 router.post("/sendnotifications", async (req, res) => {
   try {
     const { batch, sender, message } = req.body;
