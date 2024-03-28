@@ -1,13 +1,13 @@
-import { Table } from "flowbite-react"
-import { ReactNode } from "react"
+import { Button, Table } from "flowbite-react"
 
 interface DashboardProps {
   headers: string[]
   tableData: Record<string, string>[]
-  children?: ReactNode
+  buttonLabel: string
+  ButtonClicked: (index: number) => void
 }
 
-const DashboardTable = ({ headers, tableData, children }: DashboardProps) => {
+const DashboardTable = ({ headers, tableData, buttonLabel, ButtonClicked }: DashboardProps) => {
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -22,7 +22,15 @@ const DashboardTable = ({ headers, tableData, children }: DashboardProps) => {
               {Object.keys(row).map((key) => (
                 <Table.Cell>{row[key]}</Table.Cell>
               ))}
-              <Table.Cell>{children}</Table.Cell>
+              <Table.Cell>
+                <Button
+                  onClick={() => {
+                    ButtonClicked(index)
+                  }}
+                >
+                  {buttonLabel}
+                </Button>
+              </Table.Cell>
             </Table.Row>
           ))}
         </Table.Body>
