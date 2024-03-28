@@ -11,3 +11,14 @@ export interface IAllocatedCoursesResponse {
     batch: []
 }
 
+export interface IAssignCourseRequest {
+    email: string;
+    course: string;
+    batch: string;
+}
+
+export interface INewCourse {
+    name: string;
+    courseId: string;
+    year: number;
+}

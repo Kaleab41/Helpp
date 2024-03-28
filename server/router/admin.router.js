@@ -207,7 +207,7 @@ router.post("/restrictstudent", (req, res) => {
 router.get("/getbatches", async (req, res) => {
   try {
     const uniqueBatches = await studentModel.distinct("batch");
-    res.status(200).json({ batches: uniqueBatches });
+    res.status(200).json(uniqueBatches);
   } catch (error) {
     console.error("Error retrieving unique batches:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -798,7 +798,7 @@ router.get('/dashboard', async (req, res) => {
 
     // Count the number of students with restricted accounts false
     const restrictedFalseCount = await studentModel.countDocuments({ restricted: false });
-    const teachers = await teacherModel.countDocuments({ restricted: true |false });
+    const teachers = await teacherModel.countDocuments({ restricted: true | false });
     const course = await courseModel.countDocuments();
     const uniqueBatches = await studentModel.distinct('batch');
 

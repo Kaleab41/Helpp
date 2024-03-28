@@ -10,3 +10,10 @@ export interface IUploadPayment {
     id: string;
     paymentReceipt: File
 }
+
+export interface IPayment {
+    id: string;
+    paymentReceipt: string;
+    verified: boolean;
+    studentName: string;
+}

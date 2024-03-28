@@ -2,11 +2,22 @@
     "cSpell.words": [
         "allocatedcourses",
         "courseid",
+        "courselist",
+        "getbatches",
+        "getpayments",
+        "getstudents",
+        "getteachers",
         "gradechange",
+        "pendingapproval",
+        "rejectstudent",
+        "restrictstudent",
         "sendnotifications",
         "signin",
         "uploadattendance",
         "uploadmaterial",
-        "uploadpayment"
+        "uploadpayment",
+        "verifypayment",
+        "verifystudent",
+        "verifyteacher"
     ]
 }
