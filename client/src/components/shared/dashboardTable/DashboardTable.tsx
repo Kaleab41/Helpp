@@ -58,13 +58,13 @@ const DashboardTable = ({ headers, tableData, children }: DashboardProps) => {
     <div className="overflow-x-auto">
       <Table>
         <Table.Head>
-          {headers.map((header: string) => (
-            <Table.HeadCell>{header}</Table.HeadCell>
+          {headers.map((header: string, index) => (
+            <Table.HeadCell key={index}>{header}</Table.HeadCell>
           ))}
         </Table.Head>
         <Table.Body className="divide-y">
-          {tableData.map((row) => (
-            <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
+          {tableData.map((row, index) => (
+            <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
               {Object.keys(row).map((key) => (
                 <Table.Cell>{row[key]}</Table.Cell>
               ))}
