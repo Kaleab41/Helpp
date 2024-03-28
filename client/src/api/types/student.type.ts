@@ -33,6 +33,13 @@ export interface ISignupStudent {
     password: string;
 }
 
+export interface INotificationStudent {
+    sender: string,
+    message: string,
+    time: Date,
+    id: string
+}
+
 export interface ISignInStudent {
     id: string;
     password: string;
