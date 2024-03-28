@@ -1,7 +1,7 @@
 import { Button, Modal } from "flowbite-react"
 import { useState } from "react"
 import { ISignInStudent } from "../../api/types/student.type.ts"
-import { Input } from "../form/index.tsx"
+import { Input, RoleMenu } from "../form/index.tsx"
 
 type SinginProp = {
   openSigninModal: boolean
@@ -10,9 +10,11 @@ type SinginProp = {
 
 export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) {
   const [id, SetId] = useState<ISignInStudent["id"]>("")
+  const [role, SetRole] = useState<string>("Student")
   const [password, SetPassword] = useState<ISignInStudent["password"]>("")
   function onCloseModal() {
     SetSigninModal(false)
+    SetRole("Student") //default role
     SetId("")
     SetPassword("")
   }
@@ -28,7 +30,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
         <Modal.Body>
           <div className="space-y-6">
             {/* Form Title */}
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">Sign In</h3>
+            <h3 className="text-xl font-medium text-gray-900 dark:text-white">{`${role} Sign In `}</h3>
 
             {/* Form Component */}
             <Input
@@ -51,6 +53,12 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
               <Button onClick={HanldeSignin}>Sign in</Button>
             </div>
           </div>
+          <RoleMenu
+            value={role}
+            SetValue={SetRole}
+            name="RegistrationRole"
+            options={["Student", "Teacher", "Admin"]}
+          />
         </Modal.Body>
       </Modal>
     </>
