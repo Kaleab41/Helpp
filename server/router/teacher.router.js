@@ -321,25 +321,36 @@ router.get("/allocatedCourses", async (req, res) => {
 
     // Retrieve assigned courses for the teacher
     const allocatedCourses = existingTeacher.assignedCourses;
-    const batch = existingTeacher.assignedCourses;
+    const batch = existingTeacher.batch;
+
+    // If no allocated courses, return empty array
+    if (!allocatedCourses || allocatedCourses.length === 0) {
+      return res.status(200).json([]);
+    }
 
     // Fetch course details for each allocated course ID
-    const allocatedCourseNames = [];
-    for (const courseid of allocatedCourses) {
-      const course = await courseModel.findOne({ courseid });
+    const allocatedCoursesDetails = [];
+    for (let i = 0; i < allocatedCourses.length; i++) {
+      const course = await courseModel.findOne({
+        courseid: allocatedCourses[i],
+      });
       if (course) {
-        allocatedCourseNames.push(course.courseName);
+        allocatedCoursesDetails.push({
+          courseName: course.courseName,
+          courseCode: allocatedCourses[i],
+          batch: batch[i],
+        });
       } else {
-        allocatedCourseNames.push(null);
+        allocatedCoursesDetails.push({
+          courseName: null,
+          courseCode: allocatedCourses[i],
+          batch: batch[i],
+        });
       }
     }
 
     // Return allocated courses with their names
-    return res.status(200).json({
-      allocatedCourses: allocatedCourses,
-      courseNames: allocatedCourseNames,
-      batch: batch,
-    });
+    return res.status(200).json(allocatedCoursesDetails);
   } catch (error) {
     console.error("Error retrieving allocated courses:", error);
     return res.status(500).json({ error: "Internal server error" });
