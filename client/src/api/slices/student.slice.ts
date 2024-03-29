@@ -1,6 +1,7 @@
 import studentManagementApi from "..";
 import { IChangeGradeRequest, IGrade, IGradeChangeRequest, IStudentGrade } from "../types/grade.types";
-import { IPaymentReceipt, IUploadPayment } from "../types/payment.types";
+import { IMaterials } from "../types/material.types";
+import { IPayment, IPaymentReceipt, IUploadPayment } from "../types/payment.types";
 import { IChangeRequest, INotificationStudent, IRegistrationStudent, ISignInStudent, ISignupStudent, IStudent } from "../types/student.type";
 
 const studentApiSlice = studentManagementApi.injectEndpoints({
@@ -46,7 +47,7 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             invalidatesTags: ['student'],
 
         }),
-        uploadPayment: builder.mutation<IPaymentReceipt, IUploadPayment>({
+        uploadPayment: builder.mutation<IPaymentReceipt[], IUploadPayment>({
             query: ({ id, paymentReceipt }) => {
                 const formData = new FormData();
                 formData.append('id', id);
@@ -82,12 +83,17 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             providesTags: ['student']
         }),
 
+        getMaterials: builder.query<IMaterials[], string>({
+            query: (batch) => `student/material?batch=${batch}`,
+            providesTags: ['student']
+        }),
+
         getGradeHistory: builder.query<IStudentGrade[], string>({
             query: (studentId) => `/student/grades?id=${studentId}`,
             providesTags: ['student-gradeHistory']
         }),
 
-        getPaymentHistory: builder.query<IPaymentReceipt[], string>({
+        getPaymentHistory: builder.query<IPayment[], string>({
             query: (studentId) => `/student/payment?id=${studentId}`,
             providesTags: ['student-paymentHistory']
         }),
@@ -108,5 +114,6 @@ export const { useCreateStudentMutation,
     useGetPaymentHistoryQuery,
     useFetchCoursesQuery,
     useGetGradeHistoryQuery,
-    useGetNotificationsQuery
+    useGetNotificationsQuery,
+    useGetMaterialsQuery
 } = studentApiSlice

@@ -40,6 +40,8 @@ export interface INotificationStudent {
     id: string
 }
 
+
+
 export interface ISignInStudent {
     id: string;
     password: string;

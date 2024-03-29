@@ -1,18 +1,23 @@
 import DashboardTable from "../../components/shared/dashboardTable/DashboardTable";
-import { useChangeGradeRequestMutation, useGetGradeHistoryQuery, useGetNotificationsQuery } from "../../api/slices/student.slice";
+import { useChangeGradeRequestMutation, useGetGradeHistoryQuery, useGetMaterialsQuery, useGetNotificationsQuery, useGetPaymentHistoryQuery } from "../../api/slices/student.slice";
 import RequestForm from "../../components/modals/RequestForm";
 import { useState } from "react";
 import { IChangeGradeRequest, IStudentGrade } from "../../api/types/grade.types";
 import Notifications from "./notifications";
+import { Material, Payment } from "..";
 
 export default function StudentDash() {
 
   const { data: fetchData, isLoading, isSuccess, isError, error } = useGetGradeHistoryQuery("WI1830");
   const { data: notifications, isLoading: pending, isSuccess: success } = useGetNotificationsQuery("WI1830");
+  const { data: payments, isLoading: loading, isSuccess: done} = useGetPaymentHistoryQuery("WI1830");
+  const { data: materials, isSuccess: successful } = useGetMaterialsQuery("DRB2401");
 
-  const data = notifications ? notifications["notifications"] : [];
+  // Get the batch from the student's session also
+  
+  const notificationsArray = notifications ? notifications["notifications"] : [];
   // make the WI1830 Id dynamic by fetching it for the current user within the session instead of feeding it to the query manually like I did up here.
-  // use QO1203 for requesting change
+  // use QO1203 for requesting change of grades ( it's the only one that retrieves grade history with the instructor's id included. )
 
   const [createRequest, {}] = useChangeGradeRequestMutation();
   const [triggerModal, setTriggerModal] = useState<boolean>(false);
@@ -44,7 +49,6 @@ export default function StudentDash() {
   }
 
 
-
   return (
  
     <div className="flex">
@@ -54,7 +58,13 @@ export default function StudentDash() {
       }
       <div className="flex flex-col w-[400px] border-l-2">
         {success &&
-          <Notifications notifications={data} />
+          <Notifications notifications={notificationsArray} />
+        }
+        {successful && 
+          <Material materials={materials} />
+        }
+        {done &&
+          <Payment payments={payments} />
         }
       </div>
     </div>
