@@ -9,6 +9,7 @@
         "getpayments",
         "getstudents",
         "getteachers",
+        "getverifiedpayments",
         "gradechange",
         "pendingapproval",
         "registred",

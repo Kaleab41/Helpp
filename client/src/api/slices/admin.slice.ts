@@ -108,6 +108,9 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
         getPayments: builder.query<IPayment[], void>({
             query: () => '/admin/getpendingpayments',
         }),
+        getVerifiedPayments: builder.query<IPayment[], void>({
+            query: () => '/admin/getverifiedpayments',
+        }),
         getPendingStudents: builder.query<IStudent[], void>({
             query: () => '/admin/pendingapproval',
         }),
@@ -165,4 +168,5 @@ export const {
     useRejectStudentMutation,
     useRejectTeacherMutation,
     useDeleteCourseMutation,
+    useGetVerifiedPaymentsQuery
 } = adminApiSlice

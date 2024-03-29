@@ -1,10 +1,11 @@
 import { LeftRightPageLayout, DashboardTable } from "../../components/shared/index"
 import { InfoCards, Notification } from "../../components/adminComonents/index"
-import { useGetDashboardDataQuery, useGetPaymentsQuery } from "../../api/slices/admin.slice"
+import { useGetDashboardDataQuery, useGetPaymentsQuery, useGetVerifiedPaymentsQuery } from "../../api/slices/admin.slice"
 export default function AdminDash() {
 
   const { data, isSuccess } = useGetDashboardDataQuery();
   const { data: payments } = useGetPaymentsQuery();
+  const { data: verifiedPayments } = useGetVerifiedPaymentsQuery();
 
   const Student_Teacher_TableHead = ["id", "paymentReceipt", "verified", "studentName"]
 
