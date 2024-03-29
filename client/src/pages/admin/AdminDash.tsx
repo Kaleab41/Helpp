@@ -3,7 +3,7 @@ import { InfoCards, Notification } from "../../components/adminComonents/index"
 import {
   useGetDashboardDataQuery,
   useGetVerifiedPaymentsQuery,
-  useGetPendingPaymentsQuery,
+  useGetPaymentsQuery,
   useVerifyPaymentMutation,
 } from "../../api/slices/admin.slice"
 import { IPayment } from "../../api/types/payment.types"
@@ -16,10 +16,9 @@ export default function AdminDash() {
   const [pendingPayment, SetPendingPayment] = useState<IPayment | null>(null)
   const { data, isSuccess } = useGetDashboardDataQuery()
   const { data: verifiedPayments } = useGetVerifiedPaymentsQuery()
-  const { data: pendingPayments } = useGetPendingPaymentsQuery()
+  const { data: pendingPayments } = useGetPaymentsQuery()
   const [ApprovePayment, { error: ApprovePaymentError }] = useVerifyPaymentMutation()
 
-  console.log(pendingPayments)
   const PaymentTableHead = ["id", "Verified", "studentName"]
   const VerifiedPaymenTableData =
     verifiedPayments?.map((payment) => ({
@@ -34,9 +33,11 @@ export default function AdminDash() {
       studentName: payment.studentName,
     })) || []
 
-  const DownloadRecipt = (paymentRecipt: IPayment["paymentReceipt"]) => {}
-  // const ApprovePayment = (paymentId: IPayment["id"]) => {}
-  const RejectPayment = (paymentId: IPayment["id"]) => {}
+  const DownloadRecipt = (ppaymentId: string) => {
+
+  }
+
+  const RejectPayment = (paymentId: IPayment["id"]) => { }
   return (
     <LeftRightPageLayout
       leftChildren={
@@ -66,7 +67,7 @@ export default function AdminDash() {
             <div className="flex justify-around mt-5">
               <button
                 onClick={async () => {
-                  const response = await ApprovePayment({ id: pendingPayment!.id }).unwrap()
+                  const response = await ApprovePayment({ paymentId: pendingPayment!.paymentId }).unwrap()
                   if (response) {
                     toast.success(response.message)
                     SetOpenModal(false)
@@ -101,7 +102,7 @@ export default function AdminDash() {
             headers={PaymentTableHead}
             tableData={VerifiedPaymenTableData}
             buttonLabel="Download Recipt"
-            ButtonClicked={(row) => DownloadRecipt(verifiedPayments[row].paymentReceipt)}
+            ButtonClicked={(row) => DownloadRecipt(verifiedPayments ? verifiedPayments[row].paymentReceipt : "")}
           />
         </>
       }

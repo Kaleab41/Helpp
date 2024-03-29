@@ -13,6 +13,7 @@ export interface IUploadPayment {
 
 export interface IPayment {
     id: string;
+    paymentId: string;
     paymentReceipt: string;
     verified: boolean;
     studentName: string;
