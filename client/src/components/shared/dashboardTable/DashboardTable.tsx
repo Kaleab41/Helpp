@@ -9,7 +9,7 @@ interface DashboardProps {
 
 const DashboardTable = ({ headers, tableData, buttonLabel, ButtonClicked }: DashboardProps) => {
   return (
-    <div className="overflow-x-auto">
+    <div className="w-full overflow-x-auto">
       <Table>
         <Table.Head>
           {headers.map((header: string, index) => (
@@ -20,7 +20,7 @@ const DashboardTable = ({ headers, tableData, buttonLabel, ButtonClicked }: Dash
           {tableData.map((row, index) => (
             <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
               {Object.keys(row).map((key) => (
-                <Table.Cell>{row[key]}</Table.Cell>
+                <Table.Cell key={key} className="odd:font-bold odd:text-sm text-black">{row[key]}</Table.Cell>
               ))}
               <Table.Cell>
                 <Button

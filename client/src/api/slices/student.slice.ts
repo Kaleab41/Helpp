@@ -1,7 +1,7 @@
 import studentManagementApi from "..";
-import { IChangeGradeRequest, IGrade, IGradeChangeRequest } from "../types/grade.types";
+import { IChangeGradeRequest, IGrade, IGradeChangeRequest, IStudentGrade } from "../types/grade.types";
 import { IPaymentReceipt, IUploadPayment } from "../types/payment.types";
-import { IChangeRequest, IRegistrationStudent, ISignInStudent, ISignupStudent, IStudent } from "../types/student.type";
+import { IChangeRequest, INotificationStudent, IRegistrationStudent, ISignInStudent, ISignupStudent, IStudent } from "../types/student.type";
 
 const studentApiSlice = studentManagementApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -67,6 +67,7 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             }),
         }),
 
+        // TODO: 
         // Why are there two changeGradeRequests? Was one supposed to be grade history?
         gradeChangeRequest: builder.mutation<IGrade, IGradeChangeRequest>({
             query: (body) => ({
@@ -76,7 +77,12 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             }),
         }),
 
-        getGradeHistory: builder.query<Record<string, string>[], string>({
+        getNotifications: builder.query<Record<string, INotificationStudent>[], string>({
+            query: (studentId) => `student/getnotification?id=${studentId}`,
+            providesTags: ['student']
+        }),
+
+        getGradeHistory: builder.query<IStudentGrade[], string>({
             query: (studentId) => `/student/grades?id=${studentId}`,
             providesTags: ['student-gradeHistory']
         }),
@@ -101,5 +107,6 @@ export const { useCreateStudentMutation,
     useGradeChangeRequestMutation,
     useGetPaymentHistoryQuery,
     useFetchCoursesQuery,
-    useGetGradeHistoryQuery
+    useGetGradeHistoryQuery,
+    useGetNotificationsQuery
 } = studentApiSlice

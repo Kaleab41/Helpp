@@ -17,6 +17,22 @@ export interface IChangeGradeRequest {
     message: string;
 }
 
+export interface IStudentGrade {
+    id: string;
+    studentName: string;
+    instructor: string;
+    instructorId: string;   
+    course: string;
+    grade: string;
+    mid?: number;
+    final?: number;
+    assessment?: number;
+    total: number;
+    file: string;
+    batch: string;
+    attendance: string[]; // Array of strings (assuming attendance data is stored as strings)   
+}
+
 export interface IGradeChangeRequest {
     teacherId: string;
     studentId: string;
