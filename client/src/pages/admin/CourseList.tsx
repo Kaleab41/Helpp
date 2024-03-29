@@ -1,11 +1,17 @@
+import { ToastContainer, toast } from "react-toastify"
 import { Button } from "flowbite-react"
 import { INewCourse } from "../../api/types/course.types"
 import { Input, Select } from "../../components/form"
 import { Card, DashboardTable, LeftRightPageLayout } from "../../components/shared"
 import { useState } from "react"
-import { useAddCourseMutation, useAssignCourseMutation, useDeleteCourseMutation, useGetCourseListQuery, useGetUniqueBatchesQuery, useListTeachersQuery } from "../../api/slices/admin.slice"
-
-
+import {
+  useAddCourseMutation,
+  useAssignCourseMutation,
+  useDeleteCourseMutation,
+  useGetCourseListQuery,
+  useGetUniqueBatchesQuery,
+  useListTeachersQuery,
+} from "../../api/slices/admin.slice"
 export default function CourseList() {
   const [selectedTeacherForCourseAssignment, SetSelectedTeacherForCourseAssignment] = useState("")
   const [selectedCourseForCourseAssignment, SetSelectedCourseForCourseAssignment] = useState("")
@@ -15,30 +21,31 @@ export default function CourseList() {
   const [year, SetYear] = useState<INewCourse["year"]>()
 
   const { data: courseList } = useGetCourseListQuery()
-  const [addCourse] = useAddCourseMutation();
-  const [deleteCourse] = useDeleteCourseMutation();
-  const { data: teachers } = useListTeachersQuery();
+  const [addCourse, { error: addCouseError }] = useAddCourseMutation()
+  const [deleteCourse, { error: deleteCourseError }] = useDeleteCourseMutation()
+  const { data: teachers } = useListTeachersQuery()
   const { data: batches } = useGetUniqueBatchesQuery()
-  const [assignCourse] = useAssignCourseMutation()
-
+  const [assignCourse, { error: assignCourseError }] = useAssignCourseMutation()
 
   const CourseListTableHead = ["courseid", "courseName", "year"]
 
-  const CourseListTableData = courseList?.filter(payment => {
-    return Object.keys(payment).some(key => CourseListTableHead.includes(key));
-  }).map((data: any) => {
-    return CourseListTableHead.reduce((acc: Record<string, string>, key: string) => {
-      acc[key] = data[key];
-      return acc;
-    }, {});
-
-  }) || [];
+  const CourseListTableData =
+    courseList
+      ?.filter((payment) => {
+        return Object.keys(payment).some((key) => CourseListTableHead.includes(key))
+      })
+      .map((data: any) => {
+        return CourseListTableHead.reduce((acc: Record<string, string>, key: string) => {
+          acc[key] = data[key]
+          return acc
+        }, {})
+      }) || []
 
   const DeleteCourse = async (id: string) => {
-    const response = await deleteCourse({ courseid: id }).unwrap();
+    const response = await deleteCourse({ courseid: id }).unwrap()
     if (response) {
-      console.log({ response })
-    }
+      toast.success(response.message)
+    } else if (deleteCourseError) toast.error("Deleteing course failed, Please try again")
   }
   const AssignCourse = async (
     selectedTeacherForCourseAssignment: string,
@@ -48,32 +55,35 @@ export default function CourseList() {
     const response = await assignCourse({
       email: selectedTeacherForCourseAssignment,
       course: selectedCourseForCourseAssignment,
-      batch: selectedBatchForAttendance
-    }).unwrap();
+      batch: selectedBatchForAttendance,
+    }).unwrap()
     if (response) {
-      console.log({ response })
-    }
+      toast.success(response.message)
+    } else if (assignCourseError) toast.error("Assinging couse failed, Please try again")
   }
   const AddCourse = async (courseId: string, name: string, year: number | undefined) => {
-    if (!courseId || !name || !year) return
+    if (!courseId || !name || !year) {
+      toast.warn("Please fill all fileds")
+      return
+    }
     const response = await addCourse({ courseId, name, year }).unwrap()
     if (response) {
       SetCourseId("")
       SetName("")
       SetYear(undefined)
-    }
+      toast.success("Couse Added Successfuly ")
+    } else if (addCouseError) toast.error("Course Adding Failed")
   }
 
   // Sample Data - Kolo
-  const CourseCodeList = courseList?.map(payment => payment.courseid) || []
-  const TeacherEmailList = teachers?.map(teacher => teacher.email) || []
+  const CourseCodeList = courseList?.map((payment) => payment.courseid) || []
+  const TeacherEmailList = teachers?.map((teacher) => teacher.email) || []
   const BatchList = batches || []
-
   return (
     <LeftRightPageLayout
       leftChildren={
         <>
-          {courseList &&
+          {courseList && (
             <DashboardTable
               tableTitle="Course List"
               headers={CourseListTableHead}
@@ -81,8 +91,10 @@ export default function CourseList() {
               buttonLabel="Delete Course"
               ButtonClicked={(row) => {
                 DeleteCourse(courseList[row].courseid)
-              }} show={true} />}
-
+              }}
+              show={true}
+            />
+          )}
         </>
       }
       rightChildren={
