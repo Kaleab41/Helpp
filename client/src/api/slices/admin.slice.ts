@@ -134,6 +134,13 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
+        rejectPayment: builder.mutation<{ message: string }, { paymentId: string }>({
+            query: (body) => ({
+                url: `/admin/rejectPayment`,
+                method: 'POST',
+                body
+            }),
+        }),
         deleteCourse: builder.mutation<{ message: string }, { courseid: string }>({
             query: (body) => ({
                 url: '/admin/courses',
@@ -169,4 +176,5 @@ export const {
     useRejectStudentMutation,
     useRejectTeacherMutation,
     useDeleteCourseMutation,
+    useRejectPaymentMutation
 } = adminApiSlice

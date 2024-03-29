@@ -5,6 +5,7 @@ import {
   useGetVerifiedPaymentsQuery,
   useGetPaymentsQuery,
   useVerifyPaymentMutation,
+  useRejectPaymentMutation,
 } from "../../api/slices/admin.slice"
 import { IPayment } from "../../api/types/payment.types"
 import ModalForm from "../../components/modals/ModalForm"
@@ -18,6 +19,7 @@ export default function AdminDash() {
   const { data: verifiedPayments } = useGetVerifiedPaymentsQuery()
   const { data: pendingPayments } = useGetPaymentsQuery()
   const [ApprovePayment, { error: ApprovePaymentError }] = useVerifyPaymentMutation()
+  const [deletePayment] = useRejectPaymentMutation();
 
   const [hrefIndex, setHrefIndex] = useState(0)
 
@@ -37,11 +39,16 @@ export default function AdminDash() {
       studentName: payment.studentName,
     })) || []
 
-  const DownloadRecipt = (ppaymentId: string) => {
-
+  const RejectPayment = async (paymentId: string) => {
+    try {
+      const response = await deletePayment({ paymentId }).unwrap();
+      if (response) {
+        toast.success(response.message)
+      }
+    } catch (error: any) {
+      toast.error(error.error)
+    }
   }
-
-  const RejectPayment = (paymentId: IPayment["id"]) => { }
   return (
     <LeftRightPageLayout
       leftChildren={
