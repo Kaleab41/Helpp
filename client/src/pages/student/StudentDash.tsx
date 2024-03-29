@@ -55,9 +55,12 @@ export default function StudentDash() {
  
     <div className="flex">
       <div className="flex flex-col w-full">
-        <DashboardTable headers={["Instructor", "Course", "Grade"]} tableTitle="Grade history" tableData={filteredTableData} buttonLabel="Request Change" ButtonClicked={(index) => handleClick(index)} show />
-        {gotGradeHistory && 
-          <RequestForm Open={triggerModal} onClose={() => setTriggerModal(false)} student={student} ButtonClicked={(requestData: IChangeGradeRequest) => handleRequest(requestData)} />
+        {gotGradeHistory &&
+          <>
+            <DashboardTable headers={["Instructor", "Course", "Grade"]} tableTitle="Grade history" tableData={filteredTableData} buttonLabel="Request Change" ButtonClicked={(index) => handleClick(index)} show />
+          
+            <RequestForm Open={triggerModal} onClose={() => setTriggerModal(false)} student={student} ButtonClicked={(requestData: IChangeGradeRequest) => handleRequest(requestData)} />
+          </>
         }
 
         {gotCourses &&
