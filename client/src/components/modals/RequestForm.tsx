@@ -13,7 +13,6 @@ type RequestForm = {
 
 const RequestForm = ({Open, onClose, student, ButtonClicked}: RequestForm) => {
 
-
     useEffect(() => {
         setMid(student?.mid ?? 0);
         setFinal(student?.final ?? 0);
@@ -40,7 +39,11 @@ const RequestForm = ({Open, onClose, student, ButtonClicked}: RequestForm) => {
 
             <Button className="mt-4 w-full" onClick={() => ButtonClicked({
                 studentId: student?.id ?? "",
-                teacherId: student?.instructorId ?? "",
+                teacherId: student?.instructorID ?? "",
+                grade: student?.grade ?? "",
+                mid: student?.mid ?? 0,
+                final: student?.final ?? 0,
+                assessment: student?.assessment ?? 0,
                 message: message
             })}>
                 Send Request

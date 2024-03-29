@@ -2,7 +2,7 @@ import studentManagementApi from "..";
 import { IChangeGradeRequest, IGrade, IGradeChangeRequest, IStudentGrade } from "../types/grade.types";
 import { IMaterials } from "../types/material.types";
 import { IPayment, IPaymentReceipt, IUploadPayment } from "../types/payment.types";
-import { IChangeRequest, INotificationStudent, IRegistrationStudent, ISignInStudent, ISignupStudent, IStudent } from "../types/student.type";
+import { IChangeRequest, INotificationStudent, IRegistrationStudent, ISignInStudent, ISignupStudent, IStudent, IStudentCourse } from "../types/student.type";
 
 const studentApiSlice = studentManagementApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -98,8 +98,8 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             providesTags: ['student-paymentHistory']
         }),
         //TODO: add query for Grade History
-        fetchCourses: builder.query<ICourse[], void>({
-            query: () => '/student/courses',
+        fetchCourses: builder.query<IStudentCourse[], string>({
+            query: (studentId) => `/student/courses?id=${studentId}`,
             providesTags: ['courses']
         }),
     })
