@@ -5,6 +5,7 @@ interface DashboardProps {
   headers: string[]
   tableData: Record<string, string>[]
   buttonLabel: string
+  show: boolean
   ButtonClicked: (index: number) => void
 }
 
@@ -13,6 +14,7 @@ const DashboardTable = ({
   headers,
   tableData,
   buttonLabel,
+  show, 
   ButtonClicked,
 }: DashboardProps) => {
   return (
@@ -34,16 +36,18 @@ const DashboardTable = ({
                   </Table.Cell>
                 ))}
                 <Table.Cell>
+                  {show &&
                   <Button
                     outline
                     size={"sm"}
-                    onClick={() => {
-                      ButtonClicked(index)
-                    }}
-                  >
-                    {buttonLabel}
-                  </Button>
-                </Table.Cell>
+                      onClick={() => {
+                        ButtonClicked(index)
+                      }}
+                    >
+                      {buttonLabel}
+                    </Button>
+                  }
+              </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>

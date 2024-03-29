@@ -16,6 +16,14 @@ export interface IStudent {
     notifications: any[];
 }
 
+export interface IStudentCourse {
+    _id: string;
+    courseName: string;
+    year: number;
+    courseId: string;
+    status: boolean;
+}
+
 export interface IRegistrationStudent {
     name: string;
     gender: string;

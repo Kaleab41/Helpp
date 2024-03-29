@@ -1,20 +1,23 @@
 import DashboardTable from "../../components/shared/dashboardTable/DashboardTable";
-import { useChangeGradeRequestMutation, useGetGradeHistoryQuery, useGetMaterialsQuery, useGetNotificationsQuery, useGetPaymentHistoryQuery } from "../../api/slices/student.slice";
+import { useChangeGradeRequestMutation, useFetchCoursesQuery, useGetGradeHistoryQuery, useGetMaterialsQuery, useGetNotificationsQuery, useGetPaymentHistoryQuery } from "../../api/slices/student.slice";
 import RequestForm from "../../components/modals/RequestForm";
 import { useState } from "react";
 import { IChangeGradeRequest, IStudentGrade } from "../../api/types/grade.types";
-import Notifications from "./notifications";
+import Notifications from "./Notifications";
 import { Material, Payment } from "..";
+import { IStudentCourse } from "../../api/types/student.type";
 
 export default function StudentDash() {
-
-  const { data: fetchData, isLoading, isSuccess, isError, error } = useGetGradeHistoryQuery("WI1830");
-  const { data: notifications, isLoading: pending, isSuccess: success } = useGetNotificationsQuery("WI1830");
-  const { data: payments, isLoading: loading, isSuccess: done} = useGetPaymentHistoryQuery("WI1830");
-  const { data: materials, isSuccess: successful } = useGetMaterialsQuery("DRB2401");
-
+  
+  const { data: gradeHistory, isSuccess: gotGradeHistory } = useGetGradeHistoryQuery("QO1203");
+  const { data: notifications, isSuccess: gotNotifications } = useGetNotificationsQuery("WI1830");
+  const { data: payments, isSuccess: gotPayments } = useGetPaymentHistoryQuery("WI1830");
+  const { data: materials, isSuccess: gotMaterials } = useGetMaterialsQuery("DRB2401");
+  const { data: courses, isSuccess: gotCourses} = useFetchCoursesQuery("WI1830");
   // Get the batch from the student's session also
   
+  
+  const coursesFiltered = courses?.filter(data => data.status);
   const notificationsArray = notifications ? notifications["notifications"] : [];
   // make the WI1830 Id dynamic by fetching it for the current user within the session instead of feeding it to the query manually like I did up here.
   // use QO1203 for requesting change of grades ( it's the only one that retrieves grade history with the instructor's id included. )
@@ -23,14 +26,24 @@ export default function StudentDash() {
   const [triggerModal, setTriggerModal] = useState<boolean>(false);
   const [student, setStudent] = useState<IStudentGrade | null>(null);
 
-  const filterCols = ["instructor", "course", "grade"]; // Corrected typo
+  const filterColsGradeHistory = ["instructor", "course", "grade"]; // Corrected typo
+  const filterColsCourses = ["courseName", "courseid", "credithour"];
 
-  const filteredTableData = fetchData?.filter(data => {
-    return Object.keys(data).some(key => filterCols.includes(key));
+  
+  const filteredCourseData = coursesFiltered?.filter((data: IStudentCourse) => {
+    return Object.keys(data).some(key => filterColsCourses.includes(key));
+  }).map((data) => {
+    return filterColsCourses.reduce((acc, key: string) => {
+      (acc as any)[key] = (data as any)[key];
+      return acc;
+    }, {})
+  }) || []
+ 
+  const filteredTableData = gradeHistory?.filter(data => {
+    return Object.keys(data).some(key => filterColsGradeHistory.includes(key));
   }).map((data: any) => {
-    return filterCols.reduce((acc: Record<string, string>, key: string ) => {
+    return filterColsGradeHistory.reduce((acc: Record<string, string>, key: string ) => {
       acc[key] = data[key];
-      // acc.push(data[key]);
       return acc;
     }, {});
 
@@ -41,7 +54,7 @@ export default function StudentDash() {
 
   const handleClick = (index: number) => {
     setTriggerModal(true);
-    setStudent(fetchData ? fetchData[index] : null)
+    setStudent(gradeHistory ? gradeHistory[index] : null)
   }
 
   const handleRequest = (requestData: IChangeGradeRequest) => {
@@ -52,18 +65,25 @@ export default function StudentDash() {
   return (
  
     <div className="flex">
-      <DashboardTable headers={["Instructor", "Course", "Grade"]} tableData={filteredTableData} buttonLabel="Request Change" ButtonClicked={(index) => handleClick(index)} />
-      {isSuccess && 
-        <RequestForm Open={triggerModal} onClose={() => setTriggerModal(false)} student={student} ButtonClicked={(requestData: IChangeGradeRequest) => handleRequest(requestData)} />
-      }
+      <div className="flex flex-col w-full">
+        <DashboardTable headers={["Instructor", "Course", "Grade"]} tableTitle="Grade history" tableData={filteredTableData} buttonLabel="Request Change" ButtonClicked={(index) => handleClick(index)} show />
+        {gotGradeHistory && 
+          <RequestForm Open={triggerModal} onClose={() => setTriggerModal(false)} student={student} ButtonClicked={(requestData: IChangeGradeRequest) => handleRequest(requestData)} />
+        }
+
+        {gotCourses &&
+          <DashboardTable headers={["course name", "course ID", "credit hour"]} tableTitle="Current courses" tableData={filteredCourseData} />
+        }
+      </div>
+
       <div className="flex flex-col w-[400px] border-l-2">
-        {success &&
+        {gotNotifications &&
           <Notifications notifications={notificationsArray} />
         }
-        {successful && 
+        {gotMaterials && 
           <Material materials={materials} />
         }
-        {done &&
+        {gotPayments &&
           <Payment payments={payments} />
         }
       </div>

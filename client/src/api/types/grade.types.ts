@@ -14,6 +14,10 @@ export interface IGrade {
 export interface IChangeGradeRequest {
     studentId: string;
     teacherId: string;
+    grade: string;
+    mid?: number;
+    final?: number;
+    assessment?: number;
     message: string;
 }
 
@@ -21,7 +25,7 @@ export interface IStudentGrade {
     id: string;
     studentName: string;
     instructor: string;
-    instructorId: string;   
+    instructorID: string;   
     course: string;
     grade: string;
     mid?: number;
