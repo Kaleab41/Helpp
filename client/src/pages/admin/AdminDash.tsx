@@ -9,7 +9,7 @@ import {
 import { IPayment } from "../../api/types/payment.types"
 import ModalForm from "../../components/modals/ModalForm"
 import { ReadOnly } from "../../components/form"
-import { useState } from "react"
+import { AnchorHTMLAttributes, useRef, useState } from "react"
 import { toast } from "react-toastify"
 export default function AdminDash() {
   const [openModal, SetOpenModal] = useState<boolean>(false)
@@ -18,6 +18,10 @@ export default function AdminDash() {
   const { data: verifiedPayments } = useGetVerifiedPaymentsQuery()
   const { data: pendingPayments } = useGetPaymentsQuery()
   const [ApprovePayment, { error: ApprovePaymentError }] = useVerifyPaymentMutation()
+
+  const [hrefIndex, setHrefIndex] = useState(0)
+
+  const downloadRecipt = useRef<HTMLAnchorElement | null>(null);
 
   const PaymentTableHead = ["id", "Verified", "studentName"]
   const VerifiedPaymenTableData =
@@ -97,12 +101,17 @@ export default function AdminDash() {
               SetOpenModal(true)
             }}
           />
+          <a ref={downloadRecipt} hidden={true} href={`http://localhost:8000/uploads/payments/${verifiedPayments ? verifiedPayments[hrefIndex].paymentReceipt : ""}`}> download </a>
           <DashboardTable
             tableTitle="Verfied Payments"
             headers={PaymentTableHead}
             tableData={VerifiedPaymenTableData}
             buttonLabel="Download Recipt"
-            ButtonClicked={(row) => DownloadRecipt(verifiedPayments ? verifiedPayments[row].paymentReceipt : "")}
+            ButtonClicked={(row) => {
+              setHrefIndex(row)
+              downloadRecipt.current?.click()
+            }}
+
           />
         </>
       }

@@ -21,7 +21,12 @@ router.get('/attendance/:filename', (req, res) => {
 
 router.get('/material/:filename', (req, res) => {
     const filename = req.params.filename;
-    const filePath = path.join(path.resolve(__dirname, '..'), 'uploads', filename);
+    const filePath = path.join(path.resolve(__dirname, '..'), 'uploads', "material", filename);
+    res.sendFile(filePath);
+});
+router.get('/payments/:filename', (req, res) => {
+    const filename = req.params.filename;
+    const filePath = path.join(path.resolve(__dirname, '..'), 'uploads', "payments", filename);
     res.sendFile(filePath);
 });
 
