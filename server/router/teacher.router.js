@@ -69,9 +69,9 @@ router.post(
               } else {
                 // Both email and ID are unique, perform file upload
                 // Retrieve uploaded files
-                const uploadedCV = req.files['curriculumVitae'][0];
-                const uploadedQualifications = req.files['qualifications'][0];
-                const uploadedCertifications = req.files['certifications'][0];
+                const uploadedCV = req.files["curriculumVitae"][0];
+                const uploadedQualifications = req.files["qualifications"][0];
+                const uploadedCertifications = req.files["certifications"][0];
 
                 // Create and save the new teacher
                 const newTeacher = new teacherModel({
@@ -88,7 +88,7 @@ router.post(
                   certifications: uploadedCertifications
                     ? uploadedCertifications.filename
                     : null,
-                  interviewDate: req.body.date,
+                  interviewDate: req.body.interviewDate,
                 });
 
                 newTeacher

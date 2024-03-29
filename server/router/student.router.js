@@ -435,6 +435,7 @@ router.post("/gradeChangeRequest", async (req, res) => {
     const changeRequest = {
       course: course,
       requestId: "RQ" + generateID(),
+      teacherId: req.body.teacherId,
       sender: studentId,
       message: message,
       approved: false,
