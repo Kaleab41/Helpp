@@ -260,7 +260,7 @@ router.get("/payment", (req, res) => {
 
   // Search the payment model by ID
   payment
-    .findOne({ id: id })
+    .find({ id: id })
     .then((payment) => {
       if (!payment) {
         return res.status(404).json({ error: "Payment not found" });
