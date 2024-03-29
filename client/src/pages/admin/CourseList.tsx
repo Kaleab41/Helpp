@@ -1,56 +1,10 @@
 import { Button } from "flowbite-react"
-import { ICourse, INewCourse } from "../../api/types/course.types"
+import { INewCourse } from "../../api/types/course.types"
 import { Input, Select } from "../../components/form"
 import { Card, DashboardTable, LeftRightPageLayout } from "../../components/shared"
 import { useState } from "react"
+import { useAddCourseMutation, useAssignCourseMutation, useDeleteCourseMutation, useGetCourseListQuery, useGetUniqueBatchesQuery, useListTeachersQuery } from "../../api/slices/admin.slice"
 
-const SampleCourseList: ICourse[] = [
-  {
-    _id: "1",
-    courseid: "C001",
-    courseName: "Introduction to Computer Science",
-    year: 2022,
-  },
-  {
-    _id: "2",
-    courseid: "C002",
-    courseName: "Data Structures and Algorithms",
-    year: 2023,
-  },
-  {
-    _id: "3",
-    courseid: "C003",
-    courseName: "Web Development Fundamentals",
-    year: 2022,
-  },
-  {
-    _id: "4",
-    courseid: "C004",
-    courseName: "Database Management Systems",
-    year: 2023,
-  },
-]
-const CourseListTableData: { courseId: string; courseName: string; year: string }[] =
-  SampleCourseList.map((course) => ({
-    courseId: course.courseid,
-    courseName: course.courseName,
-    year: course.year,
-  }))
-const CourseListTableHead = ["Code", "Name", "Year", ""]
-
-// Functions - Kolo
-const DeleteCourse = (id: string) => {}
-const AssignCourse = (
-  selectedTeacherForCourseAssignment: string,
-  selectedCourseForCourseAssignment: string,
-  selectedBatchForAttendance: string
-) => {}
-const AddCourse = (courseId: string, name: string, year: number | undefined) => {}
-
-// Sample Data - Kolo
-const CourseCodeList = ["", "C001", "C002", "C003", "C004"]
-const TeacherEmailList = ["", "abebe@gmail.com", "kebede@gmail.com"]
-const BatchList = ["", "DRB2401", "DRB1902"]
 
 export default function CourseList() {
   const [selectedTeacherForCourseAssignment, SetSelectedTeacherForCourseAssignment] = useState("")
@@ -59,19 +13,76 @@ export default function CourseList() {
   const [courseId, SetCourseId] = useState<INewCourse["courseId"]>("")
   const [name, SetName] = useState<INewCourse["name"]>("")
   const [year, SetYear] = useState<INewCourse["year"]>()
+
+  const { data: courseList } = useGetCourseListQuery()
+  const [addCourse] = useAddCourseMutation();
+  const [deleteCourse] = useDeleteCourseMutation();
+  const { data: teachers } = useListTeachersQuery();
+  const { data: batches } = useGetUniqueBatchesQuery()
+  const [assignCourse] = useAssignCourseMutation()
+
+
+  const CourseListTableHead = ["courseid", "courseName", "year"]
+
+  const CourseListTableData = courseList?.filter(payment => {
+    return Object.keys(payment).some(key => CourseListTableHead.includes(key));
+  }).map((data: any) => {
+    return CourseListTableHead.reduce((acc: Record<string, string>, key: string) => {
+      acc[key] = data[key];
+      return acc;
+    }, {});
+
+  }) || [];
+
+  const DeleteCourse = async (id: string) => {
+    const response = await deleteCourse({ courseid: id }).unwrap();
+    if (response) {
+      console.log({ response })
+    }
+  }
+  const AssignCourse = async (
+    selectedTeacherForCourseAssignment: string,
+    selectedCourseForCourseAssignment: string,
+    selectedBatchForAttendance: string
+  ) => {
+    const response = await assignCourse({
+      email: selectedTeacherForCourseAssignment,
+      course: selectedCourseForCourseAssignment,
+      batch: selectedBatchForAttendance
+    }).unwrap();
+    if (response) {
+      console.log({ response })
+    }
+  }
+  const AddCourse = async (courseId: string, name: string, year: number | undefined) => {
+    if (!courseId || !name || !year) return
+    const response = await addCourse({ courseId, name, year }).unwrap()
+    if (response) {
+      SetCourseId("")
+      SetName("")
+      SetYear(undefined)
+    }
+  }
+
+  // Sample Data - Kolo
+  const CourseCodeList = courseList?.map(payment => payment.courseid) || []
+  const TeacherEmailList = teachers?.map(teacher => teacher.email) || []
+  const BatchList = batches || []
+
   return (
     <LeftRightPageLayout
       leftChildren={
         <>
-          <DashboardTable
-            tableTitle="Course List"
-            headers={CourseListTableHead}
-            tableData={CourseListTableData}
-            buttonLabel="Delete Course"
-            ButtonClicked={(row) => {
-              DeleteCourse(SampleCourseList[row]._id)
-            }}
-          />
+          {courseList &&
+            <DashboardTable
+              tableTitle="Course List"
+              headers={CourseListTableHead}
+              tableData={CourseListTableData}
+              buttonLabel="Delete Course"
+              ButtonClicked={(row) => {
+                DeleteCourse(courseList[row].courseid)
+              }} show={true} />}
+
         </>
       }
       rightChildren={
@@ -81,21 +92,21 @@ export default function CourseList() {
               <Input
                 name={"Code"}
                 placeholder="Enter course code"
-                setValue={SetCourseId}
+                setValue={SetCourseId as any}
                 type="text"
                 value={courseId}
               />
               <Input
                 name={"Name"}
                 placeholder="Enter course name"
-                setValue={SetName}
+                setValue={SetName as any}
                 type="text"
                 value={name}
               />
               <Input
                 name={"Year"}
                 placeholder="Enter course year"
-                setValue={SetYear}
+                setValue={SetYear as any}
                 type="text"
                 value={year}
               />
