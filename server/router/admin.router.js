@@ -11,12 +11,15 @@ const router = express.Router();
 const ExcelJS = require("exceljs");
 const crypto = require("crypto");
 const teacherModel = require("../model/teacher.model");
+const nodemailer = require("nodemailer");
+const paymentModel = require("../model/payment.model");
+
 router.post("/verifypayment", (req, res) => {
-  const studentId = req.body.id;
+  const paymentId = req.body.paymentId;
 
   // Check if the payment entry exists
   payment
-    .findOne({ id: studentId })
+    .findOne({ paymentId })
     .then((paymentEntry) => {
       if (!paymentEntry) {
         // Payment entry not found
@@ -40,8 +43,6 @@ router.post("/verifypayment", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     });
 });
-const nodemailer = require("nodemailer");
-const paymentModel = require("../model/payment.model");
 
 router.post("/verifystudent", async (req, res) => {
   try {

@@ -30,6 +30,23 @@ function generateID() {
 
   return id;
 }
+
+function generatePaymentID() {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let id = "";
+
+  // Generate two random letters
+  for (let i = 0; i < 2; i++) {
+    id += "PR" + letters.charAt(Math.floor(Math.random() * letters.length));
+  }
+
+  // Generate four random numbers
+  for (let i = 0; i < 4; i++) {
+    id += Math.floor(Math.random() * 10);
+  }
+
+  return id;
+}
 function changeRequestID() {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let id = "";
@@ -233,6 +250,7 @@ router.post(
       // Create and save the new payment with the student's name
       const newPayment = new payment({
         id: studentId,
+        paymentId: generatePaymentID(),
         studentName: existingStudent.name,
         paymentReceipt: req.file ? req.file.filename : null,
         // Add any other fields related to payment schema here

@@ -48,7 +48,7 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
-        verifyPayment: builder.mutation<{ message: string }, { id: string }>({
+        verifyPayment: builder.mutation<{ message: string }, { paymentId: string }>({
             query: (body) => ({
                 url: '/admin/verifypayment',
                 method: 'POST',
