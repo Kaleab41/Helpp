@@ -12,10 +12,12 @@ import {
 import MainNav from "./layouts/MainNav"
 import LandingNav from "./layouts/LandingNav"
 import Error404 from "./pages/Error404"
-
+import "react-toastify/dist/ReactToastify.css"
+import { ToastContainer } from "react-toastify"
 function App() {
   return (
     <main className="h-screen w-[80%] mx-auto mt-5">
+      <ToastContainer />
       <Routes>
         <Route element={<LandingNav />}>
           <Route index element={<LandingPage />}></Route>
