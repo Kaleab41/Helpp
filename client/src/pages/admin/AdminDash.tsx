@@ -30,7 +30,7 @@ export default function AdminDash() {
             buttonLabel="See detail"
             ButtonClicked={(row) => {
               console.log(row);
-            }} show={false} />
+            }} />
         </>
       }
       rightChildren={<Notification />}

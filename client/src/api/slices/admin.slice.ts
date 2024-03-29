@@ -106,7 +106,7 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
             query: () => '/admin/courselist',
         }),
         getPayments: builder.query<IPayment[], void>({
-            query: () => '/admin/getpayments',
+            query: () => '/admin/getpendingpayments',
         }),
         getPendingStudents: builder.query<IStudent[], void>({
             query: () => '/admin/pendingapproval',

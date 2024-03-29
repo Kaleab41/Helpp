@@ -92,7 +92,6 @@ export default function CourseList() {
               ButtonClicked={(row) => {
                 DeleteCourse(courseList[row].courseid)
               }}
-              show={true}
             />
           )}
         </>
