@@ -105,11 +105,19 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
         getCourseList: builder.query<ICourse[], void>({
             query: () => '/admin/courselist',
         }),
+<<<<<<< HEAD
         getPayments: builder.query<IPayment[], void>({
             query: () => '/admin/getpendingpayments',
         }),
         getVerifiedPayments: builder.query<IPayment[], void>({
             query: () => '/admin/getverifiedpayments',
+=======
+        getVerifiedPayments: builder.query<IPayment[], void>({
+            query: () => '/admin/getverifiedpayments',
+        }),
+        getPendingPayments: builder.query<IPayment[], void>({
+            query: () => '/admin/getpendingpayments',
+>>>>>>> 0d177bb (Add verified and pending payment)
         }),
         getPendingStudents: builder.query<IStudent[], void>({
             query: () => '/admin/pendingapproval',
@@ -161,7 +169,8 @@ export const {
     useGetStudentsInBatchQuery,
     useListTeachersQuery,
     useGetCourseListQuery,
-    useGetPaymentsQuery,
+    useGetVerifiedPaymentsQuery,
+    useGetPendingPaymentsQuery,
     useGetPendingStudentsQuery,
     useGetPendingTeachersQuery,
     useGetDashboardDataQuery,
