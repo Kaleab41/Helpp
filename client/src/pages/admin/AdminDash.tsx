@@ -10,7 +10,7 @@ import {
 import { IPayment } from "../../api/types/payment.types"
 import ModalForm from "../../components/modals/ModalForm"
 import { ReadOnly } from "../../components/form"
-import { AnchorHTMLAttributes, useRef, useState } from "react"
+import { useRef, useState } from "react"
 import { toast } from "react-toastify"
 export default function AdminDash() {
   const [openModal, SetOpenModal] = useState<boolean>(false)
