@@ -1,32 +1,36 @@
 import { LeftRightPageLayout, DashboardTable } from "../../components/shared/index"
 import { InfoCards, Notification } from "../../components/adminComonents/index"
+import { useGetDashboardDataQuery, useGetPaymentsQuery } from "../../api/slices/admin.slice"
 export default function AdminDash() {
-  const InfoCardData = [
-    { label: "Pyament Request", value: 5 },
-    { label: "Student Pending", value: 5 },
-    { label: "Teacher", value: 5 },
-  ]
-  const Student_Teacher_TableHead = ["Name", "Email", "Phone"]
-  const PulledData = [
-    { id: "1", description: "John Doe" },
-    { id: "2", description: "Jane Smith" },
-    { id: "3", description: "Michael Johnson" },
-  ]
+
+  const { data, isSuccess } = useGetDashboardDataQuery();
+  const { data: payments } = useGetPaymentsQuery();
+
+  const Student_Teacher_TableHead = ["id", "paymentReceipt", "verified", "studentName"]
+
+  const filteredTableData = payments?.filter(payment => {
+    return Object.keys(payment).some(key => Student_Teacher_TableHead.includes(key));
+  }).map((data: any) => {
+    return Student_Teacher_TableHead.reduce((acc: Record<string, string>, key: string) => {
+      acc[key] = data[key];
+      return acc;
+    }, {});
+
+  }) || [];
 
   return (
     <LeftRightPageLayout
       leftChildren={
         <>
-          <InfoCards cards={InfoCardData} />
+          {isSuccess ? <InfoCards cards={data} /> : null}
           <DashboardTable
             tableTitle="Payment"
             headers={Student_Teacher_TableHead}
-            tableData={PulledData}
+            tableData={filteredTableData}
             buttonLabel="See detail"
             ButtonClicked={(row) => {
-              console.log(row)
-            }}
-          />
+              console.log(row);
+            }} show={false} />
         </>
       }
       rightChildren={<Notification />}

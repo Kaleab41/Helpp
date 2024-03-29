@@ -14,6 +14,7 @@ export interface ISendNotificationRequest {
 }
 
 export interface IDashboardSummary {
+    [key: string]: any;
     approved: number;
     pending: number;
     teachers: number;
