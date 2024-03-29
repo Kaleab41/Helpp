@@ -5,18 +5,21 @@ import ModalForm from "../../components/modals/ModalForm"
 import { ReadOnly } from "../../components/form/index"
 import { useState } from "react"
 import { Select } from "../../components/form/index"
-import { useGenerateBatchExcelMutation, useGetRestrictedAccountsQuery, useGetUniqueBatchesQuery, useRejectStudentMutation, useVerifyStudentMutation } from "../../api/slices/admin.slice"
+import { useGenerateAttendanceExcelMutation, useGenerateBatchExcelMutation, useGetRestrictedAccountsQuery, useGetUniqueBatchesQuery, useRejectStudentMutation, useVerifyStudentMutation } from "../../api/slices/admin.slice"
 
 export default function StudentList() {
   const [openModal, SetOpenModal] = useState<boolean>(false)
   const [selectedBatchForAttendance, SetSelectedBatchForAttendance] = useState("")
   const [selectedBatchForExcelBatch, SetSelectedBatchForExcelBatch] = useState("")
+  const [batchForExcelBatchFile, setBatchForExcelBatch] = useState<string | null>(null)
+  const [batchForAttendance, setBatchForAttendance] = useState<string | null>(null)
   const [student, SetStudent] = useState<IStudent | null>(null)
 
   const { data: restrictedStudents } = useGetRestrictedAccountsQuery();
   const [verifyStudent] = useVerifyStudentMutation();
   const [rejectStudent] = useRejectStudentMutation();
   const [generateBatchExcel] = useGenerateBatchExcelMutation();
+  const [generateAttendanceExcel] = useGenerateAttendanceExcelMutation();
   const { data: batches } = useGetUniqueBatchesQuery();
   const RegisteredStudentTableHead = ["Name", "Email", "Phone"]
 
@@ -55,16 +58,23 @@ export default function StudentList() {
     }
   }
   const GenerateAttendance = async () => {
-    console.log({ selectedBatchForAttendance })
     if (selectedBatchForAttendance.length == 0) return
-    const response = await generateBatchExcel({
+    const response = await generateAttendanceExcel({
       batch: selectedBatchForAttendance
     }).unwrap();
     if (response) {
-      console.log({ response })
+      setBatchForAttendance(response);
     }
   }
-  const GenerateBatchExcel = () => { }
+  const GenerateBatchExcel = async () => {
+    if (selectedBatchForExcelBatch.length == 0) return
+    const response = await generateBatchExcel({
+      batch: selectedBatchForExcelBatch
+    }).unwrap();
+    if (response) {
+      setBatchForExcelBatch(response);
+    }
+  }
 
   return (
     <LeftRightPageLayout
@@ -117,7 +127,6 @@ export default function StudentList() {
             ButtonClicked={(row) => {
               SeeDetail(row)
             }}
-            show={true}
           />
           {/* <DashboardTable
             tableTitle="Student List"
@@ -143,6 +152,9 @@ export default function StudentList() {
             <Button onClick={async () => await GenerateAttendance()} outline size={"sm"}>
               Generate Attendance
             </Button>
+            {
+              batchForAttendance ? <ReadOnly label="Academic Record" link={`http://localhost:8000/uploads/attendance/${batchForAttendance}`} value={<a href={`http://localhost:8000/uploads/generate/${batchForAttendance}`} download>Download</a>} /> : null
+            }
           </Card>
           <Card cardTitle="Generate Batch Excel">
             <div className="pb-5">
@@ -155,6 +167,9 @@ export default function StudentList() {
             <Button onClick={async () => await GenerateBatchExcel()} outline size={"sm"}>
               Generate Batch Excel
             </Button>
+            {
+              batchForExcelBatchFile ? <ReadOnly label="Academic Record" link={`http://localhost:8000/uploads/generate/${batchForExcelBatchFile}`} value={<a href={`http://localhost:8000/uploads/generate/${batchForExcelBatchFile}`} download>Download</a>} /> : null
+            }
           </Card>
         </>
       }

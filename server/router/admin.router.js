@@ -426,7 +426,8 @@ router.post("/generateExcel", async (req, res) => {
 
   try {
     const fileName = await generateExcel(batch);
-    res.download(fileName);
+    const _fileName = path.basename(fileName);
+    res.json(_fileName);
   } catch (error) {
     console.error("Error generating Excel file:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -636,7 +637,9 @@ router.post("/generateAttendanceExcel", async (req, res) => {
     await workbook.xlsx.writeFile(filePath);
 
     // Send the generated Excel file as a download
-    res.download(filePath);
+    console.log({ filePath });
+    const _fileName = path.basename(fileName);
+    res.json(_fileName);
   } catch (error) {
     console.error("Error generating attendance Excel file:", error);
     res.status(500).json({ error: "Internal server error" });

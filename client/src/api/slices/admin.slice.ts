@@ -69,20 +69,18 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
-        generateBatchExcel: builder.mutation<Blob, { batch: string }>({
+        generateBatchExcel: builder.mutation<string, { batch: string }>({
             query: (body) => ({
                 url: '/admin/generateExcel',
                 method: 'POST',
                 body,
-                responseType: 'blob', // Set responseType to 'blob' for file download responses
             }),
         }),
-        generateAttendanceExcel: builder.mutation<Blob, { batch: string }>({
+        generateAttendanceExcel: builder.mutation<string, { batch: string }>({
             query: (body) => ({
                 url: '/admin/generateAttendanceExcel',
                 method: 'POST',
                 body,
-                responseType: 'blob',
             }),
         }),
         sendNotification: builder.mutation<{ message: string }, ISendNotificationRequest>({
