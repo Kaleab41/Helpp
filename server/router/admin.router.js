@@ -229,6 +229,20 @@ router.get("/getstudents", async (req, res) => {
   }
 });
 
+router.get("/getUnRestrictedStudents", async (req, res) => {
+
+  try {
+    const studentsInBatch = await studentModel.find({ restricted: false });
+    if (studentsInBatch.length === 0) {
+      return res.status(404).json({ error: "No students found in the batch" });
+    }
+    res.status(200).json(studentsInBatch);
+  } catch (error) {
+    console.error(`Error retrieving students in batch ${batch}:`, error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.post("/signin", (req, res) => {
   adminModel
     .findOne({

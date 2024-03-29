@@ -8,6 +8,9 @@ const crypto = require("crypto");
 const gradeModel = require("../model/grade.model");
 const teacherModel = require("../model/teacher.model");
 const materialModel = require("../model/material.model");
+const studentcourseModel = require("../model/studentcourse.mode");
+
+
 const getHashedPassword = (password) => {
   const sha256 = crypto.createHash("sha256");
   const hash = sha256.update(password).digest("base64");
@@ -265,8 +268,6 @@ router.post(
   }
 );
 
-// Define route to get payments by student ID
-// Endpoint to search payment model by ID
 router.get("/payment", (req, res) => {
   const { id } = req.query;
 
@@ -336,7 +337,6 @@ router.get("/gradesoptional", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     });
 });
-const studentcourseModel = require("../model/studentcourse.mode");
 // router.get("/courses", async (req, res) => {
 //   try {
 //     // Query the database to find all courses

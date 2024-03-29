@@ -5,7 +5,7 @@ import ModalForm from "../../components/modals/ModalForm"
 import { ReadOnly } from "../../components/form/index"
 import { useState } from "react"
 import { Select } from "../../components/form/index"
-import { useGenerateAttendanceExcelMutation, useGenerateBatchExcelMutation, useGetRestrictedAccountsQuery, useGetUniqueBatchesQuery, useRejectStudentMutation, useVerifyStudentMutation } from "../../api/slices/admin.slice"
+import { useGenerateAttendanceExcelMutation, useGenerateBatchExcelMutation, useGetRestrictedAccountsQuery, useGetUnRestrictedStudentsInBatchQuery, useGetUniqueBatchesQuery, useRejectStudentMutation, useVerifyStudentMutation } from "../../api/slices/admin.slice"
 
 export default function StudentList() {
   const [openModal, SetOpenModal] = useState<boolean>(false)
@@ -21,10 +21,18 @@ export default function StudentList() {
   const [generateBatchExcel] = useGenerateBatchExcelMutation();
   const [generateAttendanceExcel] = useGenerateAttendanceExcelMutation();
   const { data: batches } = useGetUniqueBatchesQuery();
+  const { data: unRestricted } = useGetUnRestrictedStudentsInBatchQuery();
   const RegisteredStudentTableHead = ["Name", "Email", "Phone"]
 
   const registredStudentTableData: { name: string; email: string; phone: number }[] =
     restrictedStudents?.map((student) => ({
+      name: student.name,
+      email: student.email,
+      phone: student.phone,
+    })) || []
+
+  const unRestrictedTableData: { name: string; email: string; phone: number }[] =
+    unRestricted?.map((student) => ({
       name: student.name,
       email: student.email,
       phone: student.phone,
@@ -35,6 +43,12 @@ export default function StudentList() {
     SetStudent(restrictedStudents[row]);
     SetOpenModal(true)
   }
+  const SeeDetailunRestricted = (row: number) => {
+    if (!unRestricted) return
+    SetStudent(unRestricted[row]);
+    SetOpenModal(true)
+  }
+
 
 
   const DelteStudent = (email: string | undefined) => {
@@ -128,15 +142,15 @@ export default function StudentList() {
               SeeDetail(row)
             }}
           />
-          {/* <DashboardTable
+          <DashboardTable
             tableTitle="Student List"
             headers={RegisteredStudentTableHead}
-            tableData={RegistredStudentTableData}
+            tableData={unRestrictedTableData as any}
             buttonLabel="See Detail"
             ButtonClicked={(row) => {
-              SeeDetail(row)
+              SeeDetailunRestricted(row)
             }}
-          /> */}
+          />
         </>
       }
       rightChildren={

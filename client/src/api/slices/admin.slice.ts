@@ -99,6 +99,9 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
         getStudentsInBatch: builder.query<IStudent[], string>({
             query: (batch) => `/admin/getstudents?batch=${batch}`,
         }),
+        getUnRestrictedStudentsInBatch: builder.query<IStudent[], void>({
+            query: () => `/admin/getUnRestrictedStudents`,
+        }),
         listTeachers: builder.query<ITeacher[], void>({
             query: () => '/admin/getteachers',
         }),
@@ -176,5 +179,6 @@ export const {
     useRejectStudentMutation,
     useRejectTeacherMutation,
     useDeleteCourseMutation,
-    useRejectPaymentMutation
+    useRejectPaymentMutation,
+    useGetUnRestrictedStudentsInBatchQuery,
 } = adminApiSlice
