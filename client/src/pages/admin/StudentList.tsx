@@ -1,181 +1,70 @@
-import { IRegistrationStudent } from "../../api/types/student.type"
+import { IRegistrationStudent, IStudent } from "../../api/types/student.type"
 import { Button } from "flowbite-react"
 import { DashboardTable, LeftRightPageLayout, Card } from "../../components/shared/index"
 import ModalForm from "../../components/modals/ModalForm"
 import { ReadOnly } from "../../components/form/index"
 import { useState } from "react"
 import { Select } from "../../components/form/index"
+import { useGenerateBatchExcelMutation, useGetRestrictedAccountsQuery, useGetUniqueBatchesQuery, useRejectStudentMutation, useVerifyStudentMutation } from "../../api/slices/admin.slice"
 
 export default function StudentList() {
   const [openModal, SetOpenModal] = useState<boolean>(false)
   const [selectedBatchForAttendance, SetSelectedBatchForAttendance] = useState("")
   const [selectedBatchForExcelBatch, SetSelectedBatchForExcelBatch] = useState("")
-  const [student, SetStudent] = useState<IRegistrationStudent>({
-    name: "",
-    gender: "",
-    email: "",
-    phone: "",
-    guardianName: "",
-    guardianPhone: "",
-    aboutYou: "",
-    department: "",
-    academicRecord: null,
-  })
+  const [student, SetStudent] = useState<IStudent | null>(null)
 
-  const RegisteredStudentTableHead = ["Name", "Email", "Phone", ""]
-  // Sample Data - Kolo
-  const RegisteredStudentList: IRegistrationStudent[] = [
-    {
-      name: "John Doe",
-      gender: "Male",
-      email: "johndoe@example.com",
-      phone: "123-456-7890",
-      guardianName: "Jane Doe",
-      guardianPhone: "987-654-3210",
-      aboutYou: "I am passionate about learning and exploring new things.",
-      department: "Computer Science",
-      academicRecord: null,
-    },
-    {
-      name: "Jane Smith",
-      gender: "Female",
-      email: "janesmith@example.com",
-      phone: "111-222-3333",
-      guardianName: "Jack Smith",
-      guardianPhone: "333-222-1111",
-      aboutYou: "I love art and enjoy painting in my free time.",
-      department: "Fine Arts",
-      academicRecord: null,
-    },
-    {
-      name: "Michael Johnson",
-      gender: "Male",
-      email: "michaelj@example.com",
-      phone: "555-666-7777",
-      guardianName: "Michelle Johnson",
-      guardianPhone: "777-666-5555",
-      aboutYou: "I am a sports enthusiast and play basketball competitively.",
-      department: "Physical Education",
-      academicRecord: null,
-    },
-    {
-      name: "Emily Davis",
-      gender: "Female",
-      email: "emilyd@example.com",
-      phone: "444-333-2222",
-      guardianName: "Edward Davis",
-      guardianPhone: "222-333-4444",
-      aboutYou: "I enjoy reading novels and writing short stories.",
-      department: "English Literature",
-      academicRecord: null,
-    },
-    {
-      name: "Emily Davis",
-      gender: "Female",
-      email: "emilyd@example.com",
-      phone: "444-333-2222",
-      guardianName: "Edward Davis",
-      guardianPhone: "222-333-4444",
-      aboutYou: "I enjoy reading novels and writing short stories.",
-      department: "English Literature",
-      academicRecord: null,
-    },
-    {
-      name: "Emily Davis",
-      gender: "Female",
-      email: "emilyd@example.com",
-      phone: "444-333-2222",
-      guardianName: "Edward Davis",
-      guardianPhone: "222-333-4444",
-      aboutYou: "I enjoy reading novels and writing short stories.",
-      department: "English Literature",
-      academicRecord: null,
-    },
-    {
-      name: "Emily Davis",
-      gender: "Female",
-      email: "emilyd@example.com",
-      phone: "444-333-2222",
-      guardianName: "Edward Davis",
-      guardianPhone: "222-333-4444",
-      aboutYou: "I enjoy reading novels and writing short stories.",
-      department: "English Literature",
-      academicRecord: null,
-    },
-    {
-      name: "Emily Davis",
-      gender: "Female",
-      email: "emilyd@example.com",
-      phone: "444-333-2222",
-      guardianName: "Edward Davis",
-      guardianPhone: "222-333-4444",
-      aboutYou: "I enjoy reading novels and writing short stories.",
-      department: "English Literature",
-      academicRecord: null,
-    },
-    {
-      name: "Emily Davis",
-      gender: "Female",
-      email: "emilyd@example.com",
-      phone: "444-333-2222",
-      guardianName: "Edward Davis",
-      guardianPhone: "222-333-4444",
-      aboutYou: "I enjoy reading novels and writing short stories.",
-      department: "English Literature",
-      academicRecord: null,
-    },
-    {
-      name: "Emily Davis",
-      gender: "Female",
-      email: "emilyd@example.com",
-      phone: "444-333-2222",
-      guardianName: "Edward Davis",
-      guardianPhone: "222-333-4444",
-      aboutYou: "I enjoy reading novels and writing short stories.",
-      department: "English Literature",
-      academicRecord: null,
-    },
-  ]
-  const RegistredStudentTableData: { name: string; email: string; phone: string }[] =
-    RegisteredStudentList.map((student) => ({
+  const { data: restrictedStudents } = useGetRestrictedAccountsQuery();
+  const [verifyStudent] = useVerifyStudentMutation();
+  const [rejectStudent] = useRejectStudentMutation();
+  const [generateBatchExcel] = useGenerateBatchExcelMutation();
+  const { data: batches } = useGetUniqueBatchesQuery();
+  const RegisteredStudentTableHead = ["Name", "Email", "Phone"]
+
+  const registredStudentTableData: { name: string; email: string; phone: number }[] =
+    restrictedStudents?.map((student) => ({
       name: student.name,
       email: student.email,
       phone: student.phone,
-    }))
+    })) || []
 
   const SeeDetail = (row: number) => {
-    const {
-      name,
-      gender,
-      email,
-      phone,
-      guardianName,
-      guardianPhone,
-      aboutYou,
-      department,
-      academicRecord,
-    } = RegisteredStudentList[row]
-    SetStudent({
-      name,
-      gender,
-      email,
-      phone,
-      guardianName,
-      guardianPhone,
-      aboutYou,
-      department,
-      academicRecord,
-    })
+    if (!restrictedStudents) return
+    SetStudent(restrictedStudents[row]);
     SetOpenModal(true)
   }
 
-  // Functions - Kolo
-  // TODO: We need render activate and deactie based on student activatio status
-  const DelteStudent = (email: string) => {}
-  const ActivateStudent = (email: string) => {}
-  const DeactivateStudent = (email: string) => {}
-  const GenerateAttendance = () => {}
-  const GenerateBatchExcel = () => {}
+
+  const DelteStudent = (email: string | undefined) => {
+    console.log({ email }, "DelteStudent")
+  }
+  const ActivateStudent = async (id: string | undefined) => {
+    if (!id) return;
+    const response = await verifyStudent({
+      id
+    }).unwrap();
+    if (response) {
+    }
+
+  }
+  const DeactivateStudent = async (id: string | undefined) => {
+    if (!id) return;
+    const response = await rejectStudent({
+      id
+    }).unwrap();
+    if (response) {
+    }
+  }
+  const GenerateAttendance = async () => {
+    console.log({ selectedBatchForAttendance })
+    if (selectedBatchForAttendance.length == 0) return
+    const response = await generateBatchExcel({
+      batch: selectedBatchForAttendance
+    }).unwrap();
+    if (response) {
+      console.log({ response })
+    }
+  }
+  const GenerateBatchExcel = () => { }
 
   return (
     <LeftRightPageLayout
@@ -187,47 +76,50 @@ export default function StudentList() {
             title="Student Detail"
           >
             <div className="grid grid-cols-2 gap-2">
-              <ReadOnly label="Name" value={student.name} />
-              <ReadOnly label="Gender" value={student.gender} />
+              <ReadOnly label="Name" value={student?.name} />
+              <ReadOnly label="Gender" value={student?.gender} />
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <ReadOnly label="Gurdian Name" value={student.guardianName} />
-              <ReadOnly label="Gurdian Phone" value={student.guardianPhone} />
+              <ReadOnly label="Gurdian Name" value={student?.guardianName} />
+              <ReadOnly label="Gurdian Phone" value={student?.guardianPhone} />
             </div>
-            <ReadOnly label="Department" value={student.department} />
-            <ReadOnly label="About Student" value={student.aboutYou} />
-            <ReadOnly label="Academic Record" link="/" value={<a>Record</a>} />
+            <ReadOnly label="Department" value={student?.department} />
+            <ReadOnly label="About Student" value={student?.aboutYou} />
+            {//TODO: change link
+            }
+            <ReadOnly label="Academic Record" link={`http://localhost:8000/uploads/files/${student?.academicRecord}`} value={<a href={`http://localhost:8000/uploads/files/${student?.academicRecord}`} download>Record</a>} />
             <div className="flex justify-around mt-5">
               <button
-                onClick={() => ActivateStudent(student.email)}
+                onClick={() => ActivateStudent(student?.id)}
                 className="text-green-500 border-2 rounded-lg p-2 hover:border-green-500 "
               >
                 Activate
               </button>
               <button
-                onClick={() => DeactivateStudent(student.email)}
+                onClick={() => DeactivateStudent(student?.id)}
                 className="text-red-500 border-2 rounded-lg p-2 hover:border-red-500 "
               >
                 Deactivate
               </button>
-              <button
-                onClick={() => DelteStudent(student.email)}
+              {/* <button
+                onClick={() => DelteStudent(student?.id)}
                 className="text-red-500 border-red-500 border-2 rounded-lg p-2 hover:bg-red-100 "
               >
                 Delete
-              </button>
+              </button> */}
             </div>
           </ModalForm>
           <DashboardTable
             tableTitle="Ristrected Student List"
             headers={RegisteredStudentTableHead}
-            tableData={RegistredStudentTableData}
+            tableData={registredStudentTableData as any}
             buttonLabel="See Detail"
             ButtonClicked={(row) => {
               SeeDetail(row)
             }}
+            show={true}
           />
-          <DashboardTable
+          {/* <DashboardTable
             tableTitle="Student List"
             headers={RegisteredStudentTableHead}
             tableData={RegistredStudentTableData}
@@ -235,7 +127,7 @@ export default function StudentList() {
             ButtonClicked={(row) => {
               SeeDetail(row)
             }}
-          />
+          /> */}
         </>
       }
       rightChildren={
@@ -244,11 +136,11 @@ export default function StudentList() {
             <div className="pb-5">
               <Select
                 name="Select Batch"
-                options={["DRB2401", "DRB1902"]}
+                options={batches || []}
                 setValue={SetSelectedBatchForAttendance}
               />
             </div>
-            <Button onClick={() => GenerateAttendance} outline size={"sm"}>
+            <Button onClick={async () => await GenerateAttendance()} outline size={"sm"}>
               Generate Attendance
             </Button>
           </Card>
@@ -256,11 +148,11 @@ export default function StudentList() {
             <div className="pb-5">
               <Select
                 name="Select Batch"
-                options={["DRB2401", "DRB1902"]}
+                options={batches || []}
                 setValue={SetSelectedBatchForExcelBatch}
               />
             </div>
-            <Button onClick={() => GenerateBatchExcel} outline size={"sm"}>
+            <Button onClick={async () => await GenerateBatchExcel()} outline size={"sm"}>
               Generate Batch Excel
             </Button>
           </Card>
