@@ -5,7 +5,6 @@ import { useState } from "react";
 import { IChangeGradeRequest, IStudentGrade } from "../../api/types/grade.types";
 import Notifications from "./Notifications";
 import { Material, Payment } from "..";
-import { IStudentCourse } from "../../api/types/student.type";
 
 export default function StudentDash() {
   
@@ -26,31 +25,21 @@ export default function StudentDash() {
   const [triggerModal, setTriggerModal] = useState<boolean>(false);
   const [student, setStudent] = useState<IStudentGrade | null>(null);
 
-  const filterColsGradeHistory = ["instructor", "course", "grade"]; // Corrected typo
-  const filterColsCourses = ["courseName", "courseid", "credithour"];
+  const filteredCourseData = coursesFiltered?.map((course) => (
+    {
+      courseName: course?.courseName,
+      courseid: course?.courseid,
+      credithour: course?.credithour
+    }
+  ))
 
-  
-  const filteredCourseData = coursesFiltered?.filter((data: IStudentCourse) => {
-    return Object.keys(data).some(key => filterColsCourses.includes(key));
-  }).map((data) => {
-    return filterColsCourses.reduce((acc, key: string) => {
-      (acc as any)[key] = (data as any)[key];
-      return acc;
-    }, {})
-  }) || []
- 
-  const filteredTableData = gradeHistory?.filter(data => {
-    return Object.keys(data).some(key => filterColsGradeHistory.includes(key));
-  }).map((data: any) => {
-    return filterColsGradeHistory.reduce((acc: Record<string, string>, key: string ) => {
-      acc[key] = data[key];
-      return acc;
-    }, {});
-
-  }) || []; // Apologies again, this was the best way I could figure out how to filter the columns
-  
-  // The ugly function above, reduces the columns to the ones we want (the ones in the header) from the fetched data. 
-
+  const filteredTableData = gradeHistory?.map(history => (
+    {
+      instructor: history.instructor,
+      course: history.course,
+      grade: history.grade
+    }
+  ))
 
   const handleClick = (index: number) => {
     setTriggerModal(true);

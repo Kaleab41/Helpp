@@ -20,7 +20,8 @@ export interface IStudentCourse {
     _id: string;
     courseName: string;
     year: number;
-    courseId: string;
+    credithour: number;
+    courseid: string;
     status: boolean;
 }
 
