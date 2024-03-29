@@ -1,5 +1,5 @@
 import { IRegistrationStudent } from "../../api/types/student.type"
-import { Button, Label } from "flowbite-react"
+import { Button } from "flowbite-react"
 import { DashboardTable, LeftRightPageLayout, Card } from "../../components/shared/index"
 import ModalForm from "../../components/modals/ModalForm"
 import { ReadOnly } from "../../components/form/index"

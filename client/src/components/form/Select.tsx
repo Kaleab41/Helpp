@@ -1,10 +1,9 @@
 import { Label, Select as Select_ } from "flowbite-react"
 
-
 type SelectProp = {
   name: string
   options: Array<string>
-  setValue: (value: string)  => void
+  setValue: (value: string) => void
 }
 
 export default function Select({ name, options, setValue }: SelectProp) {
