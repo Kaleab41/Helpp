@@ -8,7 +8,7 @@ import { Material, Payment } from "..";
 
 export default function StudentDash() {
   
-  const { data: gradeHistory, isSuccess: gotGradeHistory } = useGetGradeHistoryQuery("QO1203");
+  const { data: gradeHistory, isSuccess: gotGradeHistory } = useGetGradeHistoryQuery("WI1830");
   const { data: notifications, isSuccess: gotNotifications } = useGetNotificationsQuery("WI1830");
   const { data: payments, isSuccess: gotPayments } = useGetPaymentHistoryQuery("WI1830");
   const { data: materials, isSuccess: gotMaterials } = useGetMaterialsQuery("DRB2401");

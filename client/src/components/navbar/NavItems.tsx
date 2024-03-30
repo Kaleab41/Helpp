@@ -26,7 +26,23 @@ export default function NavItems() {
         </Navbar.Collapse>
       )
     case "teacher":
-      return <Navbar.Collapse></Navbar.Collapse>
+      return (
+        <Navbar.Collapse>
+           <Navbar.Link
+            href="/teacher"
+            {...(location.pathname == "/teacher" ? { active: true } : {})}
+          >
+            Dashboard
+          </Navbar.Link>
+          <Navbar.Link
+            href="/teacher/requests"
+            {...(location.pathname == "/teacher/requests" ? { active: true } : {})}
+          >
+            Requests
+          </Navbar.Link>
+          
+        </Navbar.Collapse>
+      )
     case "student":
       return (
         <Navbar.Collapse>

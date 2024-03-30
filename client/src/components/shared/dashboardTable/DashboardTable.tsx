@@ -34,7 +34,7 @@ const DashboardTable = ({
                   </Table.Cell>
                 ))}
                 <Table.Cell>
-                  {buttonLabel.length > 0 && (
+                  {buttonLabel?.length > 0 && (
                     <Button
                       outline
                       size={"sm"}

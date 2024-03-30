@@ -103,18 +103,18 @@ const teacherApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
-        getAllocatedCourses: builder.query<IAllocatedCoursesResponse, { email: string }>({
-            query: (params) => ({
-                url: `/teacher/allocatedcourses`,
+        getAllocatedCourses: builder.query<IAllocatedCoursesResponse, string>({
+            query: (email) => ({
+                url: `/teacher/allocatedcourses?email=${email}`,
                 method: 'GET',
-                params,
+                email,
             }),
         }),
-        getGradeChangeRequests: builder.query<IGrade, { teacherId: string }>({
-            query: (params) => ({
-                url: `/teacher/gradechangeRequests`,
+        getGradeChangeRequests: builder.query<IGrade[], string>({
+            query: (teacherId) => ({
+                url: `/teacher/gradechangeRequests?id=${teacherId}`,
                 method: 'GET',
-                params: { id: params.teacherId },
+                teacherId,
             }),
         }),
     })

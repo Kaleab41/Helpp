@@ -14,6 +14,8 @@ import LandingNav from "./layouts/LandingNav"
 import Error404 from "./pages/Error404"
 import "react-toastify/dist/ReactToastify.css"
 import { ToastContainer } from "react-toastify"
+import Requests from "./pages/teacher/Requests"
+import Uploads from "./pages/teacher/Uploads"
 function App() {
   return (
     <main className="h-screen w-[80%] mx-auto mt-5">
@@ -30,6 +32,7 @@ function App() {
           <Route path="/student" element={<StudentDash />} />
           <Route path="/student/material" element={<Material />} />
           <Route path="/student/payment" element={<Payment />} />
+          <Route path="/teacher/requests" element={<Requests />} />
         </Route>
         <Route element={<LandingNav />}>
           <Route path="*" element={<Error404 />}></Route>
