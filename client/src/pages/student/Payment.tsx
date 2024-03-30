@@ -16,9 +16,9 @@ export default function Payment({payments}: {payments: IPayment[]}) {
                                 <p className={`truncate text-sm font-medium text-gray-900 dark:text-white p-2 text-center rounded-lg w-fit ${payment.verified ? 'bg-green-100' : 'bg-red-100'}`}>
                                     {payment.verified ? "Completed" : "Canceled"}
                                 </p>
-                                <p className="truncate text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                <a href={`localhost:8000/uploads/payments/1710954869134-3.jpg`} className="truncate text-sm text-gray-500 dark:text-gray-400 mt-2" >
                                     {payment.paymentReceipt}
-                                </p>
+                                </a>
                             </div>
                         </li>
                     ))}

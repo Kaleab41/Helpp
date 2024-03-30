@@ -3,10 +3,11 @@ type TextareaProp = {
   name: string
   placeholder: string
   value: string
+  disable: boolean
   SetValue: (value: string) => void
 }
 
-export default function Textarea({ name, placeholder, value, SetValue }: TextareaProp) {
+export default function Textarea({ name, placeholder, value, disable, SetValue }: TextareaProp) {
   return (
     <div className="w-full">
       <div className="mb-2 block">
@@ -19,6 +20,7 @@ export default function Textarea({ name, placeholder, value, SetValue }: Textare
         id={name}
         value={value}
         placeholder={placeholder}
+        disabled = {disable}
         required
         rows={4}
       />

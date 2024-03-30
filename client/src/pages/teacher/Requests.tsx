@@ -2,7 +2,7 @@
 import { useApproveGradeChangeMutation, useGetGradeChangeRequestsQuery } from "../../api/slices/teacher.slice";
 import ModalForm from "../../components/modals/ModalForm";
 import { DashboardTable } from "../../components/shared";
-import { ReadOnly } from "../../components/form";
+import { ReadOnly, Textarea } from "../../components/form";
 import { IGrade } from "../../api/types/grade.types";
 import { Button } from "flowbite-react";
 
@@ -43,6 +43,7 @@ const Requests = () => {
                     <ReadOnly label="mid" value={request?.mid} />
                     <ReadOnly label="final" value={request?.final} />
                     <ReadOnly label="assessment" value={request?.assessment} />
+                    <Textarea name="student's message" value={request?.message} disable />
                     <div className="flex">
                         <Button className="w-full m-2 rounded-md" onClick={handleApprove}>
                             Approve
