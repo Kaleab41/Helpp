@@ -17,12 +17,14 @@ const RequestForm = ({Open, onClose, student, ButtonClicked}: RequestForm) => {
         setMid(student?.mid ?? 0);
         setFinal(student?.final ?? 0);
         setAssessment(student?.assessment ?? 0);
+        setGrade(student?.grade ?? "")
     }, [student])
+
 
     const [mid, setMid] = useState<number>(student?.mid ?? 0);
     const [final, setFinal] = useState<number>(student?.final ?? 0);
     const [assessment, setAssessment] = useState<number>(student?.assessment ?? 0);
-
+    const [grade, setGrade] = useState<string>(student?.grade ?? "");
     const [message, setMessage] = useState<string>("");
 
     const Close = () => {
@@ -35,15 +37,17 @@ const RequestForm = ({Open, onClose, student, ButtonClicked}: RequestForm) => {
             <Input name="Mid" type="number" value={mid} setValue={setMid as any} />
             <Input name="Final" type="number" value={final} setValue={setFinal as any} />
             <Input name="Assessment" type="number" value={assessment} setValue={setAssessment as any} />
+            <Input name="Grade" type="text" value={grade} setValue={setGrade as any} />
             <Textarea name="Request message" placeholder="purpose of request..." value={message} SetValue={setMessage} />
 
             <Button className="mt-4 w-full" onClick={() => ButtonClicked({
                 studentId: student?.id ?? "",
-                teacherId: student?.instructorID ?? "",
-                grade: student?.grade ?? "",
-                mid: student?.mid ?? 0,
-                final: student?.final ?? 0,
-                assessment: student?.assessment ?? 0,
+                teacherId: student?.instructorID ?? "TRAG8336",
+                // NOTE: teacherId will be empty because most of the DB right now doesn't pass this
+                grade: grade,
+                mid: mid,
+                final: final,
+                assessment: assessment,
                 message: message
             })}>
                 Send Request

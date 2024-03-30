@@ -6,9 +6,10 @@ export interface ICourse {
 }
 
 export interface IAllocatedCoursesResponse {
-    allocatedCourses: [],
-    courseNames: [],
-    batch: []
+    courseName: string;
+    courseCode: string;
+    credithour: number;
+    batch: string;
 }
 
 export interface IAssignCourseRequest {

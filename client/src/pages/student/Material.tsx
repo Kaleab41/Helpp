@@ -1,27 +1,49 @@
-import { Card } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
+import { useGetMaterialsQuery } from "../../api/slices/student.slice";
+import { DashboardTable } from "../../components/shared";
+import { useState } from "react";
+import ModalForm from "../../components/modals/ModalForm";
+import { ReadOnly, Textarea } from "../../components/form";
 import { IMaterials } from "../../api/types/material.types";
 
-export default function Material({ materials }: { materials: IMaterials[] }) {
+export default function Material() {
+
+    const handleClick = (index: number) => {
+        setShowDetail(true);
+        setMaterialDetail(materials[index]);
+    }
+
+    const { data: materials, isLoading: gettingMaterials, isSuccess: gotMaterials } = useGetMaterialsQuery("DRB2401");
+    const [showDetail, setShowDetail] = useState<boolean>(false);
+    const [materialDetail, setMaterialDetail] = useState<IMaterials>(null);
+
+    const materialsTableFiltered = materials?.map( material => ({
+        sender: material?.sender,
+        file: material?.file
+    }))
 
     return (
-        <Card className="max-w-sm shadow-none border-none">
-            <div className="mb-4 flex flex-col items-start justify-between">
-                <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Materials</h5>
-
-                <div className="flex flex-col max-h-[270px] overflow-auto">
-                    <ul className="flex flex-col mt-10 divide-y divide-gray-200 dark:divide-gray-700">
-
-                        {materials.map((material, index) => (
-                            <li key={index} className="py-3">
-                                <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-medium text-gray-900 dark:text-white">{material.sender}</p>
-                                    <a className="truncate text-sm text-gray-500 dark:text-gray-400" href={`http://localhost:8000/${material.file}`}>{material.file.split("\\")[material.file.split("\\").length - 1]}</a>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
-        </Card>
+        <>
+            {gettingMaterials &&
+                <div className="flex justify-center items-center bg-gray-100 w-full h-[600px] justify-self-center gap-4 text-black text-lg font-bold">
+                    <Spinner size={"lg"} />
+                    <span>Loading...</span>
+                 </div>
+            }
+            {gotMaterials && 
+                <DashboardTable tableTitle={`Material for DRB2401`} headers={["sender", "file"]} tableData={materialsTableFiltered} buttonLabel="show detail" ButtonClicked={(index) => handleClick(index) } />
+            }
+            {showDetail &&
+                <ModalForm className="flex flex-col gap-4" openModal={showDetail} onCloseModal={() => setShowDetail(false)} title="Material Detail">
+                    <ReadOnly label="From" value={materialDetail.sender} />
+                    <Textarea disable name="Message" value={materialDetail.message} />
+                    <a target="_blank" href={`localhost:8000/${materialDetail.file}`}>
+                        <Button size={"md"}>
+                            Download: {materialDetail.file}
+                        </Button>
+                    </a>
+                </ModalForm>
+            }
+        </>
     );
 }

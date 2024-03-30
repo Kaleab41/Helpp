@@ -18,7 +18,7 @@ const DashboardTable = ({
   return (
     <div className="w-full overflow-x-auto">
       <h1 className="text-2xl mt-5 mb-3 font-bold text-teal-700">{tableTitle}</h1>
-      <div className="overflow-y-scroll max-h-80">
+      <div className="overflow-y-scroll max-h-[600px]">
         <Table>
           <Table.Head>
             {headers.map((header: string, index) => (

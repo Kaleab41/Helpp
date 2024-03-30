@@ -14,6 +14,7 @@ export default function Textarea({ name, placeholder, value, disable, SetValue }
         <Label htmlFor={name} value={name} />
       </div>
       <Textarea_
+        className="disabled:cursor-text"
         onChange={(event) => {
           SetValue(event.currentTarget.value)
         }}

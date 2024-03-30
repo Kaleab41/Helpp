@@ -42,22 +42,22 @@ export default function TeacherDash() {
   const [material, setMaterial] = useState<File | null>(null);
   const [batch, setBatch] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+
   
-  console.log(grades);
   return (
     <div>
       <LeftRightPageLayout
         leftChildren={
           <>
           {gettingAllocatedCourses &&
-            <div className="flex justify-center items-center bg-gray-100 w-full h-[400px] justify-self-center gap-4 text-black text-lg font-bold">
+            <div className="flex justify-center items-center bg-gray-100 w-full h-[600px] justify-self-center gap-4 text-black text-lg font-bold">
               <Spinner />
               <span>Loading...</span>
             </div>
           }
 
           {gotAllocatedCourses &&
-           <DashboardTable headers={["course name", "credit hour", "batch"]} tableData={allocatedCourses} /> 
+           <DashboardTable headers={["course name", "course code", "batch"]} tableData={allocatedCourses} /> 
           }
           </>
         }

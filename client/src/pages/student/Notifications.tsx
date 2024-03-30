@@ -8,7 +8,7 @@ const Notifications = ({notifications}: {notifications: INotificationStudent[]})
             <div className="mb-4 flex flex-col items-start justify-between">
                 <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Notifications</h5>
 
-                <div className="flex flex-col max-h-[270px] overflow-auto">
+                <div className="flex flex-col max-h-[270px] overflow-auto w-[400px]">
                     <ul className="flex flex-col mt-10 divide-y divide-gray-200 dark:divide-gray-700">
                     
                     { notifications.map((notification, index) => (  

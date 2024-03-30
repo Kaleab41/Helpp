@@ -1,31 +1,43 @@
 import { Card } from "flowbite-react";
-import { IPayment } from "../../api/types/payment.types";
+import { useGetPaymentHistoryQuery } from "../../api/slices/student.slice";
 
-export default function Payment({payments}: {payments: IPayment[]}) {
-  return (
-    <Card className="max-w-full shadow-none border-none">
-            <div className="mb-4 flex flex-col items-start justify-between">
-                <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Payments</h5>
+export default function Payment() {
 
-                <div className="flex flex-col max-h-[270px] w-[100%] overflow-auto">
-                    <ul className="flex flex-col mt-10 divide-y divide-gray-200 dark:divide-gray-700">
-                    
-                    { payments.map((payment, index) => (  
-                        <li key={index} className="py-3">
-                            <div className="min-w-0 flex-1">
-                                <p className={`truncate text-sm font-medium text-gray-900 dark:text-white p-2 text-center rounded-lg w-fit ${payment.verified ? 'bg-green-100' : 'bg-red-100'}`}>
-                                    {payment.verified ? "Completed" : "Canceled"}
-                                </p>
-                                
-                                <a href={`localhost:8000/uploads/payments/1710954869134-3.jpg`} className="truncate text-sm text-gray-500 dark:text-gray-400 mt-2" >
-                                    {payment.paymentReceipt}
-                                </a>
+    const formatDate = (date: string) => {
+        const formattedDate = new Date(date);
+        return formattedDate.toLocaleString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        })
+    }
+
+    
+
+    const { data: payments, isLoading: gettingPayments, isSuccess: gotPayments } = useGetPaymentHistoryQuery("WI1830");
+    const paymentsFiltered = payments?.map( payment => ({
+        id: payment?.id,
+        paymentReceipt: payment?.paymentReceipt,
+        verified: payment?.verified,
+        createdAt: payment?.createdAt,
+        udpatedAt: payment?.updatedAt
+    }))
+
+    return (
+        <>
+            {gotPayments &&
+                paymentsFiltered?.map( payment => (
+                    <div className="grid grid-col-gap-4">
+                        <Card className="max-w-lg gap-4" imgAlt="payment Receipt" imgSrc={`localhost:8000/uploads/payments/${payment.paymentReceipt}`}>
+                            <span className="font-bold mb-2 mt-4"> created at: { formatDate(payment.createdAt)}</span>
+                            <div className="flex flex-col">
+                                { payment.verified ? <span className="bg-red-100 p-2 text-center font-bold uppercase rounded-lg w-fit">canceled</span> : <span className="bg-green-100 p-2 text-center font-bold uppercase rounded-lg w-fit">canceled</span>}
                             </div>
-                        </li>
-                    ))}
-                    </ul>
-                </div>
-            </div>
-        </Card>
-  );
+
+                        </Card>
+                    </div>
+                ))
+            }
+        </>
+    );
 }

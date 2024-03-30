@@ -93,7 +93,7 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             providesTags: ['student-gradeHistory']
         }),
 
-        getPaymentHistory: builder.query<IPayment[], string>({
+        getPaymentHistory: builder.query<IPaymentReceipt[], string>({
             query: (studentId) => `/student/payment?id=${studentId}`,
             providesTags: ['student-paymentHistory']
         }),
