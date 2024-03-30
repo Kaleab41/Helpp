@@ -4,6 +4,7 @@ server/node_modules/
 
 # Ignore .env file in the server directory
 server/.env
+server/uploads/
 
 client/dist
 client/dist-ssr
@@ -12,3 +13,4 @@ client/yarn.lock
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+

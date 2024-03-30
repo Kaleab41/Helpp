@@ -58,7 +58,7 @@ const teacherApiSlice = studentManagementApi.injectEndpoints({
                 const formData = new FormData();
                 formData.append('file', file);
                 return {
-                    url: '/teacher/upload',
+                    url: '/teacher/upload?file',
                     method: 'POST',
                     body: formData,
                 }

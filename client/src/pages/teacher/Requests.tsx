@@ -9,14 +9,14 @@ import { Button } from "flowbite-react";
 const Requests = () => {
 
     const handleClick = (index: number) => {
-        setRequest(requests[index]);
+        if (requests) setRequest(requests[index]);
         SetOpen(true);
     }
 
     const handleApprove = () => {
         approveGrade({
             teacherId: "TRUX9279",
-            requestId: request?.requestId
+            requestId: request ? request.requestId : ""
         })
     }
 
@@ -43,7 +43,6 @@ const Requests = () => {
                     <ReadOnly label="mid" value={request?.mid} />
                     <ReadOnly label="final" value={request?.final} />
                     <ReadOnly label="assessment" value={request?.assessment} />
-                    <ReadOnly label="Temp" value={request?.requestId} />
                     <div className="flex">
                         <Button className="w-full m-2 rounded-md" onClick={handleApprove}>
                             Approve

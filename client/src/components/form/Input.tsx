@@ -5,10 +5,11 @@ type InputProp = {
   placeholder?: string
   type: string
   value: string | number | undefined
+  helperText: string
   setValue: (value: string | number) => void
 }
 
-export default function Input({ name, placeholder, type, value, setValue }: InputProp) {
+export default function Input({ name, placeholder, type, value, helperText, setValue }: InputProp) {
   return (
     <div>
       <div className="mb-2 w-full">
@@ -24,6 +25,7 @@ export default function Input({ name, placeholder, type, value, setValue }: Inpu
             ? setValue(Number.parseInt(event.target.value))
             : setValue(event.target.value)
         }
+        helperText={helperText}
         required
       />
     </div>

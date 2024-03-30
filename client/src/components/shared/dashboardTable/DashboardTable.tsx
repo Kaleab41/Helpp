@@ -3,7 +3,7 @@ import { Button, Table } from "flowbite-react"
 interface DashboardProps {
   tableTitle: string
   headers: string[]
-  tableData: Record<string, string>[]
+  tableData: any
   buttonLabel: string
   ButtonClicked: (index: number) => void
 }
@@ -26,7 +26,7 @@ const DashboardTable = ({
             ))}
           </Table.Head>
           <Table.Body className="divide-y">
-            {tableData.map((row, index) => (
+            {tableData.map((row: any, index: number) => (
               <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                 {Object.keys(row).map((key) => (
                   <Table.Cell key={key} className="odd:font-bold odd:text-sm text-black">

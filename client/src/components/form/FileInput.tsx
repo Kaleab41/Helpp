@@ -3,7 +3,8 @@ import { Label, FileInput as FileInput_ } from "flowbite-react"
 type FileInputProp = {
   name: string
   helperText: string
-  SetValue: (value: File | null) => void
+  // value: File | null
+  SetValue: (value: File) => void
 }
 
 export default function FileInput({ name, helperText, SetValue }: FileInputProp) {
@@ -25,6 +26,7 @@ export default function FileInput({ name, helperText, SetValue }: FileInputProp)
           }
         }}
         id={name}
+        // value={value}
         helperText={helperText}
       />
     </div>
