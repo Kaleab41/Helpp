@@ -11,11 +11,11 @@ interface ModalProps {
 
 const ModalForm = ({ className, openModal, onCloseModal, title, children }: ModalProps) => {
   return (
-    <Modal className={className} show={openModal} size="xl" onClose={onCloseModal} popup>
+    <Modal dismissible show={openModal} size="xl" onClose={onCloseModal} popup>
       <Modal.Header>
         <p className="text-2xl  text-teal-600 mt-4 mb-2 ">{title}</p>
       </Modal.Header>
-      <Modal.Body>{children}</Modal.Body>
+      <Modal.Body className={className}>{children}</Modal.Body>
     </Modal>
   )
 }

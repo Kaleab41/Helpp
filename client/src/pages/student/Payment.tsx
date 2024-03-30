@@ -1,5 +1,9 @@
-import { Card } from "flowbite-react";
-import { useGetPaymentHistoryQuery } from "../../api/slices/student.slice";
+import { Button, Card, Spinner } from "flowbite-react";
+import { useGetPaymentHistoryQuery, useUploadPaymentMutation } from "../../api/slices/student.slice";
+import { useState } from "react";
+import ModalForm from "../../components/modals/ModalForm";
+import { FileInput, Input } from "../../components/form";
+import { IUploadPayment } from "../../api/types/payment.types";
 
 export default function Payment() {
 
@@ -12,8 +16,18 @@ export default function Payment() {
         })
     }
 
+    const uploadPayment = (receipt: IUploadPayment) => {
+        console.log(receipt, "receipt")
+        uploadReceipt(receipt);
+    }
     
+    const [open, setOpen] = useState<boolean>(false);
+    const [studentId, setStudentId] = useState<string>("");
+    const [receipt, setReceipt] = useState<File | null>(null);
 
+    console.log(studentId);
+
+    const [uploadReceipt, {isLoading: uploadingReceipt}] = useUploadPaymentMutation();
     const { data: payments, isLoading: gettingPayments, isSuccess: gotPayments } = useGetPaymentHistoryQuery("WI1830");
     const paymentsFiltered = payments?.map( payment => ({
         id: payment?.id,
@@ -24,11 +38,33 @@ export default function Payment() {
     }))
 
     return (
-        <>
+        <>  
+            <div className="w-full flex justify-end p-4 border-b-2 mb-4">     
+                <Button onClick={() => setOpen(true)}>
+                    pay
+                </Button>      
+            </div>
+
+            <ModalForm className={"flex flex-col gap-4"} openModal={open} onCloseModal={() => setOpen(false)} title="Upload payment details" >
+                <Input name="student ID" value={studentId} setValue={setStudentId} />
+                <FileInput name="payment Receipt" helperText="upload proof of payment" SetValue={setReceipt} />
+
+                {uploadingReceipt ? <Spinner className="text-end" size={"lg"} /> :
+                    <Button className="mt-4 w-fit place-self-end" onClick={() => uploadPayment({
+                        id: studentId,
+                        paymentReceipt: receipt
+                    })}>
+                        Upload
+                    </Button>
+                }
+            </ModalForm>
+
             {gotPayments &&
                 paymentsFiltered?.map( payment => (
-                    <div className="grid grid-col-gap-4">
-                        <Card className="max-w-lg gap-4" imgAlt="payment Receipt" imgSrc={`localhost:8000/uploads/payments/${payment.paymentReceipt}`}>
+                    <div className="flex w-full justify-center mb-2">
+                        <Card className="w-full" imgAlt="payment Receipt" imgSrc={`upload.serveo.net/uploads/payments/${payment?.paymentReceipt}`}>
+
+                            {/* <img src={`localhost:8000/uploads/payments/${payment?.paymentReceipt}`} alt="something" /> */}
                             <span className="font-bold mb-2 mt-4"> created at: { formatDate(payment.createdAt)}</span>
                             <div className="flex flex-col">
                                 { payment.verified ? <span className="bg-red-100 p-2 text-center font-bold uppercase rounded-lg w-fit">canceled</span> : <span className="bg-green-100 p-2 text-center font-bold uppercase rounded-lg w-fit">canceled</span>}
