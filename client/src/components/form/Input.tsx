@@ -1,4 +1,5 @@
 import { Label, TextInput } from "flowbite-react"
+import { SetStateAction } from "react"
 
 type InputProp = {
   name: string
@@ -6,7 +7,7 @@ type InputProp = {
   type: string
   value: string | number | undefined
   helperText: string
-  setValue: (value: string | number) => void
+  setValue: (value: string | number | SetStateAction<any>) => void
 }
 
 export default function Input({ name, placeholder, type, value, helperText, setValue }: InputProp) {

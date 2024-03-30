@@ -1,22 +1,26 @@
 import DashboardTable from "../../components/shared/dashboardTable/DashboardTable";
-import { useChangeGradeRequestMutation, useFetchCoursesQuery, useGetGradeHistoryQuery, useGetMaterialsQuery, useGetNotificationsQuery, useGetPaymentHistoryQuery } from "../../api/slices/student.slice";
+import { useChangeGradeRequestMutation, useFetchCoursesQuery, useGetGradeHistoryQuery, useGetNotificationsQuery } from "../../api/slices/student.slice";
 import RequestForm from "../../components/modals/RequestForm";
 import { useState } from "react";
 import { IChangeGradeRequest, IStudentGrade } from "../../api/types/grade.types";
 import Notifications from "./Notifications";
 import { LeftRightPageLayout } from "../../components/shared";
 import { Spinner } from "flowbite-react";
+import { INotificationStudent } from "../../api/types/student.type";
+
 
 export default function StudentDash() {
   
-  const { data: gradeHistory, isLoading: gettingGradeHistory, isSuccess: gotGradeHistory, error: gradesError } = useGetGradeHistoryQuery("WI1830");
+  const { data: gradeHistory, isLoading: gettingGradeHistory, isSuccess: gotGradeHistory, error: gradesError } = useGetGradeHistoryQuery("QO1203");
   const { data: notifications, isLoading: gettingNotiications, isSuccess: gotNotifications } = useGetNotificationsQuery("WI1830");
   const { data: courses, isLoading: gettingCourses, isSuccess: gotCourses} = useFetchCoursesQuery("WI1830");
   // Get the batch from the student's session also
   
   
   const coursesFiltered = courses?.filter(data => data.status);
-  const notificationsArray = notifications ? notifications["notifications"] : [];
+
+  const notificationsArray = notifications ? notifications["notifications" as any] : ([] as INotificationStudent[]);
+  // const notificationsArray: INotificationStudent[] = Array.isArray(notifications) ? notifications : [notifications];
   // make the WI1830 Id dynamic by fetching it for the current user within the session instead of feeding it to the query manually like I did up here.
   // use QO1203 for requesting change of grades ( it's the only one that retrieves grade history with the instructor's id included. )
 
@@ -62,7 +66,7 @@ export default function StudentDash() {
         }
         {gotGradeHistory &&
           <>
-            <DashboardTable headers={["Instructor", "Course", "Grade"]} tableTitle="Grade history" tableData={filteredTableData} buttonLabel="Request Change" ButtonClicked={(index) => handleClick(index)} show />
+            <DashboardTable headers={["Instructor", "Course", "Grade"]} tableTitle="Grade history" tableData={filteredTableData} buttonLabel="Request Change" ButtonClicked={(index) => handleClick(index)} />
           
             <RequestForm Open={triggerModal} onClose={() => setTriggerModal(false)} student={student} ButtonClicked={(requestData: IChangeGradeRequest) => handleRequest(requestData)} />
           </>
@@ -76,7 +80,7 @@ export default function StudentDash() {
           </div>
         }
         {gotCourses &&
-          <DashboardTable headers={["course name", "course ID", "credit hour"]} tableTitle="Current courses" tableData={filteredCourseData} />
+          <DashboardTable headers={["course name", "course ID", "credit hour"]} tableTitle="Current courses" tableData={filteredCourseData} buttonLabel="" ButtonClicked={() => {}} />
         }
       </div>
     }

@@ -45,8 +45,14 @@ export default function Payment() {
                 </Button>      
             </div>
 
+            {gettingPayments && 
+                            <div className="flex justify-center items-center bg-gray-100 w-full h-[600px] justify-self-center gap-4 text-black text-lg font-bold mt-2">
+                                <Spinner size={"lg"} />
+                                <span>Loading,,,</span>
+                            </div>
+            }
             <ModalForm className={"flex flex-col gap-4"} openModal={open} onCloseModal={() => setOpen(false)} title="Upload payment details" >
-                <Input name="student ID" value={studentId} setValue={setStudentId} />
+                <Input name="student ID" value={studentId} setValue={setStudentId} helperText="Enter your student code" type="text" />
                 <FileInput name="payment Receipt" helperText="upload proof of payment" SetValue={setReceipt} />
 
                 {uploadingReceipt ? <Spinner className="text-end" size={"lg"} /> :

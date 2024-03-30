@@ -8,7 +8,7 @@ export interface IPaymentReceipt {
 
 export interface IUploadPayment {
     id: string;
-    paymentReceipt: File
+    paymentReceipt: File | null
 }
 
 export interface IPayment {

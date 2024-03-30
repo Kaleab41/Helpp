@@ -2,7 +2,7 @@ import { Label, Textarea as Textarea_ } from "flowbite-react"
 type TextareaProp = {
   name: string
   placeholder: string
-  value: string
+  value: string | any
   disable: boolean
   SetValue: (value: string) => void
 }

@@ -4,7 +4,7 @@ type FileInputProp = {
   name: string
   helperText: string
   // value: File | null
-  SetValue: (value: File) => void
+  SetValue: (value: File | null) => void
 }
 
 export default function FileInput({ name, helperText, SetValue }: FileInputProp) {

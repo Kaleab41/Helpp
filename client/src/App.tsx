@@ -15,7 +15,6 @@ import Error404 from "./pages/Error404"
 import "react-toastify/dist/ReactToastify.css"
 import { ToastContainer } from "react-toastify"
 import Requests from "./pages/teacher/Requests"
-import Uploads from "./pages/teacher/Uploads"
 function App() {
   return (
     <main className="h-screen w-[80%] mx-auto mt-5">

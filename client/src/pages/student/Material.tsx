@@ -10,12 +10,14 @@ export default function Material() {
 
     const handleClick = (index: number) => {
         setShowDetail(true);
-        setMaterialDetail(materials[index]);
+        {materials &&
+            setMaterialDetail(materials[index]);
+        }
     }
 
     const { data: materials, isLoading: gettingMaterials, isSuccess: gotMaterials } = useGetMaterialsQuery("DRB2401");
     const [showDetail, setShowDetail] = useState<boolean>(false);
-    const [materialDetail, setMaterialDetail] = useState<IMaterials>(null);
+    const [materialDetail, setMaterialDetail] = useState<IMaterials | null>(null);
 
     const materialsTableFiltered = materials?.map( material => ({
         sender: material?.sender,
@@ -35,11 +37,11 @@ export default function Material() {
             }
             {showDetail &&
                 <ModalForm className="flex flex-col gap-4" openModal={showDetail} onCloseModal={() => setShowDetail(false)} title="Material Detail">
-                    <ReadOnly label="From" value={materialDetail.sender} />
-                    <Textarea disable name="Message" value={materialDetail.message} />
-                    <a target="_blank" href={`localhost:8000/${materialDetail.file}`}>
+                    <ReadOnly label="From" value={materialDetail?.sender} />
+                    <Textarea disable name="Message" value={materialDetail?.message} SetValue={() => {}} placeholder="" />
+                    <a target="_blank" href={`localhost:8000/${materialDetail?.file}`}>
                         <Button size={"md"}>
-                            Download: {materialDetail.file}
+                            Download: {materialDetail?.file}
                         </Button>
                     </a>
                 </ModalForm>

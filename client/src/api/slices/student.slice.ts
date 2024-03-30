@@ -1,7 +1,7 @@
 import studentManagementApi from "..";
 import { IChangeGradeRequest, IGrade, IGradeChangeRequest, IStudentGrade } from "../types/grade.types";
 import { IMaterials } from "../types/material.types";
-import { IPayment, IPaymentReceipt, IUploadPayment } from "../types/payment.types";
+import { IPaymentReceipt, IUploadPayment } from "../types/payment.types";
 import { IChangeRequest, INotificationStudent, IRegistrationStudent, ISignInStudent, ISignupStudent, IStudent, IStudentCourse } from "../types/student.type";
 
 const studentApiSlice = studentManagementApi.injectEndpoints({
@@ -51,7 +51,9 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             query: ({ id, paymentReceipt }) => {
                 const formData = new FormData();
                 formData.append('id', id);
-                formData.append('paymentReceipt', paymentReceipt);
+                if (paymentReceipt) {
+                    formData.append('paymentReceipt', paymentReceipt);
+                }
                 return {
                     url: '/student/uploadpayment',
                     method: 'POST',
@@ -78,7 +80,7 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             }),
         }),
 
-        getNotifications: builder.query<Record<string, INotificationStudent>[], string>({
+        getNotifications: builder.query<Record<string, INotificationStudent[]>, string>({
             query: (studentId) => `student/getnotification?id=${studentId}`,
             providesTags: ['student']
         }),
