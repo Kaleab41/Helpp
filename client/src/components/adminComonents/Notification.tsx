@@ -1,16 +1,22 @@
 import { useState } from "react"
-import { Input, Textarea } from "../../components/form/index"
+import { Input, Select, Textarea } from "../../components/form/index"
 import { Button } from "flowbite-react"
 import { Card } from "../shared"
-import { useSendNotificationMutation } from "../../api/slices/admin.slice"
-export default function Notification() {
+import { useSendNotificationMutation } from "../../api/slices/teacher.slice"
+import { useGetUniqueBatchesQuery } from "../../api/slices/admin.slice"
+export default function Notification({ sender }: { sender: string | null }) {
   const [notification, SetNotification] = useState("")
-  const [sender, SetSender] = useState("")
+  const [_sender, SetSender] = useState(sender || "")
   const [sendNotification, { isLoading }] = useSendNotificationMutation();
+  const { data: batches } = useGetUniqueBatchesQuery();
+  const [selectedBatchForCourseAssignment, SetSelectedBatchForCourseAssignment] = useState("")
+
+
 
   const HandleSendNotification = async () => {
     const response = await sendNotification({
-      sender: sender,
+      batch: selectedBatchForCourseAssignment,
+      sender: _sender,
       message: notification
     }).unwrap();
     if (response) {
@@ -20,19 +26,22 @@ export default function Notification() {
   }
   return (
     <Card cardTitle="Notification">
+      <Select
+        name={"Batch"}
+        options={batches || []}
+        setValue={SetSelectedBatchForCourseAssignment}
+      />
       <Input
         name=""
-        value={sender}
+        value={_sender}
         setValue={SetSender as any}
         type="text"
-        placeholder="Sender"
-      />
+        placeholder="Sender" helperText={""} />
       <Textarea
         name=""
         value={notification}
         SetValue={SetNotification}
-        placeholder="Write notification to broadcast"
-      />
+        placeholder="Write notification to broadcast" disable={false} />
       <Button disabled={isLoading} onClick={HandleSendNotification}>Send Message</Button>
     </Card>
   )

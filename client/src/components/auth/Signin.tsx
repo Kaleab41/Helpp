@@ -5,6 +5,7 @@ import { Input, RoleMenu } from "../form/index.tsx"
 import { useSigninStudentMutation } from "../../api/slices/student.slice.ts"
 import { useSigninTeacherMutation } from "../../api/slices/teacher.slice.ts"
 import { useSigninAdminMutation } from "../../api/slices/admin.slice.ts"
+import { useTeacherAuth } from "../../hooks/auth.tsx"
 
 type SinginProp = {
   openSigninModal: boolean
@@ -19,6 +20,9 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
   const [studentSignin, { }] = useSigninStudentMutation();
   const [teacherSignin, { }] = useSigninTeacherMutation();
   const [adminSignin, { }] = useSigninAdminMutation();
+
+  const { saveLoggedInUser } = useTeacherAuth();
+
 
   function onCloseModal() {
     SetSigninModal(false)
@@ -40,6 +44,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
         case "Teacher": {
           const response = await teacherSignin({ email: id, password }).unwrap()
           if (response) {
+            saveLoggedInUser(response);
             onCloseModal()
           }
           break;

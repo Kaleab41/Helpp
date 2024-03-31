@@ -418,7 +418,7 @@ router.post("/uploadattendance", upload.single("file"), async (req, res) => {
     }
 
     const fileName = req.file.originalname;
-    const fileNameParts = fileName.split("-");
+    const fileNameParts = fileName.split("_");
     const instructorName = fileNameParts[0].trim();
     const courseCode = fileNameParts[1].trim();
     const batch = fileNameParts[2].trim().split(".")[0];
