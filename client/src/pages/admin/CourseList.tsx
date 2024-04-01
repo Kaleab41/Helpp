@@ -91,6 +91,7 @@ export default function CourseList() {
               tableData={CourseListTableData}
               buttonLabel="Delete Course"
               searchBy="courseName"
+              searchByLabel="Course Name"
               searchTerm={searchTerm}
               SetSearchTerm={SetSearchTerm}
               ButtonClicked={(row) => {

@@ -24,7 +24,8 @@ export default function AdminDash() {
   const [hrefIndex, setHrefIndex] = useState(0)
 
   const downloadRecipt = useRef<HTMLAnchorElement | null>(null)
-  const [searchTerm, SetSearchTerm] = useState<string>("")
+  const [pendingSearchTerm, SetPendingSearchTerm] = useState<string>("")
+  const [verifiedSearchTerm, SetVerifiedSearchTerm] = useState<string>("")
 
   const PaymentTableHead = ["id", "Verified", "studentName"]
   const VerifiedPaymenTableData =
@@ -33,6 +34,7 @@ export default function AdminDash() {
       verified: "Verified",
       studentName: payment.studentName,
     })) || []
+  console.log(VerifiedPaymenTableData)
   const PendingPaymenTableData =
     pendingPayments?.map((payment) => ({
       id: payment.id,
@@ -107,8 +109,9 @@ export default function AdminDash() {
             tableData={PendingPaymenTableData}
             buttonLabel="Show Detail"
             searchBy="studentName"
-            searchTerm={searchTerm}
-            SetSearchTerm={SetSearchTerm}
+            searchByLabel="Student Name"
+            searchTerm={pendingSearchTerm}
+            SetSearchTerm={SetPendingSearchTerm}
             ButtonClicked={(row) => {
               if (!pendingPayments) return
               SetPendingPayment(pendingPayments[row])
@@ -129,6 +132,10 @@ export default function AdminDash() {
             headers={PaymentTableHead}
             tableData={VerifiedPaymenTableData}
             buttonLabel="Download Recipt"
+            searchBy="studentName"
+            searchByLabel="Student Name"
+            searchTerm={verifiedSearchTerm}
+            SetSearchTerm={SetVerifiedSearchTerm}
             ButtonClicked={(row) => {
               setHrefIndex(row)
               downloadRecipt.current?.click()

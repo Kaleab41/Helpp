@@ -8,9 +8,10 @@ interface DashboardProps {
   buttonLabel: string
   ButtonClicked: (index: number) => void
   // Search
-  searchBy: string
-  searchTerm: string
-  SetSearchTerm: (term: string) => void
+  searchBy?: string
+  searchByLabel?: string
+  searchTerm?: string
+  SetSearchTerm?: (term: string) => void
 }
 
 const DashboardTable = ({
@@ -20,22 +21,25 @@ const DashboardTable = ({
   buttonLabel,
   ButtonClicked,
   searchBy,
+  searchByLabel,
   searchTerm,
   SetSearchTerm,
 }: DashboardProps) => {
   const [filteredData, SetFilteredData] = useState<typeof tableData>(tableData)
-  let filteredTableData
   useEffect(() => {
     if (!searchBy) return
     if (searchTerm === "") {
       SetFilteredData(tableData)
       return
     }
-    filteredTableData = tableData.filter((row) =>
-      row[searchBy].toLowerCase().includes(searchTerm.toLowerCase())
+
+    SetFilteredData(
+      tableData.filter((row) => row[searchBy].toLowerCase().includes(searchTerm.toLowerCase()))
     )
-    SetFilteredData(filteredTableData)
   }, [searchTerm])
+  let dataToRender
+  if (searchBy && searchTerm !== "") dataToRender = filteredData
+  else dataToRender = tableData
   return (
     <div className="w-full overflow-x-auto">
       <h1 className="text-2xl mt-5 mb-3 font-bold text-teal-700">{tableTitle}</h1>
@@ -46,7 +50,7 @@ const DashboardTable = ({
               onChange={(e) => SetSearchTerm(e.target.value)}
               type="text"
               className="block  text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-teal-500 focus:border-teal-500 "
-              placeholder={`Search by ${searchBy}`}
+              placeholder={`Search by ${searchByLabel}`}
             ></input>
           </div>
         )}
@@ -57,7 +61,7 @@ const DashboardTable = ({
             ))}
           </Table.Head>
           <Table.Body className="divide-y">
-            {filteredData.map((row: any, index: number) => (
+            {dataToRender.map((row: any, index: number) => (
               <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                 {Object.keys(row).map((key) => (
                   <Table.Cell key={key} className="odd:font-bold odd:text-sm text-black">
