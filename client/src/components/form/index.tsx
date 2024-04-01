@@ -1,4 +1,5 @@
 export { default as Input } from "./Input"
+export { default as VInput } from "./VInput"
 export { default as DateInput } from "./DateInput"
 export { default as FileInput } from "./FileInput"
 export { default as RoleMenu } from "./RoleMenu"

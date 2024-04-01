@@ -3,6 +3,19 @@ import { IRegistrationStudent } from "../../../api/types/student.type"
 import { useState } from "react"
 import { useCreateStudentMutation } from "../../../api/slices/student.slice.ts"
 import { Input, Select, FileInput, Textarea } from "../../form/index.tsx"
+import { z } from "zod"
+
+const registrationStudentSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  gender: z.enum(["Male", "Female", "Other"]),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().regex(/^\d{10}$/, "Phone number must be 10 digits"),
+  guardianName: z.string().min(1, "Guardian name is required"),
+  guardianPhone: z.string().regex(/^\d{10}$/, "Guardian phone number must be 10 digits"),
+  aboutYou: z.string().min(1, "About you is required"),
+  department: z.string().min(1, "Department is required"),
+  academicRecord: z.union([z.instanceof(File), z.null()]),
+})
 
 export default function StudentRegister() {
   const [name, SetName] = useState<IRegistrationStudent["name"]>("")
@@ -15,7 +28,7 @@ export default function StudentRegister() {
   const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
 
-  const [create, { }] = useCreateStudentMutation();
+  const [create, {}] = useCreateStudentMutation()
   const handleRegister = async () => {
     try {
       const response = await create({
