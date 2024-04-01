@@ -69,6 +69,9 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
+        generateTranscript: builder.mutation<void, { id: string }>({
+            query: ({ id }) => `student/generatetranscript?id=${id}`,
+         }),
 
         // TODO: 
         // Why are there two changeGradeRequests? Was one supposed to be grade history?
@@ -80,10 +83,6 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             }),
         }),
         
-        getTranscript: builder.query<Record<string, INotificationStudent[]>, string>({
-            query: (studentId) => `student/generatetranscript?id=${studentId}`,
-            providesTags: ['student']
-        }),
 
         getNotifications: builder.query<Record<string, INotificationStudent[]>, string>({
             query: (studentId) => `student/getnotification?id=${studentId}`,
@@ -118,9 +117,10 @@ export const { useCreateStudentMutation,
     useUploadPaymentMutation,
     useChangeGradeRequestMutation,
     useGradeChangeRequestMutation,
+    useGenerateTranscriptMutation,
     useGetPaymentHistoryQuery,
     useFetchCoursesQuery,
     useGetGradeHistoryQuery,
     useGetNotificationsQuery,
-    useGetMaterialsQuery
+    useGetMaterialsQuery,
 } = studentApiSlice
