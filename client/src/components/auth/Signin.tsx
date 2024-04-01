@@ -1,12 +1,15 @@
 import { Button, Modal } from "flowbite-react"
 import { useState } from "react"
-import { ISignInStudent } from "../../api/types/student.type.ts"
-import { Input, RoleMenu } from "../form/index.tsx"
+import {  ZSigninStudentSchema } from "../../api/types/student.type.ts"
+import { RoleMenu, VInput } from "../form/index.tsx"
 import { useSigninStudentMutation } from "../../api/slices/student.slice.ts"
 import { useSigninTeacherMutation } from "../../api/slices/teacher.slice.ts"
 import { useSigninAdminMutation } from "../../api/slices/admin.slice.ts"
 import { useTeacherAuth } from "../../hooks/teacher.auth.tsx"
 import { useStudentAuth } from "../../hooks/student.auth.tsx"
+import { ZSigninTeacherSchema } from "../../api/types/teacher.type.ts"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
 
 type SinginProp = {
   openSigninModal: boolean
@@ -14,17 +17,21 @@ type SinginProp = {
 }
 
 export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) {
-  const [id, SetId] = useState<ISignInStudent["id"]>("")
-  const [role, SetRole] = useState<"Student" | "Teacher" | "Admin">("Student")
-  const [password, SetPassword] = useState<ISignInStudent["password"]>("")
+  const [role, SetRole] = useState<string>("Student")
 
-  const [studentSignin, { }] = useSigninStudentMutation();
-  const [teacherSignin, { }] = useSigninTeacherMutation();
-  const [adminSignin, { }] = useSigninAdminMutation();
+  const resolver =
+    role === "Student" ? zodResolver(ZSigninStudentSchema) : zodResolver(ZSigninTeacherSchema)
 
-  const { saveLoggedInUser: saveLoggedInTeacher } = useTeacherAuth();
-  const { saveLoggedInUser: saveLoggedInStudent } = useStudentAuth();
+  const {register, formState:{errors,isSubmitting},handleSubmit} = useForm({mode:"onChange"}, resolver:resolver)
 
+  
+
+  const [studentSignin, {}] = useSigninStudentMutation()
+  const [teacherSignin, {}] = useSigninTeacherMutation()
+  const [adminSignin, {}] = useSigninAdminMutation()
+
+  const { saveLoggedInUser: saveLoggedInTeacher } = useTeacherAuth()
+  const { saveLoggedInUser: saveLoggedInStudent } = useStudentAuth()
 
   function onCloseModal() {
     SetSigninModal(false)
@@ -39,18 +46,18 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
         case "Student": {
           const response = await studentSignin({ id, password }).unwrap()
           if (response) {
-            saveLoggedInStudent(response);
+            saveLoggedInStudent(response)
             onCloseModal()
           }
-          break;
+          break
         }
         case "Teacher": {
           const response = await teacherSignin({ email: id, password }).unwrap()
           if (response) {
-            saveLoggedInTeacher(response);
+            saveLoggedInTeacher(response)
             onCloseModal()
           }
-          break;
+          break
         }
         case "Admin": {
           const response = await adminSignin({ email: id, password }).unwrap()
@@ -66,7 +73,6 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
       const _error = (error as any).data.error
       console.error({ _error })
     }
-
   }
 
   return (
@@ -74,37 +80,31 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
       <Modal show={openSigninModal} size="xl" onClose={onCloseModal} popup>
         <Modal.Header />
         <Modal.Body>
-          <div className="space-y-6">
-            {/* Form Title */}
-            <h3 className="text-xl font-medium text-gray-900 dark:text-white">{`${role} Sign In `}</h3>
+          <form action="">
+            <div className="space-y-6">
+              {/* Form Title */}
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white">{`${role} Sign In `}</h3>
 
-            {/* Form Component */}
-            <Input
-              name={role === "Admin" || role === "Teacher" ? "Email" : "Id"}
-              placeholder={`Enter your ${role === "Admin" || role === "Teacher" ? "Email" : "Id"}`}
-              setValue={SetId}
-              type="text"
-              value={id}
-            />
-            <Input
-              name={"Password"}
-              placeholder="Enter your password"
-              setValue={SetPassword}
-              type="password"
-              value={password}
-            />
-
-            {/* Form Action */}
-            <div className="flex justify-center">
-              <Button onClick={HanldeSignin}>Sign in</Button>
+              {/* Form Component */}
+              <VInput 
+              name="Id"
+                label={role === "Student" ? "ID" : "Email"}
+                placeholder={`Enter your ${role === "Student" ? "Id" : "Email"}`}
+                error={errors.id?.message}
+                register={register}
+              />
+              {/* Form Action */}
+              <div className="flex justify-center">
+                <Button onClick={HanldeSignin}>Sign in</Button>
+              </div>
             </div>
-          </div>
-          <RoleMenu
-            value={role}
-            SetValue={SetRole as any}
-            name="RegistrationRole"
-            options={["Student", "Teacher", "Admin"]}
-          />
+            <RoleMenu
+              value={role}
+              SetValue={SetRole as any}
+              name="RegistrationRole"
+              options={["Student", "Teacher", "Admin"]}
+            />
+          </form>
         </Modal.Body>
       </Modal>
     </>

@@ -41,6 +41,10 @@ export interface ISignInTeacher {
     email: string;
     password: string;
 }
+export const ZSigninTeacherSchema = z.object({
+ id: z.string().email(),
+ password: z.string().min(8, 'Password must be at least 8 characters long').max(25, 'Password must not exceed 25 characters'),
+});
 
 export interface ISendNotificationRequest {
     batch: string;

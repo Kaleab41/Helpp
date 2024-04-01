@@ -73,6 +73,10 @@ export interface ISignInStudent {
     id: string;
     password: string;
 }
+export const ZSigninStudentSchema = z.object({
+ id: z.string().min(1, 'ID is required'),
+ password: z.string().min(8, 'Password must be at least 8 characters long').max(25, 'Password must not exceed 25 characters'),
+});
 
 export interface IChangeRequest {
     requestId: string;

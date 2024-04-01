@@ -6,7 +6,6 @@ import { useSignupStudentMutation } from "../../api/slices/student.slice.ts"
 import { useSignupTeacherMutation } from "../../api/slices/teacher.slice.ts"
 import { useSignupAdminMutation } from "../../api/slices/admin.slice.ts"
 import { useForm } from "react-hook-form"
-import { useHistory } from "react-router-dom"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "react-toastify"
 import { ZSignupTeacherSchema } from "../../api/types/teacher.type.ts"
@@ -18,7 +17,6 @@ type SinginProp = {
 
 export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) {
   const [role, SetRole] = useState<string>("Student")
-  const history = useHistory()
 
   const resolver =
     role === "Student" ? zodResolver(ZSignupStudentSchema) : zodResolver(ZSignupTeacherSchema)

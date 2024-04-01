@@ -18,9 +18,8 @@ import Requests from "./pages/teacher/Requests"
 import { useTeacherAuth } from "./hooks/teacher.auth"
 import { useStudentAuth } from "./hooks/student.auth"
 function App() {
-
-  const { teacher } = useTeacherAuth();
-  const { student } = useStudentAuth();
+  const { teacher } = useTeacherAuth()
+  const { student } = useStudentAuth()
 
   return (
     <main className="h-screen w-[80%] mx-auto mt-5">
@@ -33,9 +32,7 @@ function App() {
           <Route path="/admin" element={<AdminDash />} />
           <Route path="/admin/courses" element={<CourseList />} />
           <Route path="/admin/students" element={<StudentList />} />
-          <Route exact path="/teacher" >
-            {teacher ? <Redirect to="/" /> : <TeacherDash />}
-          </Route>
+          <Route path="/teacher" element={<TeacherDash />} />
           <Route path="/student" element={<StudentDash />} />
           <Route path="/student/material" element={<Material />} />
           <Route path="/student/payment" element={<Payment />} />
