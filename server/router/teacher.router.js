@@ -287,21 +287,21 @@ router.post("/signup", async (req, res) => {
     }
 
     // Hash the provided password
-    const hashedPassword = crypto
-      .createHash("sha256")
-      .update(password)
-      .digest("base64");
+    // const hashedPassword = crypto
+    //   .createHash("sha256")
+    //   .update(password)
+    //   .digest("base64");
 
-    // Create a new teacher
-    const newTeacher = new teacherModel({
-      email,
-      password: hashedPassword,
-    });
+    // // Create a new teacher
+    // const newTeacher = new teacherModel({
+    //   email,
+    //   password: hashedPassword,
+    // });
 
-    // Save the new teacher to the database
-    const savedTeacher = await newTeacher.save();
+    // // Save the new teacher to the database
+    // const savedTeacher = await newTeacher.save();
 
-    console.log("New teacher created:", savedTeacher);
+    // console.log("New teacher created:", savedTeacher);
     return res.status(201).json({ message: "Teacher created successfully" });
   } catch (error) {
     console.error("Error saving teacher:", error);
