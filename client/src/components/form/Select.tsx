@@ -13,6 +13,7 @@ export default function Select({ name, options, setValue }: SelectProp) {
         <Label htmlFor={name} value={name} />
       </div>
       <Select_
+        className="w-full"
         id={name}
         onChange={(event) => {
           setValue(event.target.value)

@@ -79,6 +79,11 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
+        
+        getTranscript: builder.query<Record<string, INotificationStudent[]>, string>({
+            query: (studentId) => `student/generatetranscript?id=${studentId}`,
+            providesTags: ['student']
+        }),
 
         getNotifications: builder.query<Record<string, INotificationStudent[]>, string>({
             query: (studentId) => `student/getnotification?id=${studentId}`,

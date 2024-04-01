@@ -5,7 +5,15 @@ import ModalForm from "../../components/modals/ModalForm"
 import { ReadOnly } from "../../components/form/index"
 import { useState } from "react"
 import { Select } from "../../components/form/index"
-import { useGenerateAttendanceExcelMutation, useGenerateBatchExcelMutation, useGetRestrictedAccountsQuery, useGetUnRestrictedStudentsInBatchQuery, useGetUniqueBatchesQuery, useRejectStudentMutation, useVerifyStudentMutation } from "../../api/slices/admin.slice"
+import {
+  useGenerateAttendanceExcelMutation,
+  useGenerateBatchExcelMutation,
+  useGetRestrictedAccountsQuery,
+  useGetUnRestrictedStudentsInBatchQuery,
+  useGetUniqueBatchesQuery,
+  useRejectStudentMutation,
+  useVerifyStudentMutation,
+} from "../../api/slices/admin.slice"
 
 export default function StudentList() {
   const [openModal, SetOpenModal] = useState<boolean>(false)
@@ -15,13 +23,13 @@ export default function StudentList() {
   const [batchForAttendance, setBatchForAttendance] = useState<string | null>(null)
   const [student, SetStudent] = useState<IStudent | null>(null)
 
-  const { data: restrictedStudents } = useGetRestrictedAccountsQuery();
-  const [verifyStudent] = useVerifyStudentMutation();
-  const [rejectStudent] = useRejectStudentMutation();
-  const [generateBatchExcel] = useGenerateBatchExcelMutation();
-  const [generateAttendanceExcel] = useGenerateAttendanceExcelMutation();
-  const { data: batches } = useGetUniqueBatchesQuery();
-  const { data: unRestricted } = useGetUnRestrictedStudentsInBatchQuery();
+  const { data: restrictedStudents } = useGetRestrictedAccountsQuery()
+  const [verifyStudent] = useVerifyStudentMutation()
+  const [rejectStudent] = useRejectStudentMutation()
+  const [generateBatchExcel] = useGenerateBatchExcelMutation()
+  const [generateAttendanceExcel] = useGenerateAttendanceExcelMutation()
+  const { data: batches } = useGetUniqueBatchesQuery()
+  const { data: unRestricted } = useGetUnRestrictedStudentsInBatchQuery()
   const RegisteredStudentTableHead = ["Name", "Email", "Phone"]
 
   const registredStudentTableData: { name: string; email: string; phone: number }[] =
@@ -40,53 +48,50 @@ export default function StudentList() {
 
   const SeeDetail = (row: number) => {
     if (!restrictedStudents) return
-    SetStudent(restrictedStudents[row]);
+    SetStudent(restrictedStudents[row])
     SetOpenModal(true)
   }
   const SeeDetailunRestricted = (row: number) => {
     if (!unRestricted) return
-    SetStudent(unRestricted[row]);
+    SetStudent(unRestricted[row])
     SetOpenModal(true)
   }
-
-
 
   const DelteStudent = (email: string | undefined) => {
     console.log({ email }, "DelteStudent")
   }
   const ActivateStudent = async (id: string | undefined) => {
-    if (!id) return;
+    if (!id) return
     const response = await verifyStudent({
-      id
-    }).unwrap();
+      id,
+    }).unwrap()
     if (response) {
     }
-
   }
   const DeactivateStudent = async (id: string | undefined) => {
-    if (!id) return;
+    if (!id) return
     const response = await rejectStudent({
-      id
-    }).unwrap();
+      id,
+    }).unwrap()
     if (response) {
     }
   }
   const GenerateAttendance = async () => {
     if (selectedBatchForAttendance.length == 0) return
     const response = await generateAttendanceExcel({
-      batch: selectedBatchForAttendance
-    }).unwrap();
+      batch: selectedBatchForAttendance,
+    }).unwrap()
     if (response) {
-      setBatchForAttendance(response);
+      setBatchForAttendance(response)
     }
   }
   const GenerateBatchExcel = async () => {
     if (selectedBatchForExcelBatch.length == 0) return
     const response = await generateBatchExcel({
-      batch: selectedBatchForExcelBatch
-    }).unwrap();
+      batch: selectedBatchForExcelBatch,
+    }).unwrap()
     if (response) {
-      setBatchForExcelBatch(response);
+      setBatchForExcelBatch(response)
     }
   }
 
@@ -109,9 +114,18 @@ export default function StudentList() {
             </div>
             <ReadOnly label="Department" value={student?.department} />
             <ReadOnly label="About Student" value={student?.aboutYou} />
-            {//TODO: change link
+            {
+              //TODO: change link
             }
-            <ReadOnly label="Academic Record" link={`http://localhost:8000/uploads/files/${student?.academicRecord}`} value={<a href={`http://localhost:8000/uploads/files/${student?.academicRecord}`} download>Record</a>} />
+            <ReadOnly
+              label="Academic Record"
+              link={`http://localhost:8000/uploads/files/${student?.academicRecord}`}
+              value={
+                <a href={`http://localhost:8000/uploads/files/${student?.academicRecord}`} download>
+                  Record
+                </a>
+              }
+            />
             <div className="flex justify-around mt-5">
               <button
                 onClick={() => ActivateStudent(student?.id)}
@@ -166,9 +180,17 @@ export default function StudentList() {
             <Button onClick={async () => await GenerateAttendance()} outline size={"sm"}>
               Generate Attendance
             </Button>
-            {
-              batchForAttendance ? <ReadOnly label="Academic Record" link={`http://localhost:8000/uploads/attendance/${batchForAttendance}`} value={<a href={`http://localhost:8000/uploads/generate/${batchForAttendance}`} download>Download</a>} /> : null
-            }
+            {batchForAttendance ? (
+              <ReadOnly
+                label="Academic Record"
+                link={`http://localhost:8000/uploads/attendance/${batchForAttendance}`}
+                value={
+                  <a href={`http://localhost:8000/uploads/generate/${batchForAttendance}`} download>
+                    Download
+                  </a>
+                }
+              />
+            ) : null}
           </Card>
           <Card cardTitle="Generate Batch Excel">
             <div className="pb-5">
@@ -181,9 +203,20 @@ export default function StudentList() {
             <Button onClick={async () => await GenerateBatchExcel()} outline size={"sm"}>
               Generate Batch Excel
             </Button>
-            {
-              batchForExcelBatchFile ? <ReadOnly label="Academic Record" link={`http://localhost:8000/uploads/generate/${batchForExcelBatchFile}`} value={<a href={`http://localhost:8000/uploads/generate/${batchForExcelBatchFile}`} download>Download</a>} /> : null
-            }
+            {batchForExcelBatchFile ? (
+              <ReadOnly
+                label="Academic Record"
+                link={`http://localhost:8000/uploads/generate/${batchForExcelBatchFile}`}
+                value={
+                  <a
+                    href={`http://localhost:8000/uploads/generate/${batchForExcelBatchFile}`}
+                    download
+                  >
+                    Download
+                  </a>
+                }
+              />
+            ) : null}
           </Card>
         </>
       }

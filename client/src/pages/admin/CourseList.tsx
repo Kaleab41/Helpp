@@ -19,6 +19,7 @@ export default function CourseList() {
   const [courseId, SetCourseId] = useState<INewCourse["courseId"]>("")
   const [name, SetName] = useState<INewCourse["name"]>("")
   const [year, SetYear] = useState<INewCourse["year"]>()
+  const [searchTerm, SetSearchTerm] = useState<string>("")
 
   const { data: courseList } = useGetCourseListQuery()
   const [addCourse, { error: addCouseError }] = useAddCourseMutation()
@@ -89,6 +90,9 @@ export default function CourseList() {
               headers={CourseListTableHead}
               tableData={CourseListTableData}
               buttonLabel="Delete Course"
+              searchBy="courseName"
+              searchTerm={searchTerm}
+              SetSearchTerm={SetSearchTerm}
               ButtonClicked={(row) => {
                 DeleteCourse(courseList[row].courseid)
               }}

@@ -19,11 +19,12 @@ export default function AdminDash() {
   const { data: verifiedPayments } = useGetVerifiedPaymentsQuery()
   const { data: pendingPayments } = useGetPaymentsQuery()
   const [ApprovePayment, { error: ApprovePaymentError }] = useVerifyPaymentMutation()
-  const [deletePayment] = useRejectPaymentMutation();
+  const [deletePayment] = useRejectPaymentMutation()
 
   const [hrefIndex, setHrefIndex] = useState(0)
 
-  const downloadRecipt = useRef<HTMLAnchorElement | null>(null);
+  const downloadRecipt = useRef<HTMLAnchorElement | null>(null)
+  const [searchTerm, SetSearchTerm] = useState<string>("")
 
   const PaymentTableHead = ["id", "Verified", "studentName"]
   const VerifiedPaymenTableData =
@@ -41,7 +42,7 @@ export default function AdminDash() {
 
   const RejectPayment = async (paymentId: string) => {
     try {
-      const response = await deletePayment({ paymentId }).unwrap();
+      const response = await deletePayment({ paymentId }).unwrap()
       if (response) {
         toast.success(response.message)
       }
@@ -79,7 +80,9 @@ export default function AdminDash() {
               <button
                 onClick={async () => {
                   console.log({ paymentId: pendingPayment })
-                  const response = await ApprovePayment({ paymentId: pendingPayment!.paymentId }).unwrap()
+                  const response = await ApprovePayment({
+                    paymentId: pendingPayment!.paymentId,
+                  }).unwrap()
                   if (response) {
                     toast.success(response.message)
                     SetOpenModal(false)
@@ -103,13 +106,24 @@ export default function AdminDash() {
             headers={PaymentTableHead}
             tableData={PendingPaymenTableData}
             buttonLabel="Show Detail"
+            searchBy="studentName"
+            searchTerm={searchTerm}
+            SetSearchTerm={SetSearchTerm}
             ButtonClicked={(row) => {
               if (!pendingPayments) return
               SetPendingPayment(pendingPayments[row])
               SetOpenModal(true)
             }}
           />
-          <a ref={downloadRecipt} hidden={true} href={`http://localhost:8000/uploads/payments/${verifiedPayments ? verifiedPayments[hrefIndex].paymentReceipt : ""}`}> download </a>
+          <a
+            ref={downloadRecipt}
+            hidden={true}
+            href={`http://localhost:8000/uploads/payments/${
+              verifiedPayments ? verifiedPayments[hrefIndex].paymentReceipt : ""
+            }`}
+          >
+            download
+          </a>
           <DashboardTable
             tableTitle="Verfied Payments"
             headers={PaymentTableHead}
@@ -119,7 +133,6 @@ export default function AdminDash() {
               setHrefIndex(row)
               downloadRecipt.current?.click()
             }}
-
           />
         </>
       }
