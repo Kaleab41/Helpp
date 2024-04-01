@@ -16,6 +16,8 @@ import {
 } from "../../api/slices/admin.slice"
 
 export default function StudentList() {
+  const [restrictedSearchTerm, SetRestrictedSearchTerm] = useState<string>("")
+  const [nonRestrictedSearchTerm, SetNonRestrictedSearchTerm] = useState<string>("")
   const [openModal, SetOpenModal] = useState<boolean>(false)
   const [selectedBatchForAttendance, SetSelectedBatchForAttendance] = useState("")
   const [selectedBatchForExcelBatch, SetSelectedBatchForExcelBatch] = useState("")
@@ -152,6 +154,10 @@ export default function StudentList() {
             headers={RegisteredStudentTableHead}
             tableData={registredStudentTableData as any}
             buttonLabel="See Detail"
+            searchBy="name"
+            searchByLabel="Student Name"
+            searchTerm={restrictedSearchTerm}
+            SetSearchTerm={SetRestrictedSearchTerm}
             ButtonClicked={(row) => {
               SeeDetail(row)
             }}
@@ -161,6 +167,10 @@ export default function StudentList() {
             headers={RegisteredStudentTableHead}
             tableData={unRestrictedTableData as any}
             buttonLabel="See Detail"
+            searchBy="name"
+            searchByLabel="Student Name"
+            searchTerm={nonRestrictedSearchTerm}
+            SetSearchTerm={SetNonRestrictedSearchTerm}
             ButtonClicked={(row) => {
               SeeDetailunRestricted(row)
             }}
