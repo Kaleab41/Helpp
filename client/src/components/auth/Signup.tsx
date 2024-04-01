@@ -8,7 +8,11 @@ import { useSignupAdminMutation } from "../../api/slices/admin.slice.ts"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "react-toastify"
-import { ZSignupTeacherSchema } from "../../api/types/teacher.type.ts"
+import {
+  ISignInTeacher,
+  ISignupTeacher,
+  ZSignupTeacherSchema,
+} from "../../api/types/teacher.type.ts"
 
 type SinginProp = {
   openSignupModal: boolean
@@ -40,7 +44,7 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
     SetPassword("")
   }
 
-  const onSubmit = async (data: ISignupStudent) => {
+  const onSubmit = async (data: ISignupStudent | ISignupTeacher) => {
     try {
       switch (role) {
         case "Student": {

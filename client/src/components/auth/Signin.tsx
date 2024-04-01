@@ -1,13 +1,13 @@
 import { Button, Modal } from "flowbite-react"
 import { useState } from "react"
-import {  ZSigninStudentSchema } from "../../api/types/student.type.ts"
+import { ISignInStudent, ZSigninStudentSchema } from "../../api/types/student.type.ts"
 import { RoleMenu, VInput } from "../form/index.tsx"
 import { useSigninStudentMutation } from "../../api/slices/student.slice.ts"
 import { useSigninTeacherMutation } from "../../api/slices/teacher.slice.ts"
 import { useSigninAdminMutation } from "../../api/slices/admin.slice.ts"
 import { useTeacherAuth } from "../../hooks/teacher.auth.tsx"
 import { useStudentAuth } from "../../hooks/student.auth.tsx"
-import { ZSigninTeacherSchema } from "../../api/types/teacher.type.ts"
+import { ISignInTeacher, ZSigninTeacherSchema } from "../../api/types/teacher.type.ts"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
@@ -22,9 +22,11 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
   const resolver =
     role === "Student" ? zodResolver(ZSigninStudentSchema) : zodResolver(ZSigninTeacherSchema)
 
-  const {register, formState:{errors,isSubmitting},handleSubmit} = useForm({mode:"onChange"}, resolver:resolver)
-
-  
+  const {
+    register,
+    formState: { errors, isSubmitting },
+    handleSubmit,
+  } = useForm({ mode: "onChange", resolver: resolver })
 
   const [studentSignin, {}] = useSigninStudentMutation()
   const [teacherSignin, {}] = useSigninTeacherMutation()
@@ -40,11 +42,11 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
     SetPassword("")
   }
 
-  const HanldeSignin = async () => {
+  const onSubmit = async (data: ISignInStudent | ISignInTeacher) => {
     try {
       switch (role) {
         case "Student": {
-          const response = await studentSignin({ id, password }).unwrap()
+          const response = await studentSignin({ ...data }).unwrap()
           if (response) {
             saveLoggedInStudent(response)
             onCloseModal()
@@ -52,7 +54,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
           break
         }
         case "Teacher": {
-          const response = await teacherSignin({ email: id, password }).unwrap()
+          const response = await teacherSignin({ email: data.id, password: data.password }).unwrap()
           if (response) {
             saveLoggedInTeacher(response)
             onCloseModal()
@@ -60,7 +62,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
           break
         }
         case "Admin": {
-          const response = await adminSignin({ email: id, password }).unwrap()
+          const response = await adminSignin({ email: data.id, password: data.password }).unwrap()
           if (response) {
             onCloseModal()
           }
@@ -74,28 +76,35 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
       console.error({ _error })
     }
   }
-
   return (
     <>
       <Modal show={openSigninModal} size="xl" onClose={onCloseModal} popup>
         <Modal.Header />
         <Modal.Body>
-          <form action="">
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6">
               {/* Form Title */}
               <h3 className="text-xl font-medium text-gray-900 dark:text-white">{`${role} Sign In `}</h3>
 
               {/* Form Component */}
-              <VInput 
-              name="Id"
+              <VInput
+                name="id"
                 label={role === "Student" ? "ID" : "Email"}
                 placeholder={`Enter your ${role === "Student" ? "Id" : "Email"}`}
                 error={errors.id?.message}
                 register={register}
               />
+              <VInput
+                name="password"
+                label="Passord"
+                type="password"
+                placeholder="Enter your password"
+                error={errors.password?.message}
+                register={register}
+              />
               {/* Form Action */}
               <div className="flex justify-center">
-                <Button onClick={HanldeSignin}>Sign in</Button>
+                <Button type="submit">Sign in</Button>
               </div>
             </div>
             <RoleMenu
