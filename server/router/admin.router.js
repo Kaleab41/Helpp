@@ -94,30 +94,27 @@ router.post("/verifystudent", async (req, res) => {
         console.log("Email sent:", info.response);
 
         // Schedule rejection email after 10 days
-        setTimeout(
-          () => {
-            const rejectionMailOptions = {
-              from: '"Hilcoe School of CS & Tech" <your_email@gmail.com>', // Sender address
-              to: student.email, // Student's email address
-              subject: "Application Status Update", // Email subject
-              text: `Dear ${student.name},\n\nWe regret to inform you that your application to Hilcoe School of Computer Science & Technology has been rejected. We appreciate your interest and wish you the best in your future endeavors.\n\nBest regards,\nHilcoe School Admissions Team`, // Plain text body
-              html: `
+        setTimeout(() => {
+          const rejectionMailOptions = {
+            from: '"Hilcoe School of CS & Tech" <your_email@gmail.com>', // Sender address
+            to: student.email, // Student's email address
+            subject: "Application Status Update", // Email subject
+            text: `Dear ${student.name},\n\nWe regret to inform you that your application to Hilcoe School of Computer Science & Technology has been rejected. We appreciate your interest and wish you the best in your future endeavors.\n\nBest regards,\nHilcoe School Admissions Team`, // Plain text body
+            html: `
               <p><img src="https://hilcoe.net/wp-content/uploads/2022/03/logo-hilcoe.jpg" alt="Sample School Logo" width="100"></p>
               <h2>Application Status Update</h2>
               <p>We regret to inform you that your application to Hilcoe School of Computer Science & Technology has been rejected. We appreciate your interest and wish you the best in your future endeavors.</p>
               <p>Best regards,<br>Hilcoe School Admissions Team</p>
             `, // HTML body
-            };
-            transporter.sendMail(rejectionMailOptions, (error, info) => {
-              if (error) {
-                console.error("Error sending rejection email:", error);
-              } else {
-                console.log("Rejection email sent:", info.response);
-              }
-            });
-          },
-          10 * 24 * 60 * 60 * 1000
-        ); // 10 days in milliseconds
+          };
+          transporter.sendMail(rejectionMailOptions, (error, info) => {
+            if (error) {
+              console.error("Error sending rejection email:", error);
+            } else {
+              console.log("Rejection email sent:", info.response);
+            }
+          });
+        }, 10 * 24 * 60 * 60 * 1000); // 10 days in milliseconds
 
         return res.status(200).json({
           message: "Student sign-up verified successfully and email sent",
@@ -230,7 +227,6 @@ router.get("/getstudents", async (req, res) => {
 });
 
 router.get("/getUnRestrictedStudents", async (req, res) => {
-
   try {
     const studentsInBatch = await studentModel.find({ restricted: false });
     if (studentsInBatch.length === 0) {
@@ -368,13 +364,17 @@ router.post("/verifyteacher", async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     console.log(
-      `${!teacher.restricted ? "Acceptance" : "Rejection"} email sent to teacher:`,
+      `${
+        !teacher.restricted ? "Acceptance" : "Rejection"
+      } email sent to teacher:`,
       teacher.email
     );
 
     // Send response
     return res.status(200).json({
-      message: `Teacher ${!teacher.restricted ? "accepted" : "rejected"} successfully`,
+      message: `Teacher ${
+        !teacher.restricted ? "accepted" : "rejected"
+      } successfully`,
     });
   } catch (error) {
     console.error("Error verifying teacher:", error);
@@ -784,8 +784,7 @@ router.post("/rejectPayment", async (req, res) => {
     await teacherModel.paymentModel({ paymentId });
 
     return res.status(200).json({
-      message:
-        "Payment successfully deleted",
+      message: "Payment successfully deleted",
     });
   } catch (error) {
     console.error("Error rejecting teacher:", error);
@@ -860,16 +859,22 @@ router.delete("/courses", async (req, res) => {
   }
 });
 
-router.get('/dashboard', async (req, res) => {
+router.get("/dashboard", async (req, res) => {
   try {
     // Count the number of students with restricted accounts true
-    const restrictedTrueCount = await studentModel.countDocuments({ restricted: true });
+    const restrictedTrueCount = await studentModel.countDocuments({
+      restricted: true,
+    });
 
     // Count the number of students with restricted accounts false
-    const restrictedFalseCount = await studentModel.countDocuments({ restricted: false });
-    const teachers = await teacherModel.countDocuments({ restricted: true | false });
+    const restrictedFalseCount = await studentModel.countDocuments({
+      restricted: false,
+    });
+    const teachers = await teacherModel.countDocuments({
+      restricted: true | false,
+    });
     const course = await courseModel.countDocuments();
-    const uniqueBatches = await studentModel.distinct('batch');
+    const uniqueBatches = await studentModel.distinct("batch");
 
     // Count the number of unique batches
     const numberOfUniqueBatches = uniqueBatches.length;
@@ -879,12 +884,11 @@ router.get('/dashboard', async (req, res) => {
       pending: restrictedFalseCount,
       teachers: teachers,
       course: course,
-      numberofBatches: numberOfUniqueBatches
-
+      numberofBatches: numberOfUniqueBatches,
     });
   } catch (error) {
-    console.error('Error fetching dashboard data:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error fetching dashboard data:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 module.exports = router;

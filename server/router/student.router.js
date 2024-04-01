@@ -10,7 +10,6 @@ const teacherModel = require("../model/teacher.model");
 const materialModel = require("../model/material.model");
 const studentcourseModel = require("../model/studentcourse.mode");
 
-
 const getHashedPassword = (password) => {
   const sha256 = crypto.createHash("sha256");
   const hash = sha256.update(password).digest("base64");
@@ -514,6 +513,82 @@ router.get("/getnotification", (req, res) => {
       console.error("Error fetching notifications:", error);
       res.status(500).json({ error: "Internal server error" });
     });
+});
+const PDFDocument = require("pdfkit");
+
+router.get("/generatetranscript", async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    // Find the student by ID
+    const student = await studentModel.findOne({ id });
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    // Find grades for the student
+    const studentGrades = await gradeModel.find({ id });
+
+    if (studentGrades.length === 0) {
+      return res.status(404).json({ error: "No grades found for the student" });
+    }
+
+    // Create a new PDF document
+    const doc = new PDFDocument();
+
+    // Set response headers for PDF
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${id}_transcript.pdf"`
+    );
+
+    // Pipe PDF document to response
+    doc.pipe(res);
+
+    // Add transcript table to PDF
+    doc
+      .font("Helvetica-Bold")
+      .fontSize(12)
+      .text("Transcript", { align: "center" })
+      .moveDown();
+    doc.font("Helvetica").fontSize(10);
+
+    // Header row
+    doc.text("Course Code", 50, doc.y, { width: 100, lineBreak: false });
+    doc.text("Course Name", 150, doc.y, { width: 200, lineBreak: false });
+    doc.text("Credit Hour", 350, doc.y, { width: 100, lineBreak: false });
+    doc.text("Grade", 450, doc.y, { width: 100, lineBreak: false });
+    doc
+      .moveTo(50, doc.y + 15)
+      .lineTo(550, doc.y + 15)
+      .stroke();
+
+    // Data rows
+    studentGrades.forEach((grade, index) => {
+      const yPos = doc.y + index * 20 + 20;
+      doc.text(grade.course, 50, yPos, { width: 100, lineBreak: false });
+      doc.text(grade.courseName, 150, yPos, { width: 200, lineBreak: false });
+      doc.text(grade.creditHour || "", 350, yPos, {
+        width: 100,
+        lineBreak: false,
+      });
+      doc.text(grade.grade || "", 450, yPos, { width: 100, lineBreak: false });
+
+      // Add row line
+      doc
+        .moveTo(50, yPos + 15)
+        .lineTo(550, yPos + 15)
+        .stroke();
+    });
+
+    // Finalize PDF
+    doc.end();
+  } catch (error) {
+    console.error("Error generating transcript:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 module.exports = router;
