@@ -5,8 +5,12 @@ type RoleMenuProps = {
   SetValue: (value: string) => void
 }
 export default function RoleMenu({ name, options, value, SetValue }: RoleMenuProps) {
+  const GridColumns = options.length
   return (
-    <ul className={`grid grid-cols-${options.length} my-4 text-gray-500 `}>
+    <ul
+      className={`grid my-4 text-gray-500 `}
+      style={{ gridTemplateColumns: `repeat(${GridColumns},1fr)` }}
+    >
       {options.map((option) => (
         <li key={option}>
           <input
