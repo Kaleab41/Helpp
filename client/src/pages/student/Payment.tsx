@@ -4,8 +4,12 @@ import { useState } from "react";
 import ModalForm from "../../components/modals/ModalForm";
 import { FileInput, Input } from "../../components/form";
 import { IUploadPayment } from "../../api/types/payment.types";
+import { useStudentAuth } from "../../hooks/student.auth";
+import { toast } from "react-toastify";
 
 export default function Payment() {
+
+    const { student } = useStudentAuth();
 
     const formatDate = (date: string) => {
         const formattedDate = new Date(date);
@@ -16,20 +20,13 @@ export default function Payment() {
         })
     }
 
-    const uploadPayment = (receipt: IUploadPayment) => {
-        console.log(receipt, "receipt")
-        uploadReceipt(receipt);
-    }
-    
     const [open, setOpen] = useState<boolean>(false);
-    const [studentId, setStudentId] = useState<string>("");
+    const [studentId, setStudentId] = useState<string>(student?.id || "");
     const [receipt, setReceipt] = useState<File | null>(null);
 
-    console.log(studentId);
-
-    const [uploadReceipt, {isLoading: uploadingReceipt}] = useUploadPaymentMutation();
+    const [uploadReceipt, { isLoading: uploadingReceipt }] = useUploadPaymentMutation();
     const { data: payments, isLoading: gettingPayments, isSuccess: gotPayments } = useGetPaymentHistoryQuery("WI1830");
-    const paymentsFiltered = payments?.map( payment => ({
+    const paymentsFiltered = payments?.map(payment => ({
         id: payment?.id,
         paymentReceipt: payment?.paymentReceipt,
         verified: payment?.verified,
@@ -37,43 +34,54 @@ export default function Payment() {
         udpatedAt: payment?.updatedAt
     }))
 
+    const uploadPayment = async () => {
+        try {
+            const response = await uploadReceipt({
+                id: studentId,
+                paymentReceipt: receipt
+            }).unwrap();
+            setOpen(false)
+            if (response) {
+                toast.success('Payment Added Successful')
+            }
+        } catch (error: any) {
+            toast.error(error.error)
+        }
+    }
+
     return (
-        <>  
-            <div className="w-full flex justify-end p-4 border-b-2 mb-4">     
+        <>
+            <div className="w-full flex justify-end p-4 border-b-2 mb-4">
                 <Button onClick={() => setOpen(true)}>
                     pay
-                </Button>      
+                </Button>
             </div>
 
-            {gettingPayments && 
-                            <div className="flex justify-center items-center bg-gray-100 w-full h-[600px] justify-self-center gap-4 text-black text-lg font-bold mt-2">
-                                <Spinner size={"lg"} />
-                                <span>Loading,,,</span>
-                            </div>
+            {gettingPayments &&
+                <div className="flex justify-center items-center bg-gray-100 w-full h-[600px] justify-self-center gap-4 text-black text-lg font-bold mt-2">
+                    <Spinner size={"lg"} />
+                    <span>Loading,,,</span>
+                </div>
             }
             <ModalForm className={"flex flex-col gap-4"} openModal={open} onCloseModal={() => setOpen(false)} title="Upload payment details" >
                 <Input name="student ID" value={studentId} setValue={setStudentId} helperText="Enter your student code" type="text" />
                 <FileInput name="payment Receipt" helperText="upload proof of payment" SetValue={setReceipt} />
 
                 {uploadingReceipt ? <Spinner className="text-end" size={"lg"} /> :
-                    <Button className="mt-4 w-fit place-self-end" onClick={() => uploadPayment({
-                        id: studentId,
-                        paymentReceipt: receipt
-                    })}>
+                    <Button className="mt-4 w-fit place-self-end" onClick={() => uploadPayment()}>
                         Upload
                     </Button>
                 }
             </ModalForm>
 
             {gotPayments &&
-                paymentsFiltered?.map( payment => (
+                paymentsFiltered?.map(payment => (
                     <div className="flex w-full justify-center mb-2">
-                        <Card className="w-full" imgAlt="payment Receipt" imgSrc={`upload.serveo.net/uploads/payments/${payment?.paymentReceipt}`}>
-
+                        <Card className="w-full" imgAlt="payment Receipt" imgSrc={`http://localhost:8000/uploads/payments/${payment?.paymentReceipt}`}>
                             {/* <img src={`localhost:8000/uploads/payments/${payment?.paymentReceipt}`} alt="something" /> */}
-                            <span className="font-bold mb-2 mt-4"> created at: { formatDate(payment.createdAt)}</span>
+                            <span className="font-bold mb-2 mt-4"> created at: {formatDate(payment.createdAt)}</span>
                             <div className="flex flex-col">
-                                { payment.verified ? <span className="bg-red-100 p-2 text-center font-bold uppercase rounded-lg w-fit">canceled</span> : <span className="bg-green-100 p-2 text-center font-bold uppercase rounded-lg w-fit">canceled</span>}
+                                {payment.verified ? <span className="bg-red-100 p-2 text-center font-bold uppercase rounded-lg w-fit">canceled</span> : <span className="bg-green-100 p-2 text-center font-bold uppercase rounded-lg w-fit">canceled</span>}
                             </div>
 
                         </Card>

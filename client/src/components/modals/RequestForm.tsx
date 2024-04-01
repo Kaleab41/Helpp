@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Input, Textarea } from "../form";
+import { Input, Select, Textarea } from "../form";
 import ModalForm from "./ModalForm";
 import { IChangeGradeRequest, IStudentGrade } from "../../api/types/grade.types";
 import { Button } from "flowbite-react";
+import { useStudentAuth } from "../../hooks/student.auth";
+import { useListTeachersQuery } from "../../api/slices/admin.slice";
 
 type RequestForm = {
     Open: boolean;
@@ -11,7 +13,7 @@ type RequestForm = {
     ButtonClicked: (requestData: IChangeGradeRequest) => void;
 }
 
-const RequestForm = ({Open, onClose, student, ButtonClicked}: RequestForm) => {
+const RequestForm = ({ Open, onClose, student, ButtonClicked }: RequestForm) => {
 
     useEffect(() => {
         setMid(student?.mid ?? 0);
@@ -20,7 +22,11 @@ const RequestForm = ({Open, onClose, student, ButtonClicked}: RequestForm) => {
         setGrade(student?.grade ?? "")
     }, [student])
 
+    const { student: _student } = useStudentAuth();
 
+
+    const [studentId, setStudentId] = useState<string>(_student?.id || "");
+    const [teacherId, setTeacherId] = useState<string>();
     const [mid, setMid] = useState<number>(student?.mid ?? 0);
     const [final, setFinal] = useState<number>(student?.final ?? 0);
     const [assessment, setAssessment] = useState<number>(student?.assessment ?? 0);
@@ -34,6 +40,7 @@ const RequestForm = ({Open, onClose, student, ButtonClicked}: RequestForm) => {
 
     return (
         <ModalForm openModal={Open} onCloseModal={Close} title="Request Form" >
+            <Input name="studentId" type="text" value={studentId} setValue={setStudentId as any} />
             <Input name="Mid" type="number" value={mid} setValue={setMid as any} />
             <Input name="Final" type="number" value={final} setValue={setFinal as any} />
             <Input name="Assessment" type="number" value={assessment} setValue={setAssessment as any} />
@@ -41,9 +48,8 @@ const RequestForm = ({Open, onClose, student, ButtonClicked}: RequestForm) => {
             <Textarea name="Request message" placeholder="purpose of request..." value={message} SetValue={setMessage} />
 
             <Button className="mt-4 w-full" onClick={() => ButtonClicked({
-                studentId: student?.id ?? "",
-                teacherId: student?.instructorID ?? "TRAG8336",
-                // NOTE: teacherId will be empty because most of the DB right now doesn't pass this
+                studentId: studentId,
+                teacherId: student?.instructorID ?? "TRUX9279",
                 grade: grade,
                 mid: mid,
                 final: final,

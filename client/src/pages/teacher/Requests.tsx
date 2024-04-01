@@ -5,7 +5,7 @@ import { DashboardTable } from "../../components/shared";
 import { ReadOnly, Textarea } from "../../components/form";
 import { IGrade } from "../../api/types/grade.types";
 import { Button, Spinner } from "flowbite-react";
-import { useTeacherAuth } from "../../hooks/auth";
+import { useTeacherAuth } from "../../hooks/teacher.auth";
 
 const Requests = () => {
 

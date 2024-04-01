@@ -4,7 +4,7 @@ import { Button } from "flowbite-react"
 import { Card } from "../shared"
 import { useSendNotificationMutation } from "../../api/slices/teacher.slice"
 import { useGetUniqueBatchesQuery } from "../../api/slices/admin.slice"
-export default function Notification({ sender }: { sender: string | null }) {
+export default function Notification({ sender }: { sender?: string | null }) {
   const [notification, SetNotification] = useState("")
   const [_sender, SetSender] = useState(sender || "")
   const [sendNotification, { isLoading }] = useSendNotificationMutation();

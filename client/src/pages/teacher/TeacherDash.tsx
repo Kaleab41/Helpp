@@ -5,7 +5,7 @@ import { Button, Spinner } from "flowbite-react";
 import { useState } from "react";
 import { FileInput, Select, Textarea } from "../../components/form";
 import { useGetUniqueBatchesQuery } from "../../api/slices/admin.slice";
-import { useTeacherAuth } from "../../hooks/auth";
+import { useTeacherAuth } from "../../hooks/teacher.auth";
 
 
 
