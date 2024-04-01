@@ -77,8 +77,6 @@ function generateBatch() {
   return batch;
 }
 
-// Configure Multer to restrict the maximum file size to 5MB
-
 const upload = multer({
   storage: multer.diskStorage({
     destination: function (req, file, cb) {
@@ -534,6 +532,15 @@ router.get("/generatetranscript", async (req, res) => {
       return res.status(404).json({ error: "No grades found for the student" });
     }
 
+    // Fetch course details for each grade
+    for (const grade of studentGrades) {
+      const course = await courseModel.findOne({ courseid: grade.course });
+      if (course) {
+        grade.courseName = course.courseName;
+        grade.creditHour = course.credithour;
+      }
+    }
+
     // Create a new PDF document
     const doc = new PDFDocument();
 
@@ -547,41 +554,92 @@ router.get("/generatetranscript", async (req, res) => {
     // Pipe PDF document to response
     doc.pipe(res);
 
-    // Add transcript table to PDF
+    // Add fancy header
+    doc.fontSize(24).text("HiLCoE School of Computer Science and Technology", {
+      align: "center",
+    });
+    doc.moveDown(0.5);
     doc
-      .font("Helvetica-Bold")
-      .fontSize(12)
-      .text("Transcript", { align: "center" })
-      .moveDown();
-    doc.font("Helvetica").fontSize(10);
+      .fontSize(14)
+      .text("Location: 4 Kilo Addis Ababa, Ethiopia", { align: "center" });
+    doc.text("Phone: +251-115-51265", { align: "center" });
+    doc.text("Student Transcript", { align: "center" });
+    doc.moveDown(0.5);
+
+    // Add student information
+    doc.text(`Student ID: ${student.id}`, { align: "left" });
+    doc.text(`Student Name: ${student.name}`, { align: "left" });
+    doc.text(`Student Email: ${student.email}`, { align: "left" });
+    // Add any additional student information as needed
+
+    // Add transcript table to PDF
+    const tableWidth = 500;
+    const startX = (doc.page.width - tableWidth) / 2;
+    const startY = doc.y;
+    const cellWidth = tableWidth / 4;
+    const cellHeight = 30;
 
     // Header row
-    doc.text("Course Code", 50, doc.y, { width: 100, lineBreak: false });
-    doc.text("Course Name", 150, doc.y, { width: 200, lineBreak: false });
-    doc.text("Credit Hour", 350, doc.y, { width: 100, lineBreak: false });
-    doc.text("Grade", 450, doc.y, { width: 100, lineBreak: false });
     doc
-      .moveTo(50, doc.y + 15)
-      .lineTo(550, doc.y + 15)
-      .stroke();
-
-    // Data rows
-    studentGrades.forEach((grade, index) => {
-      const yPos = doc.y + index * 20 + 20;
-      doc.text(grade.course, 50, yPos, { width: 100, lineBreak: false });
-      doc.text(grade.courseName, 150, yPos, { width: 200, lineBreak: false });
-      doc.text(grade.creditHour || "", 350, yPos, {
-        width: 100,
-        lineBreak: false,
-      });
-      doc.text(grade.grade || "", 450, yPos, { width: 100, lineBreak: false });
-
-      // Add row line
-      doc
-        .moveTo(50, yPos + 15)
-        .lineTo(550, yPos + 15)
-        .stroke();
+      .rect(startX, startY, tableWidth, cellHeight)
+      .fillAndStroke("#666666", "#000000");
+    doc.fillColor("#FFFFFF").text("Course Code", startX, startY + 15, {
+      width: cellWidth,
+      align: "center",
+      lineBreak: false,
     });
+    doc.text("Course Name", startX + cellWidth, startY + 15, {
+      width: cellWidth,
+      align: "center",
+      lineBreak: false,
+    });
+    doc.text("Credit Hour", startX + cellWidth * 2, startY + 15, {
+      width: cellWidth,
+      align: "center",
+      lineBreak: false,
+    });
+    doc.text("Grade", startX + cellWidth * 3, startY + 15, {
+      width: cellWidth,
+      align: "center",
+      lineBreak: false,
+    });
+
+    // Middle lines and data rows
+    for (let i = 0; i <= studentGrades.length; i++) {
+      const yPos = startY + (i + 1) * cellHeight;
+      doc
+        .moveTo(startX, yPos)
+        .lineTo(startX + tableWidth, yPos)
+        .stroke();
+
+      if (i < studentGrades.length) {
+        const grade = studentGrades[i];
+        doc.fillColor("#000000").text(grade.course, startX, yPos + 15, {
+          width: cellWidth,
+          align: "center",
+          lineBreak: false,
+        });
+        doc.text(grade.courseName || "", startX + cellWidth, yPos + 15, {
+          width: cellWidth,
+          align: "center",
+          lineBreak: false,
+        });
+        doc.text(grade.creditHour || "", startX + cellWidth * 2, yPos + 15, {
+          width: cellWidth,
+          align: "center",
+          lineBreak: false,
+        });
+        doc.text(grade.grade || "", startX + cellWidth * 3, yPos + 15, {
+          width: cellWidth,
+          align: "center",
+          lineBreak: false,
+        });
+      }
+    }
+
+    // Add signature section
+    doc.moveDown(2);
+    doc.text("Verified by:", { align: "center" });
 
     // Finalize PDF
     doc.end();
