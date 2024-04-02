@@ -81,7 +81,6 @@ export default function AdminDash() {
             <div className="flex justify-around mt-5">
               <button
                 onClick={async () => {
-                  console.log({ paymentId: pendingPayment })
                   const response = await ApprovePayment({
                     paymentId: pendingPayment!.paymentId,
                   }).unwrap()
