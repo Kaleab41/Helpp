@@ -33,9 +33,9 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
     resolver: resolver,
   })
 
-  const [studentSignup, {}] = useSignupStudentMutation()
-  const [teacherSignup, {}] = useSignupTeacherMutation()
-  const [adminSignup, {}] = useSignupAdminMutation()
+  const [studentSignup, { }] = useSignupStudentMutation()
+  const [teacherSignup, { }] = useSignupTeacherMutation()
+  const [adminSignup, { }] = useSignupAdminMutation()
 
   function onCloseModal() {
     SetSignupModal(false)

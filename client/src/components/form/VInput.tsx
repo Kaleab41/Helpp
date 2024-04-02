@@ -9,7 +9,6 @@ type InputProp = {
   error: undefined | string
   register: UseFormRegister<FieldValues>
 }
-
 export default function VInput({
   name,
   label,
