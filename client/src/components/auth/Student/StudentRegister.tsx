@@ -5,6 +5,7 @@ import { useCreateStudentMutation } from "../../../api/slices/student.slice.ts"
 import { Input, Select, FileInput, Textarea } from "../../form/index.tsx"
 import { z } from "zod"
 
+
 const registrationStudentSchema = z.object({
   name: z.string().min(1, "Name is required"),
   gender: z.enum(["Male", "Female", "Other"]),
@@ -28,6 +29,7 @@ export default function StudentRegister() {
   const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
 
+
   const [create, {}] = useCreateStudentMutation()
   const handleRegister = async () => {
     try {
@@ -44,11 +46,15 @@ export default function StudentRegister() {
       }).unwrap()
       if (response) {
         onCloseModal()
+        dispatch(register(response))
+        console.log(student, "STUDENT");
       }
     } catch (error) {
       const _error = (error as any).error
       console.error({ _error })
     }
+
+    
   }
 
   function onCloseModal() {

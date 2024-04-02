@@ -16,10 +16,11 @@ import "react-toastify/dist/ReactToastify.css"
 import { ToastContainer } from "react-toastify"
 import Requests from "./pages/teacher/Requests"
 import { useEffect, useMemo } from "react"
+import TeacherList from "./pages/admin/TeacherList"
 function App() {
   /* Route protection */
   // Temp variable
-  const user = undefined
+  const user = undefined // user is always undefined... 
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -31,7 +32,7 @@ function App() {
       student: "student",
     }),
     []
-  )
+  ) // What in the infinte loop did you create? Why useMemo, if it's an empty dependency array and the output never changes? Doesn't this just create a normal object eacht time?
   useEffect(() => {
     if (!user) {
       navigate("/", { replace: true })
@@ -59,6 +60,8 @@ function App() {
           <Route path="/admin" element={<AdminDash />} />
           <Route path="/admin/courses" element={<CourseList />} />
           <Route path="/admin/students" element={<StudentList />} />
+          <Route path="/admin/teachers" element={<TeacherList />} />
+  
           <Route path="/teacher" element={<TeacherDash />} />
           <Route path="/teacher/requests" element={<Requests />} />
 

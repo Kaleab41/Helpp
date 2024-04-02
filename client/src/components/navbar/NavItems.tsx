@@ -22,6 +22,14 @@ export default function NavItems() {
           >
             Students
           </Navbar.Link>
+
+          <Navbar.Link  
+            href="/admin/teachers"
+            {...(location.pathname == "/admin/teachers" ? { active: true } : {})}
+          >
+            Teachers
+          </Navbar.Link>
+
         </Navbar.Collapse>
       )
     case "teacher":

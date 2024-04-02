@@ -61,6 +61,7 @@ const TeacherRegister = () => {
             setValue={SetName}
             type="text"
             value={name}
+            helperText=""
           />
 
           <Select name="Gender" options={["", "Male", "Female"]} setValue={SetGender} />
@@ -72,6 +73,7 @@ const TeacherRegister = () => {
             setValue={SetEmail}
             type="text"
             value={email}
+            helperText=""
           />
           <Input
             name={"Phone"}
@@ -79,6 +81,7 @@ const TeacherRegister = () => {
             setValue={SetPhone}
             type="text"
             value={phone}
+            helperText=""
           />
         </div>
         <div className="grid grid-cols-2 gap-2">

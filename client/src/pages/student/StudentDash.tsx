@@ -20,22 +20,23 @@ import { toast } from "react-toastify"
 export default function StudentDash() {
   const { student } = useStudentAuth()
 
+
   const {
     data: gradeHistory,
     isLoading: gettingGradeHistory,
     isSuccess: gotGradeHistory,
     error: gradesError,
-  } = useGetGradeHistoryQuery(student?.id || "QO1203")
+  } = useGetGradeHistoryQuery(student?.id || "")
   const {
     data: notifications,
     isLoading: gettingNotiications,
     isSuccess: gotNotifications,
-  } = useGetNotificationsQuery(student?.batch || "WI1830")
+  } = useGetNotificationsQuery(student?.batch || "")
   const {
     data: courses,
     isLoading: gettingCourses,
     isSuccess: gotCourses,
-  } = useFetchCoursesQuery(student?.batch || "WI1830")
+  } = useFetchCoursesQuery(student?.batch || "")
   // Get the batch from the student's session also
 
   const coursesFiltered = courses?.filter((data) => data.status)

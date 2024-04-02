@@ -1,6 +1,6 @@
 import { useGetAllocatedCoursesQuery, useUploadAttendanceMutation, useUploadGradeMutation, useUploadMaterialMutation, } from "../../api/slices/teacher.slice";
 import { DashboardTable, LeftRightPageLayout } from "../../components/shared";
-import { Notification } from "../../components/adminComonents";
+import { Notification } from "../../components/adminComponents";
 import { Button, Spinner } from "flowbite-react";
 import { useState } from "react";
 import { FileInput, Select, Textarea } from "../../components/form";

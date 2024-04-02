@@ -3,7 +3,6 @@ import { useGetPaymentHistoryQuery, useUploadPaymentMutation } from "../../api/s
 import { useState } from "react";
 import ModalForm from "../../components/modals/ModalForm";
 import { FileInput, Input } from "../../components/form";
-import { IUploadPayment } from "../../api/types/payment.types";
 import { useStudentAuth } from "../../hooks/student.auth";
 import { toast } from "react-toastify";
 
@@ -25,7 +24,7 @@ export default function Payment() {
     const [receipt, setReceipt] = useState<File | null>(null);
 
     const [uploadReceipt, { isLoading: uploadingReceipt }] = useUploadPaymentMutation();
-    const { data: payments, isLoading: gettingPayments, isSuccess: gotPayments } = useGetPaymentHistoryQuery("WI1830");
+    const { data: payments, isLoading: gettingPayments, isSuccess: gotPayments } = useGetPaymentHistoryQuery(student?.id);
     const paymentsFiltered = payments?.map(payment => ({
         id: payment?.id,
         paymentReceipt: payment?.paymentReceipt,

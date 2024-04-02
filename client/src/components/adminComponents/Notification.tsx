@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { Input, Select, Textarea } from "../../components/form/index"
+import { Input, Select, Textarea } from "../form/index"
 import { Button } from "flowbite-react"
 import { Card } from "../shared"
 import { useSendNotificationMutation } from "../../api/slices/teacher.slice"

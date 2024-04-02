@@ -111,7 +111,8 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
     })
 })
 
-export const { useCreateStudentMutation,
+export const { 
+    useCreateStudentMutation,
     useSignupStudentMutation,
     useSigninStudentMutation,
     useUploadPaymentMutation,

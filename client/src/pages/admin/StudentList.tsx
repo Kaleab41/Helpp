@@ -1,4 +1,4 @@
-import { IRegistrationStudent, IStudent } from "../../api/types/student.type"
+import { IStudent } from "../../api/types/student.type"
 import { Button } from "flowbite-react"
 import { DashboardTable, LeftRightPageLayout, Card } from "../../components/shared/index"
 import ModalForm from "../../components/modals/ModalForm"

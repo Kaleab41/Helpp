@@ -17,6 +17,7 @@ type SinginProp = {
 }
 
 export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) {
+
   const [role, SetRole] = useState<string>("Student")
 
   const resolver =
@@ -57,6 +58,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
           const response = await teacherSignin({ email: data.id, password: data.password }).unwrap()
           if (response) {
             saveLoggedInTeacher(response)
+            nav("/teacher")
             onCloseModal()
           }
           break
@@ -78,7 +80,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
   }
   return (
     <>
-      <Modal show={openSigninModal} size="xl" onClose={onCloseModal} popup>
+      <Modal show={openSigninModal} size="xl" onClose={onCloseModal} popup dismissible>
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)}>

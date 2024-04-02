@@ -8,6 +8,7 @@ export interface ITeacher {
     password: string | null;
     phone: number;
     role: string;
+    assignedCourses: string[];
     restricted: boolean;
     interviewDate: Date;
     notifications: any[];

@@ -9,7 +9,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "react-toastify"
 import {
-  ISignInTeacher,
   ISignupTeacher,
   ZSignupTeacherSchema,
 } from "../../api/types/teacher.type.ts"
@@ -82,7 +81,7 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
 
   return (
     <>
-      <Modal show={openSignupModal} size="xl" onClose={onCloseModal} popup>
+      <Modal show={openSignupModal} size="xl" onClose={onCloseModal} popup dismissible>
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)}>

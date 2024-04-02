@@ -6,7 +6,7 @@ interface DashboardProps {
   headers: string[]
   tableData: any
   buttonLabel: string
-  ButtonClicked: (index: number) => void
+  ButtonClicked: (index: number, filteredData: any[], searchBy: string) => void
   // Search
   searchBy?: string
   searchByLabel?: string
@@ -34,12 +34,18 @@ const DashboardTable = ({
     }
 
     SetFilteredData(
-      tableData.filter((row) => row[searchBy].toLowerCase().includes(searchTerm.toLowerCase()))
+      tableData.filter((row: typeof tableData) => row[searchBy] ? row[searchBy].toLowerCase().includes(searchTerm?.toLowerCase()) : "")
+      // Remove this and substitute for tableData.filter((row: typeof tableData) => row[searchBy].toLowerCase().includes(searchTerm?.toLowerCase()) )
+      // I used the above so that the program doesn't crash if any of the objects have undefined fields
+      // In the real app, I don't think we'll have undefined fields ( I hope )
+
     )
   }, [searchTerm])
+
   let dataToRender
   if (searchBy && searchTerm !== "") dataToRender = filteredData
   else dataToRender = tableData
+
   return (
     <div className="w-full overflow-x-auto">
       <h1 className="text-2xl mt-5 mb-3 font-bold text-teal-700">{tableTitle}</h1>
@@ -74,7 +80,7 @@ const DashboardTable = ({
                       outline
                       size={"sm"}
                       onClick={() => {
-                        ButtonClicked(index)
+                        ButtonClicked(index, filteredData, searchBy)
                       }}
                     >
                       {buttonLabel}

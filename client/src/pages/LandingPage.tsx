@@ -1,4 +1,21 @@
+import { useNavigate } from "react-router";
+import { useStudentAuth } from "../hooks/student.auth";
+import { useTeacherAuth } from "../hooks/teacher.auth";
+
 export default function LandingPage() {
+
+  const student = useStudentAuth();
+  const teacher = useTeacherAuth();
+
+  const nav = useNavigate();
+
+  if (student) {
+    nav("/student");
+  }
+  else if (teacher) {
+    nav("/teacher");
+  }
+
   return <div>   <section style={heroStyle}>
   <h2 style={heroHeading}>HiLPortal</h2>
   <p style={heroSubheading}>An Acadamic Portal for the HiLCoE community</p>

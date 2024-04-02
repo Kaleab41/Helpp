@@ -5,8 +5,11 @@ import { useState } from "react";
 import ModalForm from "../../components/modals/ModalForm";
 import { ReadOnly, Textarea } from "../../components/form";
 import { IMaterials } from "../../api/types/material.types";
+import { useStudentAuth } from "../../hooks/student.auth";
 
 export default function Material() {
+
+    const { student } = useStudentAuth();
 
     const handleClick = (index: number) => {
         setShowDetail(true);
@@ -16,7 +19,7 @@ export default function Material() {
         }
     }
 
-    const { data: materials, isLoading: gettingMaterials, isSuccess: gotMaterials } = useGetMaterialsQuery("DRB2401");
+    const { data: materials, isLoading: gettingMaterials, isSuccess: gotMaterials } = useGetMaterialsQuery(student ? student.batch : "");
     const [showDetail, setShowDetail] = useState<boolean>(false);
     const [materialDetail, setMaterialDetail] = useState<IMaterials | null>(null);
 

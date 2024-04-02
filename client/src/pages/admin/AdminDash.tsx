@@ -1,5 +1,5 @@
 import { LeftRightPageLayout, DashboardTable } from "../../components/shared/index"
-import { InfoCards, Notification } from "../../components/adminComonents/index"
+import { InfoCards, Notification } from "../../components/adminComponents/index"
 import {
   useGetDashboardDataQuery,
   useGetVerifiedPaymentsQuery,

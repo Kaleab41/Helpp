@@ -68,6 +68,7 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      invalidatesTags: ['courses']
     }),
     generateBatchExcel: builder.mutation<string, { batch: string }>({
       query: (body) => ({
@@ -107,6 +108,7 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
     }),
     getCourseList: builder.query<ICourse[], void>({
       query: () => '/admin/courselist',
+      providesTags: ['courses']
     }),
     getPayments: builder.query<IPayment[], void>({
       query: () => '/admin/getpendingpayments',
@@ -150,6 +152,7 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
         method: 'DELETE',
         body,
       }),
+      invalidatesTags: ['courses']
     }),
   })
 })
