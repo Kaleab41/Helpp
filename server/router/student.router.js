@@ -501,8 +501,8 @@ router.get("/getnotification", (req, res) => {
         return res.status(404).json({ error: "Student not found" });
       }
 
-      // Get the notifications array from the student object
-      const notifications = student.notifications;
+      // Get the notifications array from the student object and reverse it
+      const notifications = student.notifications.reverse();
 
       // Return the notifications array as the response
       res.status(200).json({ notifications });
@@ -512,6 +512,7 @@ router.get("/getnotification", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     });
 });
+
 const PDFDocument = require("pdfkit");
 
 router.get("/generatetranscript", async (req, res) => {
