@@ -246,7 +246,6 @@ router.post(
         // ID does not exist, return an error
         return res.status(404).json({ error: "ID does not exist" });
       }
-
       // Create and save the new payment with the student's name
       const newPayment = new payment({
         id: studentId,

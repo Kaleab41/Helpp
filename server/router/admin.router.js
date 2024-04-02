@@ -364,17 +364,15 @@ router.post("/verifyteacher", async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     console.log(
-      `${
-        !teacher.restricted ? "Acceptance" : "Rejection"
+      `${!teacher.restricted ? "Acceptance" : "Rejection"
       } email sent to teacher:`,
       teacher.email
     );
 
     // Send response
     return res.status(200).json({
-      message: `Teacher ${
-        !teacher.restricted ? "accepted" : "rejected"
-      } successfully`,
+      message: `Teacher ${!teacher.restricted ? "accepted" : "rejected"
+        } successfully`,
     });
   } catch (error) {
     console.error("Error verifying teacher:", error);
@@ -533,7 +531,7 @@ router.get("/getverifiedpayments", async (req, res) => {
     // Fetch verified payments from the PaymentModel
     const payments = await paymentModel.find(
       { verified: { $eq: true } },
-      { id: 1, paymentReceipt: 1, verified: 1, _id: 0 }
+      { id: 1, paymentReceipt: 1, verified: 1, paymentId: 1, _id: 0 }
     );
 
     // Map over the payments to retrieve student names
@@ -563,7 +561,7 @@ router.get("/getpendingpayments", async (req, res) => {
     // Fetch pending payments from the PaymentModel
     const payments = await paymentModel.find(
       { verified: { $eq: false } },
-      { id: 1, paymentReceipt: 1, verified: 1, _id: 0 }
+      { id: 1, paymentReceipt: 1, verified: 1, paymentId: 1, _id: 0 }
     );
 
     // Map over the payments to retrieve student names
