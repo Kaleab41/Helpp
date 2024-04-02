@@ -19,7 +19,7 @@ import { useEffect, useMemo } from "react"
 function App() {
   /* Route protection */
   // Temp variable
-  const user = { Id: "LB873", role: "student" }
+  const user = undefined
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -33,6 +33,10 @@ function App() {
     []
   )
   useEffect(() => {
+    if (!user) {
+      navigate("/", { replace: true })
+      return
+    }
     if (location.pathname === "/") {
       if (user) navigate(`/${user.role}`, { replace: true })
       return
