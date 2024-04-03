@@ -21,3 +21,12 @@ export interface IDashboardSummary {
     course: number;
     numberofBatches: number;
 }
+
+export interface IAdmin {
+    id: String,
+    name: String,
+    email: String,
+    password: String,
+    phone: Number,
+    role: String,
+}
