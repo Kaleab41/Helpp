@@ -16,16 +16,17 @@ mongoose.connect(process.env.MONGO_URL, {
 
 const db = mongoose.connection;
 
-db.on('error', (error) => {
-  console.error('MongoDB connection error:', error);
+db.on("error", (error) => {
+  console.error("MongoDB connection error:", error);
 });
 
-db.once('open', () => {
-  console.log('Connected to MongoDB database');
+db.once("open", () => {
+  console.log("Connected to MongoDB database");
 });
 const helmet = require("helmet");
-app.use(helmet());
 app.use(cors());
+app.use(helmet());
+
 app.use(bodyParses.urlencoded({ extended: true }));
 app.use(bodyParses.json());
 
