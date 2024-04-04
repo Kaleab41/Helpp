@@ -523,6 +523,9 @@ router.get("/getnotification", (req, res) => {
     });
 });
 
+const fs = require("fs");
+const path = require("path");
+
 router.get("/generatetranscript", async (req, res) => {
   try {
     const { id } = req.query;
@@ -553,20 +556,22 @@ router.get("/generatetranscript", async (req, res) => {
     // Create a new PDF document
     const doc = new PDFDocument();
 
-    // Set response headers for PDF
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${id}_transcript.pdf"`
+    // Set file path to save the PDF
+    const filePath = path.join(
+      __dirname,
+      "../uploads/transcript",
+      `${id}_transcript.pdf`
     );
 
-    // Pipe PDF document to response
-    doc.pipe(res);
+    // Pipe PDF document to file stream
+    const fileStream = fs.createWriteStream(filePath);
+    doc.pipe(fileStream);
 
-    // Add fancy header
+    // Add content to the PDF document
     doc.fontSize(24).text("HiLCoE School of Computer Science and Technology", {
       align: "center",
     });
+    // Add more content here as needed...
     doc.moveDown(0.5);
     doc
       .fontSize(14)
@@ -649,13 +654,18 @@ router.get("/generatetranscript", async (req, res) => {
     // Add signature section
     doc.moveDown(2);
     doc.text("Verified by:", { align: "center" });
-
     // Finalize PDF
     doc.end();
+
+    // Wait for PDF creation to complete
+    fileStream.on("finish", () => {
+      // Return relative URL of the saved PDF
+      const relativeUrl = path.relative(__dirname, filePath);
+      res.status(200).json({ url: relativeUrl });
+    });
   } catch (error) {
     console.error("Error generating transcript:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 module.exports = router;

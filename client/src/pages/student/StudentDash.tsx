@@ -23,23 +23,35 @@ export default function StudentDash() {
 
   console.log(transcript);
 
-  const handleTranscript = () => {
-
+  const handleTranscript = async () => {
     try {
-      if (transcript) {
-        const blob = new Blob([transcript], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'transcript.pdf';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+      // Fetch the transcript PDF from the server
+      const response = await fetch('URL_TO_FETCH_TRANSCRIPT', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf', // Specify that the server sends a PDF
+        },
+      });
+  
+      // Check if the response is successful
+      if (!response.ok) {
+        throw new Error('Failed to fetch transcript PDF');
       }
+  
+      // Convert the response to a Blob
+      const blob = await response.blob();
+  
+      // Create a URL for the Blob
+      const url = URL.createObjectURL(blob);
+  
+      // Open the PDF in a new browser tab
+      window.open(url, '_blank');
     } catch (error) {
-      console.error('Failed to download transcript:', error);
+      console.error('Failed to fetch transcript PDF:', error);
     }
-  }
+  };
+  
+  
 
   
 
