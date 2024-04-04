@@ -272,7 +272,17 @@ router.post("/signup", async (req, res) => {
     const existingTeacher = await teacherModel.findOne({ email });
 
     if (existingTeacher) {
-      // Email already exists, assign the password to the existing teacher
+      // Email already exists
+
+      // Check if password is already set for the teacher
+      if (existingTeacher.password) {
+        // Password is already set, inform the user
+        return res
+          .status(400)
+          .json({ error: "Email already exists. Password cannot be changed." });
+      }
+
+      // Hash the provided password and assign it to the existing teacher
       const hashedPassword = crypto
         .createHash("sha256")
         .update(password)
@@ -285,31 +295,32 @@ router.post("/signup", async (req, res) => {
         .status(200)
         .json({ message: "Password assigned successfully" });
     } else {
-      return res.status(400).json({ error: "Email already exists" });
+      // Email does not exist, create a new teacher
+
+      // Hash the provided password
+      const hashedPassword = crypto
+        .createHash("sha256")
+        .update(password)
+        .digest("base64");
+
+      // Create a new teacher
+      const newTeacher = new teacherModel({
+        email,
+        password: hashedPassword,
+      });
+
+      // Save the new teacher to the database
+      const savedTeacher = await newTeacher.save();
+
+      console.log("New teacher created:", savedTeacher);
+      return res.status(201).json({ message: "Teacher created successfully" });
     }
-
-    // Hash the provided password
-    // const hashedPassword = crypto
-    //   .createHash("sha256")
-    //   .update(password)
-    //   .digest("base64");
-
-    // // Create a new teacher
-    // const newTeacher = new teacherModel({
-    //   email,
-    //   password: hashedPassword,
-    // });
-
-    // // Save the new teacher to the database
-    // const savedTeacher = await newTeacher.save();
-
-    // console.log("New teacher created:", savedTeacher);
-    // return res.status(201).json({ message: "Teacher created successfully" });
   } catch (error) {
     console.error("Error saving teacher:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 const courseModel = require("../model/course.model");
 router.get("/allocatedCourses", async (req, res) => {
   try {

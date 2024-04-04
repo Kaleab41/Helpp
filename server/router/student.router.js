@@ -179,7 +179,7 @@ router.post("/signup", async (req, res) => {
 
     if (existingUser && existingUser.password) {
       // Password is already set for this user
-      return res.status(400).json({ error: "User already signed up." });
+      return res.status(400).json({ error: "User already exists" });
     }
 
     // Update the password for the user
