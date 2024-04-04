@@ -3,12 +3,12 @@ import { useGetPaymentHistoryQuery, useUploadPaymentMutation } from "../../api/s
 import { useState } from "react";
 import ModalForm from "../../components/modals/ModalForm";
 import { FileInput, Input } from "../../components/form";
-import { useStudentAuth } from "../../hooks/student.auth";
 import { toast } from "react-toastify";
+import { useUserAuth } from "../../hooks/user.auth";
 
 export default function Payment() {
 
-    const { student } = useStudentAuth();
+    const { user: student } = useUserAuth();
 
     const formatDate = (date: string) => {
         const formattedDate = new Date(date);

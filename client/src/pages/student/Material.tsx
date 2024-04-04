@@ -5,11 +5,11 @@ import { useState } from "react";
 import ModalForm from "../../components/modals/ModalForm";
 import { ReadOnly, Textarea } from "../../components/form";
 import { IMaterials } from "../../api/types/material.types";
-import { useStudentAuth } from "../../hooks/student.auth";
+import { useUserAuth } from "../../hooks/user.auth";
 
 export default function Material() {
 
-    const { student } = useStudentAuth();
+    const { user: student } = useUserAuth();
 
     const handleClick = (index: number) => {
         setShowDetail(true);

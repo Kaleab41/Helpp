@@ -10,7 +10,7 @@ export default function Empty() {
       />
 
       <div className="flex flex-col gap-2 justify-center items-center">
-        <p className="text-4xl font-bold text-center">Nothing Here!</p>
+        <p className="text-4xl font-bold text-center p-10">Nothing Here!</p>
       </div>
     </div>
   )

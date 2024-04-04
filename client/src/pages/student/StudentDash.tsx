@@ -5,7 +5,6 @@ import {
   useGenerateTranscriptMutation,
   useGetGradeHistoryQuery,
   useGetNotificationsQuery,
-  useGradeChangeRequestMutation,
 } from "../../api/slices/student.slice"
 import RequestForm from "../../components/modals/RequestForm"
 import { useState } from "react"
@@ -14,11 +13,14 @@ import Notifications from "./Notifications"
 import { Card, LeftRightPageLayout } from "../../components/shared"
 import { Button, Spinner } from "flowbite-react"
 import { INotificationStudent } from "../../api/types/student.type"
-import { useStudentAuth } from "../../hooks/student.auth"
 import { toast } from "react-toastify"
+import { useUserAuth } from "../../hooks/user.auth"
+import Empty from "../Empty"
 
 export default function StudentDash() {
-  const { student } = useStudentAuth()
+
+  const { user: student } = useUserAuth()
+
 
   const {
     data: gradeHistory,
@@ -40,6 +42,7 @@ export default function StudentDash() {
 
 
   const coursesFiltered = courses?.filter((data) => data.status)
+  
   const notificationsArray = notifications
     ? notifications["notifications" as any]
     : ([] as INotificationStudent[])
@@ -90,6 +93,13 @@ export default function StudentDash() {
               <span>Loading...</span>
             </div>
           )}
+
+          {(!gradeHistory || gradeHistory?.length === 0)  &&
+            <div className="flex w-full justify-center p-20">
+              <Empty />
+            </div>
+          }
+
           {gotGradeHistory && (
             <>
               <DashboardTable
@@ -108,7 +118,6 @@ export default function StudentDash() {
               />
             </>
           )}
-          {gradesError && <span>error!</span>}
 
           {gettingCourses && (
             <div className="flex justify-center items-center bg-gray-100 w-full h-[600px] justify-self-center gap-4 text-black text-lg font-bold mt-2">
@@ -116,7 +125,8 @@ export default function StudentDash() {
               <span>Loading...</span>
             </div>
           )}
-          {gotCourses && (
+
+          {gotCourses && coursesFiltered.length > 0 && (
             <DashboardTable
               headers={["course name", "course ID", "credit hour"]}
               tableTitle="Current courses"
