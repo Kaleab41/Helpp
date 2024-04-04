@@ -2,6 +2,7 @@ const express = require("express");
 const studentModel = require("../model/student.model");
 const payment = require("../model/payment.model");
 const courseModel = require("../model/course.model");
+const PDFDocument = require("pdfkit");
 const router = express.Router();
 const multer = require("multer");
 const crypto = require("crypto");
@@ -100,19 +101,6 @@ const uploadpayment = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
 });
 
-router.patch("/changePassword", async (req, res) => {
-  try {
-    const id = req.body.id;
-    const password = getHashedPassword(req.body.password);
-    const response = await studentModel.findOneAndUpdate({ id }, { password });
-    return res.status(200).json({ response: response });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ error: "could not change password" });
-
-  }
-})
-
 // Handle POST request to register a new student with file upload for academic record
 router.post("/register", upload.single("academicRecord"), (req, res) => {
   // Check if the provided email already exists
@@ -186,6 +174,15 @@ router.post("/signup", async (req, res) => {
     const restriction = req.body.restriction;
     const hashedPassword = getHashedPassword(req.body.password);
 
+    // Check if password is already set for the user
+    const existingUser = await studentModel.findOne({ id: id });
+
+    if (existingUser && existingUser.password) {
+      // Password is already set for this user
+      return res.status(400).json({ error: "User already signed up." });
+    }
+
+    // Update the password for the user
     const result = await studentModel.findOneAndUpdate(
       { id: id },
       { password: hashedPassword }
@@ -194,7 +191,7 @@ router.post("/signup", async (req, res) => {
     if (!result) {
       return res.status(404).json({ error: "User doesn't exist!" });
     }
-    //FIXME: check wether student is restricted or not
+    //FIXME: check whether student is restricted or not
 
     return res.status(201).json({ message: "User Signup completed" });
   } catch (err) {
@@ -259,6 +256,7 @@ router.post(
         // ID does not exist, return an error
         return res.status(404).json({ error: "ID does not exist" });
       }
+
       // Create and save the new payment with the student's name
       const newPayment = new payment({
         id: studentId,
@@ -513,8 +511,8 @@ router.get("/getnotification", (req, res) => {
         return res.status(404).json({ error: "Student not found" });
       }
 
-      // Get the notifications array from the student object and reverse it
-      const notifications = student.notifications.reverse();
+      // Get the notifications array from the student object
+      const notifications = student.notifications;
 
       // Return the notifications array as the response
       res.status(200).json({ notifications });
@@ -524,8 +522,6 @@ router.get("/getnotification", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     });
 });
-
-const PDFDocument = require("pdfkit");
 
 router.get("/generatetranscript", async (req, res) => {
   try {
