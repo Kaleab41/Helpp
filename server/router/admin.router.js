@@ -272,7 +272,7 @@ router.post("/signin", (req, res) => {
     });
 });
 router.post("/signup", (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, name, phone } = req.body;
 
   // Check if the email already exists
   adminModel
@@ -292,6 +292,8 @@ router.post("/signup", (req, res) => {
       const newAdmin = new adminModel({
         email,
         password: hashedPassword,
+        name: name,
+        phone: phone,
         role: "Admin",
       });
 
@@ -364,15 +366,17 @@ router.post("/verifyteacher", async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     console.log(
-      `${!teacher.restricted ? "Acceptance" : "Rejection"
+      `${
+        !teacher.restricted ? "Acceptance" : "Rejection"
       } email sent to teacher:`,
       teacher.email
     );
 
     // Send response
     return res.status(200).json({
-      message: `Teacher ${!teacher.restricted ? "accepted" : "rejected"
-        } successfully`,
+      message: `Teacher ${
+        !teacher.restricted ? "accepted" : "rejected"
+      } successfully`,
     });
   } catch (error) {
     console.error("Error verifying teacher:", error);
