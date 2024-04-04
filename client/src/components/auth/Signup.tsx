@@ -1,5 +1,5 @@
 import { Button, Modal } from "flowbite-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ISignupStudent, ZSignupStudentSchema } from "../../api/types/student.type.ts"
 import { VInput, RoleMenu } from "../form/index.tsx"
 import { useSignupStudentMutation } from "../../api/slices/student.slice.ts"
@@ -28,10 +28,16 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
+    reset
   } = useForm({
     mode: "onChange",
     resolver: resolver,
   })
+
+  // function to clearout form when chaning roles
+  useEffect(() => {
+    reset()
+  }, [role])
 
   const [studentSignup, { }] = useSignupStudentMutation()
   const [teacherSignup, { }] = useSignupTeacherMutation()

@@ -1,5 +1,5 @@
 import { Button, Modal } from "flowbite-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ISignInStudent, ZSigninStudentSchema } from "../../api/types/student.type.ts"
 import { RoleMenu, VInput } from "../form/index.tsx"
 import { useSigninStudentMutation } from "../../api/slices/student.slice.ts"
@@ -32,6 +32,11 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
     handleSubmit,
     reset,
   } = useForm({ mode: "onChange", resolver: resolver })
+
+  // function to clearout form when chaning roles
+  useEffect(() => {
+    reset()
+  }, [role])
 
   const [studentSignin, { }] = useSigninStudentMutation()
   const [teacherSignin, { }] = useSigninTeacherMutation()
