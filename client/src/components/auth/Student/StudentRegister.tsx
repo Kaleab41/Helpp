@@ -1,11 +1,21 @@
 import { Button } from "flowbite-react"
-import { IRegistrationStudent } from "../../../api/types/student.type"
+import { IRegistrationStudent, ZRegistrationStudentSchema } from "../../../api/types/student.type"
 import { useState } from "react"
 import { useCreateStudentMutation } from "../../../api/slices/student.slice.ts"
-import { Input, Select, FileInput, Textarea } from "../../form/index.tsx"
+import {
+  Input,
+  Select,
+  FileInput,
+  Textarea,
+  VInput,
+  VSelect,
+  VTextarea,
+  VFileInput,
+} from "../../form/index.tsx"
 import { z } from "zod"
-import { toast } from "react-toastify"
-
+import { Controller, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { ZRegistrationTeacherSchema } from "../../../api/types/teacher.type.ts"
 
 const registrationStudentSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -30,8 +40,7 @@ export default function StudentRegister() {
   const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
 
-
-  const [create, { }] = useCreateStudentMutation()
+  const [create, {}] = useCreateStudentMutation()
   const handleRegister = async () => {
     try {
       const response = await create({
@@ -47,16 +56,15 @@ export default function StudentRegister() {
       }).unwrap()
       if (response) {
         onCloseModal()
-        toast.success("Registration Successful")
-
-        // dispatch(register(response))
-        // console.log(student, "STUDENT");
+        dispatch(register(response))
+        console.log(student, "STUDENT")
       }
     } catch (error) {
       toast.success((error as any).error)
     }
-
-
+  }
+  const onSubmit = async (data: IRegistrationStudent) => {
+    console.log(data)
   }
 
   function onCloseModal() {
@@ -71,78 +79,124 @@ export default function StudentRegister() {
     SetAcademicRecord(null)
   }
   return (
-    <div className="space-y-6">
-      {/* Form Title */}
-      <h3 className="text-xl font-medium text-gray-900 dark:text-white">Apply to the school</h3>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className="space-y-6">
+        {/* Form Title */}
+        <h3 className="text-xl font-medium text-gray-900 dark:text-white">Apply to the school</h3>
 
-      {/* Form Component */}
-      <div className="grid grid-cols-2 gap-2">
-        <Input
-          name={"Name"}
-          placeholder="Enter your name"
-          setValue={SetName}
-          type="text"
-          value={name}
+        {/* Form Component */}
+        {/* <div className="grid grid-cols-2 gap-2">
+          <VInput
+            name="name"
+            label="Name"
+            placeholder="Enter your name"
+            error={errors.name?.message}
+            register={register}
+          />
+          <VSelect
+            label="Gender"
+            name="gender"
+            options={["Male", "Female"]}
+            error={errors.gender?.message}
+            register={register}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <VInput
+            name="email"
+            label="Email"
+            placeholder="Enter your email"
+            error={errors.email?.message}
+            register={register}
+          />
+          <VInput
+            name="phone"
+            label="Phone"
+            placeholder="Enter your Phone"
+            error={errors.phone?.message}
+            register={register}
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+          <VInput
+            name="guardianName"
+            label="Gurdian Name"
+            placeholder="Enter your Gurdian Name"
+            error={errors.guardianName?.message}
+            register={register}
+          />
+          <VInput
+            name="guardianPhone"
+            label="Gurdian Phone"
+            placeholder="Enter your Gurdian Phone"
+            error={errors.guardianPhone?.message}
+            register={register}
+          />
+        </div>
+        <VSelect
+          label="Department"
+          name="department"
+          options={["Computer Science ", "Software Engineering"]}
+          error={errors.department?.message}
+          register={register}
         />
-
-        <Select name="Gender" options={["", "Male", "Female"]} setValue={SetGender} />
+        <VTextarea
+          label="About You"
+          name="aboutYou"
+          placeholder="Enter description about you"
+          error={errors.aboutYou?.message}
+          register={register}
+        /> */}
+        {/* <Controller
+          name="academicRecord"
+          control={control}
+          defaultValue={null}
+          render={({ filed }) => (
+            <input
+              {...filed}
+              type="file"
+              onChange={(e) => {
+                filed.onChange({ target: { value: e.target.files[0], name: field.name } }) // Manually update the value
+              }}
+            />
+          )}
+        /> */}
+        {/* <Controller
+          control={control}
+          name={"academicRecord"}
+          render={({ field: { value, onChange, ...field } }) => {
+            return (
+              <Input
+                {...field}
+                value={value?.fileName}
+                onChange={(event) => {
+                  onChange(event.target.files[0])
+                }}
+                type="file"
+                id="academicRecord"
+              />
+            )
+          }}
+        /> */}
+        {errors.academicRecord?.message && <p>{errors.academicRecord.message}</p>}
+        <input
+          name="academicRecord"
+          id="academicRecord"
+          type="file"
+          {...register("academicRecord", { required: true })}
+        />
+        {/* <VFileInput
+          label="Acadamic Record"
+          name="academicRecord"
+          error={errors.academicRecord?.message}
+          register={register}
+        /> */}
+        {/* <input type="file" name="academicRecord" {...register("academicRecord")} /> */}
+        {/* Form Action */}
+        <div className="flex justify-center">
+          <Button type="submit">Register</Button>
+        </div>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <Input
-          name={"Email"}
-          placeholder="Enter your email"
-          setValue={SetEmail}
-          type="text"
-          value={email}
-        />
-        <Input
-          name={"Phone"}
-          placeholder="Enter your phone"
-          setValue={SetPhone}
-          type="text"
-          value={phone}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-2">
-        <Input
-          name={"Gurdian Name"}
-          placeholder="Enter your gurdian name"
-          setValue={SetGuardianName}
-          type="text"
-          value={guardianName}
-        />
-        <Input
-          name={"Gurdian Phone"}
-          placeholder="Enter your gurdian phone"
-          setValue={SetGuardianPhone}
-          type="text"
-          value={guardianPhone}
-        />
-      </div>
-      <Input
-        name={"Department"}
-        placeholder="Enter your department"
-        setValue={SetDepartment}
-        type="text"
-        value={department}
-      />
-      <Textarea
-        name={"About you"}
-        placeholder="Enter description about you"
-        SetValue={SetAboutYou}
-        value={aboutYou}
-      />
-      <FileInput
-        name="Acadamic Record"
-        SetValue={SetAcademicRecord}
-        helperText="Upload your acadamic recored "
-      />
-      {/* Form Action */}
-      <div className="flex justify-center">
-        <Button type="submit" onClick={handleRegister}>
-          Register
-        </Button>
-      </div>
-    </div>
+    </form>
   )
 }

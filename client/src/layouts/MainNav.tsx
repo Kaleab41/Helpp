@@ -1,4 +1,4 @@
-import { Button, Navbar } from "flowbite-react"
+import { Navbar } from "flowbite-react"
 import { Navigate, Outlet } from "react-router"
 import User from "../components/navbar/User"
 import NavItems from "../components/navbar/NavItems"

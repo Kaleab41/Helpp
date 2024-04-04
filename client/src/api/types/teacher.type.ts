@@ -27,6 +27,16 @@ export interface IRegistrationTeacher {
     qualifications: File | null;
     certifications: File | null;
 }
+export const ZRegistrationTeacherSchema = z.object({
+        name: z.string().min(1, 'Name is required'),
+        gender: z.enum(['Male', 'Female']),
+        email: z.string().email('Invalid email address'),
+        phone: z.string().regex(/^\d{10}$/, 'Phone number must be 10 digits'),
+        interviewDate: z.date().nullable(),
+        curriculumVitae: z.instanceof(File).nullable(),
+        qualifications: z.instanceof(File).nullable(),
+        certifications: z.instanceof(File).nullable(),
+   });
 
 export interface ISignupTeacher {
     email: string;
