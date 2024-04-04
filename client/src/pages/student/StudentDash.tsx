@@ -20,24 +20,24 @@ import { toast } from "react-toastify"
 export default function StudentDash() {
   const { student } = useStudentAuth()
 
-
   const {
     data: gradeHistory,
     isLoading: gettingGradeHistory,
     isSuccess: gotGradeHistory,
     error: gradesError,
-  } = useGetGradeHistoryQuery(student?.id || "")
+  } = useGetGradeHistoryQuery(student?.id as any)
   const {
     data: notifications,
     isLoading: gettingNotiications,
     isSuccess: gotNotifications,
-  } = useGetNotificationsQuery(student?.batch || "")
+  } = useGetNotificationsQuery(student?.id || "")
   const {
     data: courses,
     isLoading: gettingCourses,
     isSuccess: gotCourses,
   } = useFetchCoursesQuery(student?.batch || "")
   // Get the batch from the student's session also
+
 
   const coursesFiltered = courses?.filter((data) => data.status)
   const notificationsArray = notifications
@@ -47,8 +47,8 @@ export default function StudentDash() {
   // make the WI1830 Id dynamic by fetching it for the current user within the session instead of feeding it to the query manually like I did up here.
   // use QO1203 for requesting change of grades ( it's the only one that retrieves grade history with the instructor's id included. )
 
-  const [createRequest, {}] = useChangeGradeRequestMutation()
-  const [generateTranscript, {}] = useGenerateTranscriptMutation()
+  const [createRequest, { }] = useChangeGradeRequestMutation()
+  const [generateTranscript, { }] = useGenerateTranscriptMutation()
   const [triggerModal, setTriggerModal] = useState<boolean>(false)
   const [studentGrade, setStudentGrade] = useState<IStudentGrade | null>(null)
 
@@ -122,7 +122,7 @@ export default function StudentDash() {
               tableTitle="Current courses"
               tableData={filteredCourseData}
               buttonLabel=""
-              ButtonClicked={() => {}}
+              ButtonClicked={() => { }}
             />
           )}
         </div>

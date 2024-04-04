@@ -100,6 +100,19 @@ const uploadpayment = multer({
   limits: { fileSize: 5 * 1024 * 1024 }, // Limit file size to 5MB
 });
 
+router.patch("/changePassword", async (req, res) => {
+  try {
+    const id = req.body.id;
+    const password = getHashedPassword(req.body.password);
+    const response = await studentModel.findOneAndUpdate({ id }, { password });
+    return res.status(200).json({ response: response });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "could not change password" });
+
+  }
+})
+
 // Handle POST request to register a new student with file upload for academic record
 router.post("/register", upload.single("academicRecord"), (req, res) => {
   // Check if the provided email already exists

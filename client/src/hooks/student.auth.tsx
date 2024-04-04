@@ -6,7 +6,7 @@ export function useStudentAuth() {
     const [student, setUser] = useState<IStudent | null>(null);
 
     useEffect(() => {
-        const savedUser = localStorage.getItem('student');
+        const savedUser = localStorage.getItem('user');
         setUser(savedUser && JSON.parse(savedUser));
     }, []);
 
@@ -15,7 +15,7 @@ export function useStudentAuth() {
         setUser(loggedInUser);
     };
     const logoutUser = () => {
-        localStorage.removeItem('student');
+        localStorage.removeItem('user');
         setUser(null);
     };
 

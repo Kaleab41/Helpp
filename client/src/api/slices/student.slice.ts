@@ -71,7 +71,7 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
         }),
         generateTranscript: builder.mutation<void, { id: string }>({
             query: ({ id }) => `student/generatetranscript?id=${id}`,
-         }),
+        }),
 
         // TODO: 
         // Why are there two changeGradeRequests? Was one supposed to be grade history?
@@ -82,7 +82,7 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
-        
+
 
         getNotifications: builder.query<Record<string, INotificationStudent[]>, string>({
             query: (studentId) => `student/getnotification?id=${studentId}`,
@@ -108,10 +108,17 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             query: (studentId) => `/student/courses?id=${studentId}`,
             providesTags: ['courses']
         }),
+        changePassword: builder.mutation<IStudent, { id: string, password: string }>({
+            query: ({ id, password }: { id: string, password: string }) => ({
+                url: '/student/changePassword',
+                method: 'PATCH',
+                body: { id, password },
+            }),
+        })
     })
 })
 
-export const { 
+export const {
     useCreateStudentMutation,
     useSignupStudentMutation,
     useSigninStudentMutation,
@@ -124,4 +131,5 @@ export const {
     useGetGradeHistoryQuery,
     useGetNotificationsQuery,
     useGetMaterialsQuery,
+    useChangePasswordMutation,
 } = studentApiSlice
