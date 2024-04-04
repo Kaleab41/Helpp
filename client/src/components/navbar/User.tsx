@@ -1,39 +1,30 @@
-import { Avatar, Dropdown, Navbar } from "flowbite-react"
-import { useStudentAuth } from "../../hooks/student.auth"
-import { useTeacherAuth } from "../../hooks/teacher.auth";
+import { Dropdown, Navbar } from "flowbite-react"
+import { useUserAuth } from "../../hooks/user.auth"
 
 export default function NavItems() {
+  const { logoutUser } = useUserAuth()
+  let user = localStorage.getItem("user")
+  if (user) user = JSON.parse(user)
+  else user = null
 
-  const { student } = useStudentAuth();
-  const { teacher } = useTeacherAuth();
-
+  if (!user) return <></>
   return (
     <div className="flex md:order-2">
-
-      {(student || teacher) && 
       <Dropdown
         arrowIcon={false}
         inline
         label={
-          <Avatar
-            alt="User settings"
-            img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-            rounded
-          />
+          <button className="bg-teal-600 text-white px-4 py-2 rounded-full">{user.name[1]}</button>
         }
       >
-        
         <Dropdown.Header>
-          <span className="block text-sm">{ student ? student.name : teacher?.name }</span>
-          <span className="block truncate text-sm font-medium">{ student ? student.email : teacher?.email }</span>
+          <p>{user.name}</p>
         </Dropdown.Header>
-        <Dropdown.Item>Dashboard</Dropdown.Item>
-        <Dropdown.Item>Settings</Dropdown.Item>
-        <Dropdown.Item>Earnings</Dropdown.Item>
-        <Dropdown.Divider />
-        <Dropdown.Item>Sign out</Dropdown.Item>
+        <Dropdown.Item>Change Password</Dropdown.Item>
+        <Dropdown.Item onClick={logoutUser} className="hover:bg-red-100">
+          Sign out
+        </Dropdown.Item>
       </Dropdown>
-      }
       <Navbar.Toggle />
     </div>
   )

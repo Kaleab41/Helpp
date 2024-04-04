@@ -7,9 +7,11 @@ import { useSigninTeacherMutation } from "../../api/slices/teacher.slice.ts"
 import { useSigninAdminMutation } from "../../api/slices/admin.slice.ts"
 import { useTeacherAuth } from "../../hooks/teacher.auth.tsx"
 import { useStudentAuth } from "../../hooks/student.auth.tsx"
+import { useUserAuth } from "../../hooks/user.auth.tsx"
 import { ISignInTeacher, ZSigninTeacherSchema } from "../../api/types/teacher.type.ts"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { useNavigate } from "react-router"
 
 type SinginProp = {
   openSigninModal: boolean
@@ -17,8 +19,8 @@ type SinginProp = {
 }
 
 export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) {
-
   const [role, SetRole] = useState<string>("Student")
+  const navigate = useNavigate()
 
   const resolver =
     role === "Student" ? zodResolver(ZSigninStudentSchema) : zodResolver(ZSigninTeacherSchema)
@@ -27,21 +29,14 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
+    reset,
   } = useForm({ mode: "onChange", resolver: resolver })
 
   const [studentSignin, {}] = useSigninStudentMutation()
   const [teacherSignin, {}] = useSigninTeacherMutation()
   const [adminSignin, {}] = useSigninAdminMutation()
 
-  const { saveLoggedInUser: saveLoggedInTeacher } = useTeacherAuth()
-  const { saveLoggedInUser: saveLoggedInStudent } = useStudentAuth()
-
-  function onCloseModal() {
-    SetSigninModal(false)
-    SetRole("Student") //default role
-    SetId("")
-    SetPassword("")
-  }
+  const { saveLoggedInUser } = useUserAuth()
 
   const onSubmit = async (data: ISignInStudent | ISignInTeacher) => {
     try {
@@ -49,24 +44,31 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
         case "Student": {
           const response = await studentSignin({ ...data }).unwrap()
           if (response) {
-            saveLoggedInStudent(response)
-            onCloseModal()
+            const LoggedInUser = {
+              id: response.id,
+              role: "student",
+              name: response.name,
+              email: response.email,
+              batch: response.batch,
+            }
+            saveLoggedInUser(LoggedInUser)
+            SetSigninModal(false)
+            reset()
+            navigate("/", { replace: true })
           }
           break
         }
         case "Teacher": {
           const response = await teacherSignin({ email: data.id, password: data.password }).unwrap()
           if (response) {
-            saveLoggedInTeacher(response)
-            nav("/teacher")
-            onCloseModal()
+            // Nothing yet;
           }
           break
         }
         case "Admin": {
           const response = await adminSignin({ email: data.id, password: data.password }).unwrap()
           if (response) {
-            onCloseModal()
+            // Nothing yet;
           }
           break
         }
@@ -80,7 +82,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
   }
   return (
     <>
-      <Modal show={openSigninModal} size="xl" onClose={onCloseModal} popup dismissible>
+      <Modal show={openSigninModal} size="xl" onClose={SetSigninModal} popup dismissible>
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)}>
