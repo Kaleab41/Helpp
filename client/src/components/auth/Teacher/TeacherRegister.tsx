@@ -3,6 +3,7 @@ import { Button } from "flowbite-react"
 import { IRegistrationTeacher } from "../../../api/types/teacher.type"
 import { useCreateTeacherMutation } from "../../../api/slices/teacher.slice"
 import { Input, FileInput, Select, DateInput } from "../../form/index"
+import { toast } from "react-toastify"
 
 const TeacherRegister = () => {
   const EmptyInputs = () => {
@@ -40,11 +41,12 @@ const TeacherRegister = () => {
         certifications,
       }).unwrap()
       if (response) {
+        toast.success("Registration Successful")
         EmptyInputs()
       }
     } catch (error) {
-      const _error = (error as any).error
-      console.log({ _error })
+      toast.success((error as any).error)
+
     }
   }
   return (

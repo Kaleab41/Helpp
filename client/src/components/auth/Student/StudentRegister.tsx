@@ -48,11 +48,11 @@ export default function StudentRegister() {
       if (response) {
         onCloseModal()
         toast.success("Registration Successful")
-        dispatch(register(response))
-        console.log(student, "STUDENT");
+
+        // dispatch(register(response))
+        // console.log(student, "STUDENT");
       }
     } catch (error) {
-      const _error = (error as any).error
       toast.success((error as any).error)
     }
 
