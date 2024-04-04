@@ -58,9 +58,7 @@ function App() {
     <main className="h-screen w-[80%] mx-auto mt-5">
       <ToastContainer />
       <Routes>
-        <Route element={<LandingNav />}>
-          <Route index element={<LandingPage />}></Route>
-        </Route>
+        <Route element={<LandingNav />} />
         <Route element={<MainNav />}>
           <Route path="/admin" element={<AdminDash />} />
           <Route path="/admin/courses" element={<CourseList />} />

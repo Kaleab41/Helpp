@@ -6,6 +6,8 @@ import { Button, Navbar } from "flowbite-react"
 import Signup from "../components/auth/Signup"
 import Signin from "../components/auth/Signin"
 import Register from "../components/auth/Register"
+import { LandingPage } from "../pages"
+
 
 export default function LandingNav() {
   const [openRegisterModal, SetRegisterModal] = useState(false)
@@ -25,7 +27,7 @@ export default function LandingNav() {
         <Button.Group outline>
           <Button color="gray" onClick={() => SetRegisterModal(true)}>
             <Icon icon="solar:pen-new-round-line-duotone" className="text-lg mr-2" />
-            Register
+            Apply
           </Button>
           <Button color="gray" onClick={() => SetSignupModal(true)}>
             <Icon icon="solar:user-plus-rounded-line-duotone" className="text-lg mr-2" />
@@ -37,7 +39,7 @@ export default function LandingNav() {
           </Button>
         </Button.Group>
       </Navbar>
-      <Outlet />
+      <LandingPage SetRegistrationModal={SetRegisterModal} />
     </>
   )
 }
