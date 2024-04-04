@@ -1,11 +1,14 @@
-export default function LandingPage() {
+type LandingProp = {
+  SetRegistrationModal: (value: boolean) => void
+}
+export default function LandingPage({ SetRegistrationModal }: LandingProp) {
   return (
     <div>
       {" "}
       <section style={heroStyle}>
         <h2 style={heroHeading}>HiLPortal</h2>
         <p style={heroSubheading}>An Acadamic Portal for the HiLCoE community</p>
-        <button style={heroButton}> Apply</button>
+        <button className="rounded-lg font-bold" onClick={() => SetRegistrationModal(true)} style={heroButton}> Apply</button>
       </section>
       {/* Features Section */}
       <section style={featuresStyle}>

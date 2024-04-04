@@ -1,5 +1,5 @@
 import { Button, Modal } from "flowbite-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ISignInStudent, ZSigninStudentSchema } from "../../api/types/student.type.ts"
 import { RoleMenu, VInput } from "../form/index.tsx"
 import { useSigninStudentMutation } from "../../api/slices/student.slice.ts"
@@ -11,6 +11,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
 import { toast } from "react-toastify"
+import { Icon } from "@iconify/react/dist/iconify.js"
+import LoadingButton from "../shared/LoadingButton.tsx"
 
 type SinginProp = {
   openSigninModal: boolean
@@ -31,9 +33,14 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
     reset,
   } = useForm({ mode: "onChange", resolver: resolver })
 
-  const [studentSignin, {}] = useSigninStudentMutation()
-  const [teacherSignin, {}] = useSigninTeacherMutation()
-  const [adminSignin, {}] = useSigninAdminMutation()
+  // function to clearout form when chaning roles
+  useEffect(() => {
+    reset()
+  }, [role])
+
+  const [studentSignin, { }] = useSigninStudentMutation()
+  const [teacherSignin, { }] = useSigninTeacherMutation()
+  const [adminSignin, { }] = useSigninAdminMutation()
 
   const { saveLoggedInUser } = useUserAuth()
   const SetLoggedInUser = (response: any) => {
@@ -104,7 +111,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
               {/* Form Component */}
               <VInput
                 name="id"
-                label={role === "Student" ? "ID" : "Email"}
+                label={role === "student" ? "ID" : "Email"}
                 placeholder={`Enter your ${role === "Student" ? "Id" : "Email"}`}
                 error={errors.id?.message}
                 register={register}
@@ -117,10 +124,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
                 error={errors.password?.message}
                 register={register}
               />
-              {/* Form Action */}
-              <div className="flex justify-center">
-                {isSubmitting ? <p>Loading</p> : <Button type="submit">Sign in</Button>}
-              </div>
+              <LoadingButton type="submit" label="Sign In" loading={isSubmitting} />
             </div>
             <RoleMenu
               value={role}
@@ -130,7 +134,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
             />
           </form>
         </Modal.Body>
-      </Modal>
+      </Modal >
     </>
   )
 }

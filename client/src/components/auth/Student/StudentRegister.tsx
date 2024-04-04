@@ -14,6 +14,7 @@ import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ZRegistrationTeacherSchema } from "../../../api/types/teacher.type.ts"
 import { toast } from "react-toastify"
+import LoadingButton from "../../shared/LoadingButton.tsx"
 
 const registrationStudentSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -126,9 +127,7 @@ export default function StudentRegister() {
           register={register}
         />
         <FileInput name="Academic Record" value={academicRecord} SetValue={SetAcademicRecord} helperText="Upload your academic record record" />
-        <div className="flex justify-center">
-          <Button type="submit">Register</Button>
-        </div>
+        <LoadingButton type="submit" label="Register" loading={isSubmitting} />
       </div>
     </form>
   )

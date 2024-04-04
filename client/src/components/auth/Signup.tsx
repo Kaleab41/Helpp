@@ -1,5 +1,5 @@
 import { Button, Modal } from "flowbite-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ISignupStudent, ZSignupStudentSchema } from "../../api/types/student.type.ts"
 import { VInput, RoleMenu } from "../form/index.tsx"
 import { useSignupStudentMutation } from "../../api/slices/student.slice.ts"
@@ -12,6 +12,7 @@ import {
   ISignupTeacher,
   ZSignupTeacherSchema,
 } from "../../api/types/teacher.type.ts"
+import LoadingButton from "../shared/LoadingButton.tsx"
 
 type SinginProp = {
   openSignupModal: boolean
@@ -19,18 +20,24 @@ type SinginProp = {
 }
 
 export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) {
-  const [role, SetRole] = useState<string>("Student")
+  const [role, SetRole] = useState<string>("student")
 
   const resolver =
-    role === "Student" ? zodResolver(ZSignupStudentSchema) : zodResolver(ZSignupTeacherSchema)
+    role === "student" ? zodResolver(ZSignupStudentSchema) : zodResolver(ZSignupTeacherSchema)
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
+    reset
   } = useForm({
     mode: "onChange",
     resolver: resolver,
   })
+
+  // function to clearout form when chaning roles
+  useEffect(() => {
+    reset()
+  }, [role])
 
   const [studentSignup, { }] = useSignupStudentMutation()
   const [teacherSignup, { }] = useSignupTeacherMutation()
@@ -46,7 +53,7 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
   const onSubmit = async (data: ISignupStudent | ISignupTeacher) => {
     try {
       switch (role) {
-        case "Student": {
+        case "student": {
           const response = await studentSignup({ ...data }).unwrap()
           if (response) {
             onCloseModal()
@@ -55,15 +62,8 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
 
           break
         }
-        case "Teacher": {
+        case "teacher": {
           const response = await teacherSignup({ email: data.id, password: data.password }).unwrap()
-          if (response) {
-            onCloseModal()
-          }
-          break
-        }
-        case "Admin": {
-          const response = await adminSignup({ email: data.id, password: data.password }).unwrap()
           if (response) {
             onCloseModal()
           }
@@ -91,8 +91,8 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
               {/* Form Component */}
               <VInput
                 name="id"
-                label={role === "Student" ? "ID" : "Email"}
-                placeholder={`Enter your ${role === "Student" ? "Id" : "Email"}`}
+                label={role === "student" ? "ID" : "Email"}
+                placeholder={`Enter your ${role === "student" ? "Id" : "Email"}`}
                 error={errors.id?.message}
                 register={register}
               />
@@ -104,16 +104,13 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
                 error={errors.password?.message}
                 register={register}
               />
-              {/* Form Action */}
-              <div className="flex justify-center">
-                <Button type="submit">Sign up</Button>
-              </div>
+              <LoadingButton type="submit" label="Sign In" loading={isSubmitting} />
             </div>
             <RoleMenu
               value={role}
               SetValue={SetRole}
               name="RegistrationRole"
-              options={["Student", "Teacher", "Admin"]}
+              options={["student", "teacher"]}
             />
           </form>
         </Modal.Body>
