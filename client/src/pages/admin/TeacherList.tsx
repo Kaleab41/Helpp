@@ -5,6 +5,7 @@ import { Button, Spinner } from "flowbite-react";
 import ModalForm from "../../components/modals/ModalForm";
 import { ReadOnly } from "../../components/form";
 import { ITeacher } from "../../api/types/teacher.type";
+import Empty from "../Empty";
 
 const TeacherList = () => {
 
@@ -31,10 +32,10 @@ const TeacherList = () => {
 
             // Do not question the ugliness above, it is 2:00 AM and my brain is running on coffee and the love of my parents
             // Basically we're sorting through the original array which resides here then we check the filteredData (returned from the DashboardTable component) and by utilizing the searchBy keyword we look for the entry in the filtered list that matches the one in the original,
-            // We do this because the only the original Array has access to all the other data that we excluded when rendering the array on the table.
+            // We do this because only the original Array has access to all the other data that we excluded when rendering the array on the table.
             // I have a kind of solution, that I will try for refactoring later.
             // This should do for now.
-         // When the data is searched through, the list becomes shorter but the indexes aren't updated, so in the original 
+         // When the data is searched through, the list becomes shorter but the indexes aren't updated
     }
 2
         
@@ -47,6 +48,11 @@ const TeacherList = () => {
                     <span>Loading...</span>
                 </div>
             }
+
+            {!teachers &&
+                <Empty />
+            }
+            
             {gotTeachers &&
             
             <>
