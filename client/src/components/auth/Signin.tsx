@@ -10,6 +10,7 @@ import { ISignInTeacher, ZSigninTeacherSchema } from "../../api/types/teacher.ty
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router"
+import { toast } from "react-toastify"
 
 type SinginProp = {
   openSigninModal: boolean
@@ -77,13 +78,22 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
           break
       }
     } catch (error) {
+      toast.error(error.data.error)
+      console.error(error)
       const _error = (error as any).data.error
-      console.error({ _error })
     }
   }
   return (
     <>
-      <Modal show={openSigninModal} size="xl" onClose={SetSigninModal} popup dismissible>
+      <Modal
+        show={openSigninModal}
+        size="xl"
+        onClose={() => {
+          reset(), SetSigninModal(false)
+        }}
+        popup
+        dismissible
+      >
         <Modal.Header />
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)}>
