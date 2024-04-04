@@ -4,18 +4,16 @@ import { useState } from "react"
 import { useCreateStudentMutation } from "../../../api/slices/student.slice.ts"
 import {
   Input,
-  Select,
   FileInput,
-  Textarea,
   VInput,
   VSelect,
   VTextarea,
-  VFileInput,
 } from "../../form/index.tsx"
 import { z } from "zod"
 import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { ZRegistrationTeacherSchema } from "../../../api/types/teacher.type.ts"
+import { toast } from "react-toastify"
 
 const registrationStudentSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -30,62 +28,42 @@ const registrationStudentSchema = z.object({
 })
 
 export default function StudentRegister() {
-  const [name, SetName] = useState<IRegistrationStudent["name"]>("")
-  const [gender, SetGender] = useState<IRegistrationStudent["gender"]>("")
-  const [email, SetEmail] = useState<IRegistrationStudent["email"]>("")
-  const [phone, SetPhone] = useState<IRegistrationStudent["phone"]>("")
-  const [guardianName, SetGuardianName] = useState<IRegistrationStudent["guardianName"]>("")
-  const [guardianPhone, SetGuardianPhone] = useState<IRegistrationStudent["guardianPhone"]>("")
-  const [aboutYou, SetAboutYou] = useState<IRegistrationStudent["aboutYou"]>("")
-  const [department, SetDepartment] = useState<IRegistrationStudent["department"]>("")
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
 
-  const [create, {}] = useCreateStudentMutation()
-  const handleRegister = async () => {
+  const {
+    register,
+    formState: { errors, isSubmitting },
+    handleSubmit,
+    reset,
+  } = useForm({ mode: "onChange", resolver: zodResolver(ZRegistrationStudentSchema) })
+  const [create, { }] = useCreateStudentMutation()
+
+  const onSubmit = async (data: IRegistrationStudent) => {
     try {
       const response = await create({
-        name,
-        gender,
-        email,
-        phone,
-        guardianName,
-        guardianPhone,
-        aboutYou,
-        department,
+        ...data,
         academicRecord,
       }).unwrap()
       if (response) {
         onCloseModal()
-        dispatch(register(response))
-        console.log(student, "STUDENT")
+        // Kolo or mame, what are we doing by the next line
+        // dispatch(register(response))
+        toast.success("Student Registered Successfully")
+
       }
     } catch (error) {
-      toast.success((error as any).error)
+      toast.error(error.data.error)
     }
-  }
-  const onSubmit = async (data: IRegistrationStudent) => {
-    console.log(data)
   }
 
   function onCloseModal() {
-    SetName("")
-    SetGender("")
-    SetEmail("")
-    SetPhone("")
-    SetGuardianName("")
-    SetGuardianPhone("")
-    SetAboutYou("")
-    SetDepartment("")
     SetAcademicRecord(null)
   }
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="space-y-6">
-        {/* Form Title */}
         <h3 className="text-xl font-medium text-gray-900 dark:text-white">Apply to the school</h3>
-
-        {/* Form Component */}
-        {/* <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           <VInput
             name="name"
             label="Name"
@@ -146,53 +124,8 @@ export default function StudentRegister() {
           placeholder="Enter description about you"
           error={errors.aboutYou?.message}
           register={register}
-        /> */}
-        {/* <Controller
-          name="academicRecord"
-          control={control}
-          defaultValue={null}
-          render={({ filed }) => (
-            <input
-              {...filed}
-              type="file"
-              onChange={(e) => {
-                filed.onChange({ target: { value: e.target.files[0], name: field.name } }) // Manually update the value
-              }}
-            />
-          )}
-        /> */}
-        {/* <Controller
-          control={control}
-          name={"academicRecord"}
-          render={({ field: { value, onChange, ...field } }) => {
-            return (
-              <Input
-                {...field}
-                value={value?.fileName}
-                onChange={(event) => {
-                  onChange(event.target.files[0])
-                }}
-                type="file"
-                id="academicRecord"
-              />
-            )
-          }}
-        /> */}
-        {errors.academicRecord?.message && <p>{errors.academicRecord.message}</p>}
-        <input
-          name="academicRecord"
-          id="academicRecord"
-          type="file"
-          {...register("academicRecord", { required: true })}
         />
-        {/* <VFileInput
-          label="Acadamic Record"
-          name="academicRecord"
-          error={errors.academicRecord?.message}
-          register={register}
-        /> */}
-        {/* <input type="file" name="academicRecord" {...register("academicRecord")} /> */}
-        {/* Form Action */}
+        <FileInput name="Academic Record" value={academicRecord} SetValue={SetAcademicRecord} helperText="Upload your academic record record" />
         <div className="flex justify-center">
           <Button type="submit">Register</Button>
         </div>
