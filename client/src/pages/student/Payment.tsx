@@ -81,7 +81,7 @@ export default function Payment() {
       >
         <Input
           name="student ID"
-          value={student.id}
+          value={student?.id}
           disabled={true}
           setValue={setStudentId}
           type="text"

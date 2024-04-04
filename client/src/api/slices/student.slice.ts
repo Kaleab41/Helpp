@@ -69,8 +69,13 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
-        generateTranscript: builder.mutation<void, { id: string }>({
-            query: ({ id }) => `student/generatetranscript?id=${id}`,
+        generateTranscript: builder.query<Blob, { id: string }>({
+            query: ({ id }) => ({   
+                url: `student/generatetranscript?id=${id}`,
+                method: 'GET',
+                responseHandler: 'content-type: blob'
+            })
+            
         }),
 
         // TODO: 
@@ -125,7 +130,7 @@ export const {
     useUploadPaymentMutation,
     useChangeGradeRequestMutation,
     useGradeChangeRequestMutation,
-    useGenerateTranscriptMutation,
+    useGenerateTranscriptQuery,
     useGetPaymentHistoryQuery,
     useFetchCoursesQuery,
     useGetGradeHistoryQuery,

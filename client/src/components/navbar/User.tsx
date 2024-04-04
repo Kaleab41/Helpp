@@ -63,7 +63,7 @@ export default function NavItems() {
         arrowIcon={false}
         inline
         label={
-          <button className="bg-teal-600 text-white px-4 py-2 rounded-full">{user.name[0]}</button>
+          <button className="bg-teal-600 text-white px-4 py-2 rounded-full font-bold text-lg">{user.name[0]}</button>
         }
       >
         <Dropdown.Header>

@@ -2,7 +2,7 @@ import DashboardTable from "../../components/shared/dashboardTable/DashboardTabl
 import {
   useChangeGradeRequestMutation,
   useFetchCoursesQuery,
-  useGenerateTranscriptMutation,
+  useGenerateTranscriptQuery,
   useGetGradeHistoryQuery,
   useGetNotificationsQuery,
 } from "../../api/slices/student.slice"
@@ -19,6 +19,29 @@ import Empty from "../Empty"
 
 export default function StudentDash() {
   const { user: student } = useUserAuth()
+  const { data: transcript, isLoading: gettingTranscript, isSuccess: gotTranscript } = useGenerateTranscriptQuery({ id: student ? student.id : "" })
+
+  console.log(transcript);
+
+  const handleTranscript = () => {
+
+    try {
+      if (transcript) {
+        const blob = new Blob([transcript], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'transcript.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    } catch (error) {
+      console.error('Failed to download transcript:', error);
+    }
+  }
+
+  
 
   const {
     data: gradeHistory,
@@ -47,8 +70,11 @@ export default function StudentDash() {
   // make the WI1830 Id dynamic by fetching it for the current user within the session instead of feeding it to the query manually like I did up here.
   // use QO1203 for requesting change of grades ( it's the only one that retrieves grade history with the instructor's id included. )
 
-  const [createRequest, { }] = useChangeGradeRequestMutation()
-  const [generateTranscript, { }] = useGenerateTranscriptMutation()
+  const [createRequest, {}] = useChangeGradeRequestMutation()
+  // const response = useGenerateTranscriptQuery({ id: student ? student.id : "" });
+
+  // console.log(generateTranscript({ id: student?.id || ""}), "hello")
+
   const [triggerModal, setTriggerModal] = useState<boolean>(false)
   const [studentGrade, setStudentGrade] = useState<IStudentGrade | null>(null)
 
@@ -147,14 +173,16 @@ export default function StudentDash() {
           </div>
           <Card cardTitle="Generate Transcript">
             {/* TODO: Get student id from session and set it here */}
+
+            
             <Button
               outline
-              onClick={async () => {
-                const response = await generateTranscript({ id: student?.id })
-              }}
+              onClick={handleTranscript}
             >
               Generate Transcript
             </Button>
+
+
           </Card>
         </div>
       }
