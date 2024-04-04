@@ -28,7 +28,7 @@ export default function RoleMenu({ name, options, value, SetValue }: RoleMenuPro
             className="block text-center w-full cursor-pointer peer-checked:text-teal-600 border-b-2  peer-checked:border-green-800"
           >
             <div className="block">
-              <div className="w-full  text-lg font-semibold">{option}</div>
+              <div className="w-full  text-lg font-semibold">{`${option[0].toUpperCase()}${option.slice(1)}`}</div>
             </div>
           </label>
         </li>

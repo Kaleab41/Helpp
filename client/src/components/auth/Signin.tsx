@@ -106,7 +106,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6">
               {/* Form Title */}
-              <h3 className="text-xl font-medium text-gray-900 dark:text-white">{`${role} Sign In `}</h3>
+              <h3 className="text-xl font-medium text-gray-900 dark:text-white">{`${role[0].toUpperCase()}${role.slice(1)} Sign in `}</h3>
 
               {/* Form Component */}
               <VInput

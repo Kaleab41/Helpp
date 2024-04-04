@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Icon } from "@iconify/react"
-import { Outlet } from "react-router"
 import { Button, Navbar } from "flowbite-react"
 
 import Signup from "../components/auth/Signup"

@@ -10,7 +10,7 @@ export default function InfoCards({ cards }: InfoCardProp) {
       {Object.keys(cards).map((label: string) => (
         <div key={label} className="flex flex-col w-fit">
           <div className="w-fit mx-auto font-extrabold text-2xl text-teal-600">{cards[label]}</div>
-          <p className="text-gray-700">{label}</p>
+          <p className="text-gray-700 text-sm font-bold">{label.toUpperCase()}</p>
         </div>
       ))}
     </div>

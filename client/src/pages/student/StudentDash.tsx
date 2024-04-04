@@ -47,8 +47,8 @@ export default function StudentDash() {
   // make the WI1830 Id dynamic by fetching it for the current user within the session instead of feeding it to the query manually like I did up here.
   // use QO1203 for requesting change of grades ( it's the only one that retrieves grade history with the instructor's id included. )
 
-  const [createRequest, {}] = useChangeGradeRequestMutation()
-  const [generateTranscript, {}] = useGenerateTranscriptMutation()
+  const [createRequest, { }] = useChangeGradeRequestMutation()
+  const [generateTranscript, { }] = useGenerateTranscriptMutation()
   const [triggerModal, setTriggerModal] = useState<boolean>(false)
   const [studentGrade, setStudentGrade] = useState<IStudentGrade | null>(null)
 
@@ -129,7 +129,7 @@ export default function StudentDash() {
               tableTitle="Current courses"
               tableData={filteredCourseData}
               buttonLabel=""
-              ButtonClicked={() => {}}
+              ButtonClicked={() => { }}
             />
           )}
         </div>
@@ -150,7 +150,7 @@ export default function StudentDash() {
             <Button
               outline
               onClick={async () => {
-                const response = await generateTranscript({ id: student.id })
+                const response = await generateTranscript({ id: student?.id })
               }}
             >
               Generate Transcript
