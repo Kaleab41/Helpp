@@ -8,9 +8,10 @@ type InputProp = {
   value: string | number | undefined
   helperText: string
   setValue: (value: string | number | SetStateAction<any>) => void
+  disabled: boolean
 }
 
-export default function Input({ name, placeholder, type, value, helperText, setValue }: InputProp) {
+export default function Input({ name, placeholder, type, value, helperText, setValue, disabled = false }: InputProp) {
   return (
     <div>
       <div className="mb-2 w-full">
@@ -27,6 +28,7 @@ export default function Input({ name, placeholder, type, value, helperText, setV
             : setValue(event.target.value)
         }
         helperText={helperText}
+        disabled={disabled}
         required
       />
     </div>

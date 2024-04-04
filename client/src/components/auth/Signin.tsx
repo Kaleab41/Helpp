@@ -18,11 +18,11 @@ type SinginProp = {
 }
 
 export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) {
-  const [role, SetRole] = useState<string>("Student")
+  const [role, SetRole] = useState<string>("student")
   const navigate = useNavigate()
 
   const resolver =
-    role === "Student" ? zodResolver(ZSigninStudentSchema) : zodResolver(ZSigninTeacherSchema)
+    role === "student" ? zodResolver(ZSigninStudentSchema) : zodResolver(ZSigninTeacherSchema)
 
   const {
     register,
@@ -53,21 +53,21 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
   const onSubmit = async (data: ISignInStudent | ISignInTeacher) => {
     try {
       switch (role) {
-        case "Student": {
+        case "student": {
           const response = await studentSignin({ ...data }).unwrap()
           if (response) {
             SetLoggedInUser(response)
           }
           break
         }
-        case "Teacher": {
+        case "teacher": {
           const response = await teacherSignin({ email: data.id, password: data.password }).unwrap()
           if (response) {
             SetLoggedInUser(response)
           }
           break
         }
-        case "Admin": {
+        case "admin": {
           const response = await adminSignin({ email: data.id, password: data.password }).unwrap()
           if (response) {
             SetLoggedInUser(response)
@@ -119,14 +119,14 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
               />
               {/* Form Action */}
               <div className="flex justify-center">
-                <Button type="submit">Sign in</Button>
+                {isSubmitting ? <p>Loading</p> : <Button type="submit">Sign in</Button>}
               </div>
             </div>
             <RoleMenu
               value={role}
               SetValue={SetRole as any}
               name="RegistrationRole"
-              options={["Student", "Teacher", "Admin"]}
+              options={["student", "teacher", "admin"]}
             />
           </form>
         </Modal.Body>

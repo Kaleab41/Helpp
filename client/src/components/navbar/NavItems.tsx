@@ -4,7 +4,7 @@ import { useLocation } from "react-router"
 export default function NavItems() {
   const location = useLocation()
   switch (location.pathname.split("/")[1]) {
-    case "Admin":
+    case "admin":
       return (
         <Navbar.Collapse>
           <Navbar.Link href="/admin" {...(location.pathname == "/admin" ? { active: true } : {})}>
@@ -31,7 +31,7 @@ export default function NavItems() {
           </Navbar.Link>
         </Navbar.Collapse>
       )
-    case "Teacher":
+    case "teacher":
       return (
         <Navbar.Collapse>
           <Navbar.Link
@@ -48,7 +48,7 @@ export default function NavItems() {
           </Navbar.Link>
         </Navbar.Collapse>
       )
-    case "Student":
+    case "student":
       return (
         <Navbar.Collapse>
           <Navbar.Link
