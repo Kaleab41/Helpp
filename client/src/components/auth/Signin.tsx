@@ -5,9 +5,7 @@ import { RoleMenu, VInput } from "../form/index.tsx"
 import { useSigninStudentMutation } from "../../api/slices/student.slice.ts"
 import { useSigninTeacherMutation } from "../../api/slices/teacher.slice.ts"
 import { useSigninAdminMutation } from "../../api/slices/admin.slice.ts"
-import { useTeacherAuth } from "../../hooks/teacher.auth.tsx"
-import { useStudentAuth } from "../../hooks/student.auth.tsx"
-import { useUserAuth } from "../../hooks/user.auth.tsx"
+import { LoggedInUser, useUserAuth } from "../../hooks/user.auth.tsx"
 import { ISignInTeacher, ZSigninTeacherSchema } from "../../api/types/teacher.type.ts"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -37,6 +35,19 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
   const [adminSignin, {}] = useSigninAdminMutation()
 
   const { saveLoggedInUser } = useUserAuth()
+  const SetLoggedInUser = (response: any) => {
+    const LoggedInUser: LoggedInUser = {
+      id: response.id,
+      role: role,
+      name: response.name,
+      email: response.email,
+    }
+    if (response.batch) LoggedInUser.batch = response.batch
+    saveLoggedInUser(LoggedInUser)
+    SetSigninModal(false)
+    reset()
+    navigate(`/${role}`, { replace: true })
+  }
 
   const onSubmit = async (data: ISignInStudent | ISignInTeacher) => {
     try {
@@ -44,31 +55,21 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
         case "Student": {
           const response = await studentSignin({ ...data }).unwrap()
           if (response) {
-            const LoggedInUser = {
-              id: response.id,
-              role: "student",
-              name: response.name,
-              email: response.email,
-              batch: response.batch,
-            }
-            saveLoggedInUser(LoggedInUser)
-            SetSigninModal(false)
-            reset()
-            navigate("/", { replace: true })
+            SetLoggedInUser(response)
           }
           break
         }
         case "Teacher": {
           const response = await teacherSignin({ email: data.id, password: data.password }).unwrap()
           if (response) {
-            // Nothing yet;
+            SetLoggedInUser(response)
           }
           break
         }
         case "Admin": {
           const response = await adminSignin({ email: data.id, password: data.password }).unwrap()
           if (response) {
-            // Nothing yet;
+            SetLoggedInUser(response)
           }
           break
         }

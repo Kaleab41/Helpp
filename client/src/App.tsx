@@ -38,11 +38,11 @@ function App() {
     let user = localStorage.getItem("user")
     if (user) user = JSON.parse(user)
     else user = null
-    // if (!user) {
-    //   console.log(user)
-    //   // nvigate("/", { replace: true })
-    //   return
-    // }
+    if (!user) {
+      if (location.pathname == "/") return
+      navigate("/", { replace: true })
+      return
+    }
     if (location.pathname === "/") {
       if (user) navigate(`/${user.role}`, { replace: true })
       return

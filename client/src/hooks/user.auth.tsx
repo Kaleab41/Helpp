@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router"
-type LoggedInUser = {
+export type LoggedInUser = {
   id: string
   role: string
   name: string
