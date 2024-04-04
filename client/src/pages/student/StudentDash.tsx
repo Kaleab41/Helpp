@@ -1,3 +1,4 @@
+'use-strict'
 import DashboardTable from "../../components/shared/dashboardTable/DashboardTable"
 import {
   useChangeGradeRequestMutation,
@@ -15,43 +16,29 @@ import { Button, Spinner } from "flowbite-react"
 import { INotificationStudent } from "../../api/types/student.type"
 import { toast } from "react-toastify"
 import { useUserAuth } from "../../hooks/user.auth"
-import Empty from "../Empty"
 
 export default function StudentDash() {
   const { user: student } = useUserAuth()
   const { data: transcript, isLoading: gettingTranscript, isSuccess: gotTranscript } = useGenerateTranscriptQuery({ id: student ? student.id : "" })
 
-  console.log(transcript);
+  const handleTranscript = () => {
 
-  const handleTranscript = async () => {
     try {
-      // Fetch the transcript PDF from the server
-      const response = await fetch('URL_TO_FETCH_TRANSCRIPT', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/pdf', // Specify that the server sends a PDF
-        },
-      });
-  
-      // Check if the response is successful
-      if (!response.ok) {
-        throw new Error('Failed to fetch transcript PDF');
+      if (transcript) {
+        const fixedFilePath = transcript.url.startsWith('../') ? transcript.url.slice(3) : transcript.url;
+        const url = `localhost:8000/${fixedFilePath}`;
+        window.open(url);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'transcript.pdf';   
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-  
-      // Convert the response to a Blob
-      const blob = await response.blob();
-  
-      // Create a URL for the Blob
-      const url = URL.createObjectURL(blob);
-  
-      // Open the PDF in a new browser tab
-      window.open(url, '_blank');
     } catch (error) {
       console.error('Failed to fetch transcript PDF:', error);
     }
-  };
-  
-  
+  }
 
   
 
@@ -61,6 +48,8 @@ export default function StudentDash() {
     isSuccess: gotGradeHistory,
     error: gradesError,
   } = useGetGradeHistoryQuery(student?.id as any)
+
+  
   const {
     data: notifications,
     isLoading: gettingNotiications,
@@ -100,6 +89,7 @@ export default function StudentDash() {
     instructor: history.instructor,
     course: history.course,
     grade: history.grade,
+    attendance: history.attendance[0]?.status ? history.attendance[0].status : "NA"
   }))
 
   const handleClick = (index: number) => {
@@ -129,16 +119,12 @@ export default function StudentDash() {
             </div>
           )}
 
-          {(!gradeHistory || gradeHistory?.length === 0) && (
-            <div className="flex w-full justify-center p-20">
-              <Empty />
-            </div>
-          )}
+         
 
           {gotGradeHistory && (
             <>
               <DashboardTable
-                headers={["Instructor", "Course", "Grade"]}
+                headers={["Instructor", "Course", "Grade", "Attendance"]}
                 tableTitle="Grade history"
                 tableData={filteredTableData}
                 buttonLabel="Request Change"
@@ -161,7 +147,7 @@ export default function StudentDash() {
             </div>
           )}
 
-          {gotCourses && coursesFiltered.length > 0 && (
+          {gotCourses && (
             <DashboardTable
               headers={["course name", "course ID", "credit hour"]}
               tableTitle="Current courses"
@@ -170,6 +156,8 @@ export default function StudentDash() {
               ButtonClicked={() => { }}
             />
           )}
+
+          
         </div>
       }
       rightChildren={

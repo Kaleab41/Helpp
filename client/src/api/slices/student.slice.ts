@@ -69,13 +69,8 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
                 body,
             }),
         }),
-        generateTranscript: builder.query<Blob, { id: string }>({
-            query: ({ id }) => ({   
-                url: `student/generatetranscript?id=${id}`,
-                method: 'GET',
-                responseHandler: 'content-type: blob'
-            })
-            
+        generateTranscript: builder.query<Record<string, string>, { id: string }>({
+            query: ({ id }) => `student/generatetranscript?id=${id}`,
         }),
 
         // TODO: 

@@ -34,7 +34,7 @@ export interface IStudentGrade {
     total: number;
     file: string;
     batch: string;
-    attendance: string[]; // Array of strings (assuming attendance data is stored as strings)   
+    attendance: string; // Array of strings (assuming attendance data is stored as strings)   
 }
 
 export interface IGradeChangeRequest {

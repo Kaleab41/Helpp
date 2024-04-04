@@ -1,5 +1,6 @@
 import { Button, Table } from "flowbite-react"
 import { useEffect, useState } from "react"
+import Empty from "../../../pages/Empty"
 
 interface DashboardProps {
   tableTitle: string
@@ -42,9 +43,13 @@ const DashboardTable = ({
     )
   }, [searchTerm])
 
+
+
   let dataToRender
   if (searchBy && searchTerm !== "") dataToRender = filteredData
   else dataToRender = tableData
+
+
 
   return (
     <div className="w-full overflow-x-auto">
@@ -67,6 +72,11 @@ const DashboardTable = ({
             ))}
           </Table.Head>
           <Table.Body className="divide-y">
+            {(!dataToRender || dataToRender.length === 0) &&
+              <div className="flex w-full justify-center p-20 h-[600px]">
+                <Empty />
+              </div>
+            }
             {dataToRender.map((row: any, index: number) => (
               <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                 {Object.keys(row).map((key) => (

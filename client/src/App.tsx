@@ -1,6 +1,5 @@
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom"
 import {
-  LandingPage,
   AdminDash,
   TeacherDash,
   StudentDash,
@@ -17,7 +16,7 @@ import { ToastContainer } from "react-toastify"
 import Requests from "./pages/teacher/Requests"
 import { useEffect, useMemo } from "react"
 import TeacherList from "./pages/admin/TeacherList"
-import { useUserAuth } from "./hooks/user.auth"
+
 function App() {
   /* Route protection */
   // Temp variable
