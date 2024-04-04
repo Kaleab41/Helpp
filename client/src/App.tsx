@@ -20,7 +20,8 @@ import TeacherList from "./pages/admin/TeacherList"
 function App() {
   /* Route protection */
   // Temp variable
-  const user = undefined // user is always undefined... 
+  // const user = undefined // user is always undefined...
+  const user = { Id: "PD9209", role: "student" }
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -61,7 +62,7 @@ function App() {
           <Route path="/admin/courses" element={<CourseList />} />
           <Route path="/admin/students" element={<StudentList />} />
           <Route path="/admin/teachers" element={<TeacherList />} />
-  
+
           <Route path="/teacher" element={<TeacherDash />} />
           <Route path="/teacher/requests" element={<Requests />} />
 
