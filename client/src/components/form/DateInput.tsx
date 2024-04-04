@@ -10,7 +10,7 @@ const DateInput = ({ name, SetValue }: DateInputProps) => {
       <div className="mb-2 w-full">
         <Label htmlFor={name} value={name} />
       </div>
-      <Datepicker onSelectedDateChanged={(date) => SetValue(date)} />
+      <Datepicker min={new Date().toString()} onSelectedDateChanged={(date) => SetValue(date)} />
     </div>
   )
 }

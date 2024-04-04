@@ -8,7 +8,7 @@ type InputProp = {
   value: string | number | undefined
   helperText: string
   setValue: (value: string | number | SetStateAction<any>) => void
-  disabled: boolean
+  disabled?: boolean
 }
 
 export default function Input({ name, placeholder, type, value, helperText, setValue, disabled = false }: InputProp) {
