@@ -18,9 +18,7 @@ import { useUserAuth } from "../../hooks/user.auth"
 import Empty from "../Empty"
 
 export default function StudentDash() {
-
   const { user: student } = useUserAuth()
-
 
   const {
     data: gradeHistory,
@@ -40,9 +38,8 @@ export default function StudentDash() {
   } = useFetchCoursesQuery(student?.batch || "")
   // Get the batch from the student's session also
 
-
   const coursesFiltered = courses?.filter((data) => data.status)
-  
+
   const notificationsArray = notifications
     ? notifications["notifications" as any]
     : ([] as INotificationStudent[])
@@ -50,8 +47,8 @@ export default function StudentDash() {
   // make the WI1830 Id dynamic by fetching it for the current user within the session instead of feeding it to the query manually like I did up here.
   // use QO1203 for requesting change of grades ( it's the only one that retrieves grade history with the instructor's id included. )
 
-  const [createRequest, { }] = useChangeGradeRequestMutation()
-  const [generateTranscript, { }] = useGenerateTranscriptMutation()
+  const [createRequest, {}] = useChangeGradeRequestMutation()
+  const [generateTranscript, {}] = useGenerateTranscriptMutation()
   const [triggerModal, setTriggerModal] = useState<boolean>(false)
   const [studentGrade, setStudentGrade] = useState<IStudentGrade | null>(null)
 
@@ -94,11 +91,11 @@ export default function StudentDash() {
             </div>
           )}
 
-          {(!gradeHistory || gradeHistory?.length === 0)  &&
+          {(!gradeHistory || gradeHistory?.length === 0) && (
             <div className="flex w-full justify-center p-20">
               <Empty />
             </div>
-          }
+          )}
 
           {gotGradeHistory && (
             <>
@@ -132,7 +129,7 @@ export default function StudentDash() {
               tableTitle="Current courses"
               tableData={filteredCourseData}
               buttonLabel=""
-              ButtonClicked={() => { }}
+              ButtonClicked={() => {}}
             />
           )}
         </div>
@@ -153,7 +150,7 @@ export default function StudentDash() {
             <Button
               outline
               onClick={async () => {
-                const response = await generateTranscript({ id: "RS6223" })
+                const response = await generateTranscript({ id: student.id })
               }}
             >
               Generate Transcript
