@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useCreateStudentMutation } from "../../../api/slices/student.slice.ts"
 import { Input, Select, FileInput, Textarea } from "../../form/index.tsx"
 import { z } from "zod"
+import { toast } from "react-toastify"
 
 
 const registrationStudentSchema = z.object({
@@ -30,7 +31,7 @@ export default function StudentRegister() {
   const [academicRecord, SetAcademicRecord] = useState<IRegistrationStudent["academicRecord"]>(null)
 
 
-  const [create, {}] = useCreateStudentMutation()
+  const [create, { }] = useCreateStudentMutation()
   const handleRegister = async () => {
     try {
       const response = await create({
@@ -46,15 +47,16 @@ export default function StudentRegister() {
       }).unwrap()
       if (response) {
         onCloseModal()
+        toast.success("Registration Successful")
         dispatch(register(response))
         console.log(student, "STUDENT");
       }
     } catch (error) {
       const _error = (error as any).error
-      console.error({ _error })
+      toast.success((error as any).error)
     }
 
-    
+
   }
 
   function onCloseModal() {
