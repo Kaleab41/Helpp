@@ -284,6 +284,8 @@ router.post("/signup", async (req, res) => {
       return res
         .status(200)
         .json({ message: "Password assigned successfully" });
+    } else {
+      return res.status(400).json({ error: "Email already exists" });
     }
 
     // Hash the provided password
@@ -302,7 +304,7 @@ router.post("/signup", async (req, res) => {
     // const savedTeacher = await newTeacher.save();
 
     // console.log("New teacher created:", savedTeacher);
-    return res.status(201).json({ message: "Teacher created successfully" });
+    // return res.status(201).json({ message: "Teacher created successfully" });
   } catch (error) {
     console.error("Error saving teacher:", error);
     return res.status(500).json({ error: "Internal Server Error" });
