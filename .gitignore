@@ -14,3 +14,4 @@ client/yarn.lock
 .vscode/*
 !.vscode/extensions.json
 
+.env
