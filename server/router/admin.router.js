@@ -43,7 +43,6 @@ router.post("/verifypayment", (req, res) => {
       res.status(500).json({ error: "Internal server error" });
     });
 });
-
 router.post("/verifystudent", async (req, res) => {
   try {
     const studentId = req.body.id;
@@ -62,70 +61,93 @@ router.post("/verifystudent", async (req, res) => {
     // Update the student's verification status
     student.restricted = false;
     await student.save();
-
-    // Send congratulatory email with student's ID
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.email,
-        pass: process.env.pass,
-      },
-    });
-
-    const mailOptions = {
-      from: '"Hilcoe School of CS & Tech" <your_email@gmail.com>', // Sender address
-      to: student.email, // Student's email address
-      subject: "Congratulations on Your Acceptance to Hilcoe School!", // Email subject
-      text: `Dear ${student.name},\n\nCongratulations! We are pleased to inform you that you have been accepted to Hilcoe School of Computer Science & Technology. Your student ID is ${student.id}. To complete your registration, please proceed to the signup page using the following link:\n\nhttps://hilcoe-school.com/signup?id=${student.id}\n\nOnce signed up, you will be able to assign a password and access your dashboard.\n\nBest regards,\nHilcoe School Admissions Team`, // Plain text body
-      html: `
-        <p><img src="https://hilcoe.net/wp-content/uploads/2022/03/logo-hilcoe.jpg" alt="Sample School Logo" width="100"></p>
-        <h2>Congratulations ${student.name}!</h2>
-        <p>We are pleased to inform you that you have been accepted to Hilcoe School of Computer Science & Technology. Your student ID is <strong>${student.id}</strong>. Now got to the Signup page and set your password and access your dashboard. Welcome aboard!</p>
-        <p>Best regards,<br>Hilcoe School Admissions Team</p>
-      `, // HTML body
-    };
-
-    // Send email and schedule rejection email after 10 days
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Error sending email:", error);
-        return res.status(500).json({ error: "Internal server error" });
-      } else {
-        console.log("Email sent:", info.response);
-
-        // Schedule rejection email after 10 days
-        setTimeout(() => {
-          const rejectionMailOptions = {
-            from: '"Hilcoe School of CS & Tech" <your_email@gmail.com>', // Sender address
-            to: student.email, // Student's email address
-            subject: "Application Status Update", // Email subject
-            text: `Dear ${student.name},\n\nWe regret to inform you that your application to Hilcoe School of Computer Science & Technology has been rejected. We appreciate your interest and wish you the best in your future endeavors.\n\nBest regards,\nHilcoe School Admissions Team`, // Plain text body
-            html: `
-              <p><img src="https://hilcoe.net/wp-content/uploads/2022/03/logo-hilcoe.jpg" alt="Sample School Logo" width="100"></p>
-              <h2>Application Status Update</h2>
-              <p>We regret to inform you that your application to Hilcoe School of Computer Science & Technology has been rejected. We appreciate your interest and wish you the best in your future endeavors.</p>
-              <p>Best regards,<br>Hilcoe School Admissions Team</p>
-            `, // HTML body
-          };
-          transporter.sendMail(rejectionMailOptions, (error, info) => {
-            if (error) {
-              console.error("Error sending rejection email:", error);
-            } else {
-              console.log("Rejection email sent:", info.response);
-            }
-          });
-        }, 10 * 24 * 60 * 60 * 1000); // 10 days in milliseconds
-
-        return res.status(200).json({
-          message: "Student sign-up verified successfully and email sent",
-        });
-      }
-    });
   } catch (error) {
     console.error("Error verifying student:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+// router.post("/verifystudent", async (req, res) => {
+//   try {
+//     const studentId = req.body.id;
+
+//     // Find the student by ID
+//     const student = await studentModel.findOne({ id: studentId });
+//     if (!student) {
+//       return res.status(404).json({ error: "Student not found" });
+//     }
+
+//     // Check if the student is already verified
+//     if (!student.restricted) {
+//       return res.status(200).json({ message: "Student is already verified" });
+//     }
+
+//     // Update the student's verification status
+//     student.restricted = false;
+//     await student.save();
+
+//     // Send congratulatory email with student's ID
+//     const transporter = nodemailer.createTransport({
+//       service: "gmail",
+//       auth: {
+//         user: process.env.email,
+//         pass: process.env.pass,
+//       },
+//     });
+
+//     const mailOptions = {
+//       from: '"Hilcoe School of CS & Tech" <your_email@gmail.com>', // Sender address
+//       to: student.email, // Student's email address
+//       subject: "Congratulations on Your Acceptance to Hilcoe School!", // Email subject
+//       text: `Dear ${student.name},\n\nCongratulations! We are pleased to inform you that you have been accepted to Hilcoe School of Computer Science & Technology. Your student ID is ${student.id}. To complete your registration, please proceed to the signup page using the following link:\n\nhttps://hilcoe-school.com/signup?id=${student.id}\n\nOnce signed up, you will be able to assign a password and access your dashboard.\n\nBest regards,\nHilcoe School Admissions Team`, // Plain text body
+//       html: `
+//         <p><img src="https://hilcoe.net/wp-content/uploads/2022/03/logo-hilcoe.jpg" alt="Sample School Logo" width="100"></p>
+//         <h2>Congratulations ${student.name}!</h2>
+//         <p>We are pleased to inform you that you have been accepted to Hilcoe School of Computer Science & Technology. Your student ID is <strong>${student.id}</strong>. Now got to the Signup page and set your password and access your dashboard. Welcome aboard!</p>
+//         <p>Best regards,<br>Hilcoe School Admissions Team</p>
+//       `, // HTML body
+//     };
+
+//     // Send email and schedule rejection email after 10 days
+//     transporter.sendMail(mailOptions, (error, info) => {
+//       if (error) {
+//         console.error("Error sending email:", error);
+//         return res.status(500).json({ error: "Internal server error" });
+//       } else {
+//         console.log("Email sent:", info.response);
+
+//         // Schedule rejection email after 10 days
+//         setTimeout(() => {
+//           const rejectionMailOptions = {
+//             from: '"Hilcoe School of CS & Tech" <your_email@gmail.com>', // Sender address
+//             to: student.email, // Student's email address
+//             subject: "Application Status Update", // Email subject
+//             text: `Dear ${student.name},\n\nWe regret to inform you that your application to Hilcoe School of Computer Science & Technology has been rejected. We appreciate your interest and wish you the best in your future endeavors.\n\nBest regards,\nHilcoe School Admissions Team`, // Plain text body
+//             html: `
+//               <p><img src="https://hilcoe.net/wp-content/uploads/2022/03/logo-hilcoe.jpg" alt="Sample School Logo" width="100"></p>
+//               <h2>Application Status Update</h2>
+//               <p>We regret to inform you that your application to Hilcoe School of Computer Science & Technology has been rejected. We appreciate your interest and wish you the best in your future endeavors.</p>
+//               <p>Best regards,<br>Hilcoe School Admissions Team</p>
+//             `, // HTML body
+//           };
+//           transporter.sendMail(rejectionMailOptions, (error, info) => {
+//             if (error) {
+//               console.error("Error sending rejection email:", error);
+//             } else {
+//               console.log("Rejection email sent:", info.response);
+//             }
+//           });
+//         }, 10 * 24 * 60 * 60 * 1000); // 10 days in milliseconds
+
+//         return res.status(200).json({
+//           message: "Student sign-up verified successfully and email sent",
+//         });
+//       }
+//     });
+//   } catch (error) {
+//     console.error("Error verifying student:", error);
+//     return res.status(500).json({ error: "Internal server error" });
+//   }
+// });
 
 // Endpoint to retrieve all students with restricted value as true
 router.get("/restricted", (req, res) => {
@@ -366,15 +388,17 @@ router.post("/verifyteacher", async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     console.log(
-      `${!teacher.restricted ? "Acceptance" : "Rejection"
+      `${
+        !teacher.restricted ? "Acceptance" : "Rejection"
       } email sent to teacher:`,
       teacher.email
     );
 
     // Send response
     return res.status(200).json({
-      message: `Teacher ${!teacher.restricted ? "accepted" : "rejected"
-        } successfully`,
+      message: `Teacher ${
+        !teacher.restricted ? "accepted" : "rejected"
+      } successfully`,
     });
   } catch (error) {
     console.error("Error verifying teacher:", error);
@@ -800,7 +824,6 @@ router.post("/rejectPayment", async (req, res) => {
 
     // Delete the payment
     await paymentModel.deleteOne({ paymentId });
-
 
     return res.status(200).json({
       message: "Payment successfully rejected",
