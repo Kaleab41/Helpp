@@ -76,7 +76,7 @@ export default function NavItems() {
         reset()
         setOpenModal(false)
       }}>
-        <form onSubmit={handleSubmit(onSubmit)} onError={console.log(errors)}>
+        <form onSubmit={handleSubmit(onSubmit)} >
           <VInput label="Password" name="password" placeholder="Enter your password" type="password" error={errors.password?.message} register={register} />
           <VInput label="Confirm Password" name="confirmPassword" placeholder="Enter your password" type="password" error={errors.confirmPassword?.message || errors.confirmPassword?.confirmPassword?.message} register={register} />
           <LoadingButton className="mt-5" label={"Reset"} loading={isSubmitting} type={"submit"} />

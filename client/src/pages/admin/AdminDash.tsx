@@ -18,7 +18,7 @@ export default function AdminDash() {
   const { data, isSuccess } = useGetDashboardDataQuery()
   const { data: verifiedPayments } = useGetVerifiedPaymentsQuery()
   const { data: pendingPayments } = useGetPaymentsQuery()
-  const [ApprovePayment, { error: ApprovePaymentError }] = useVerifyPaymentMutation()
+  const [approvePayment, { error: ApprovePaymentError }] = useVerifyPaymentMutation()
   const [deletePayment] = useRejectPaymentMutation()
 
   const [hrefIndex, setHrefIndex] = useState(0)
@@ -34,7 +34,6 @@ export default function AdminDash() {
       verified: "Verified",
       studentName: payment.studentName,
     })) || []
-  console.log(VerifiedPaymenTableData)
   const PendingPaymenTableData =
     pendingPayments?.map((payment) => ({
       id: payment.id,
@@ -47,10 +46,24 @@ export default function AdminDash() {
       const response = await deletePayment({ paymentId }).unwrap()
       if (response) {
         toast.success(response.message)
+        SetOpenModal(false)
+      }
+    } catch (error: any) {
+      console.error(error)
+      toast.error(error.error)
+    }
+  }
+  const ApprovePayment = async (paymentId: string) => {
+    try {
+      const response = await approvePayment({ paymentId }).unwrap()
+      if (response) {
+        toast.success(response.message)
+        SetOpenModal(false)
       }
     } catch (error: any) {
       toast.error(error.error)
     }
+
   }
   return (
     <LeftRightPageLayout
@@ -80,21 +93,13 @@ export default function AdminDash() {
             />
             <div className="flex justify-around mt-5">
               <button
-                onClick={async () => {
-                  const response = await ApprovePayment({
-                    paymentId: pendingPayment!.paymentId,
-                  }).unwrap()
-                  if (response) {
-                    toast.success(response.message)
-                    SetOpenModal(false)
-                  } else if (ApprovePaymentError) toast.error("Payment approval failed.")
-                }}
+                onClick={() => ApprovePayment(pendingPayment!.paymentId)}
                 className="text-green-500 border-2 rounded-lg p-2 hover:border-green-500 "
               >
                 Approve
               </button>
               <button
-                onClick={() => RejectPayment(pendingPayment!.id)}
+                onClick={() => RejectPayment(pendingPayment!.paymentId)}
                 className="text-red-500 border-2 rounded-lg p-2 px-4 hover:border-red-500 "
               >
                 Reject
