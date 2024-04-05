@@ -35,7 +35,7 @@ export default function StudentDash() {
     try {
       if (transcript) {
         const fixedFilePath = transcript.url.startsWith('../') ? transcript.url.slice(3) : transcript.url;
-        const url = `localhost:8000${fixedFilePath.replace('..', "")}`;
+        const url = `localhost:8000/${fixedFilePath.replace('..', "")}`;
         // window.open(url);
         setTranscriptlink("http://" + url.replace(new RegExp(escapeRegExp("\\"), 'g'), "/"))
         // const link = document.createElement('a');
