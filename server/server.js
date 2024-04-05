@@ -24,7 +24,11 @@ db.once("open", () => {
   console.log("Connected to MongoDB database");
 });
 const helmet = require("helmet");
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Allow requests from this origin
+  })
+);
 app.use(helmet());
 
 app.use(bodyParses.urlencoded({ extended: true }));

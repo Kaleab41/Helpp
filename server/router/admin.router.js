@@ -777,19 +777,17 @@ router.post("/rejectPayment", async (req, res) => {
   try {
     const { paymentId } = req.body;
 
-    // Find the teacher by email
-    const payment = await paymentModel.findOne({ paymentId });
-    if (!payment) {
+    const deletePayment = await paymentModel.deleteOne(paymentId);
+
+    if (deletePayment.deletedCount === 0) {
       return res.status(404).json({ error: "Payment not found" });
     }
 
-    await teacherModel.paymentModel({ paymentId });
-
     return res.status(200).json({
-      message: "Payment successfully deleted",
+      message: "Deleted suffessfully",
     });
   } catch (error) {
-    console.error("Error rejecting teacher:", error);
+    console.error("Error rejecting payment:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
