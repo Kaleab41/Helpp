@@ -693,7 +693,7 @@ router.post("/generateAttendanceExcel", async (req, res) => {
 
   try {
     // Fetch students in the specified batch
-    const students = await studentModel.find({ batch });
+    const students = await studentModel.find({ batch, restricted: false });
 
     // Fetch attendance records for the specified batch
     const attendanceRecords = await studentModel.find({ batch });

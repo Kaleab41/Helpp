@@ -59,7 +59,7 @@ export default function StudentDash() {
     data: courses,
     isLoading: gettingCourses,
     isSuccess: gotCourses,
-  } = useFetchCoursesQuery(student?.batch || "")
+  } = useFetchCoursesQuery(student?.id || "")
   // Get the batch from the student's session also
 
   const coursesFiltered = courses?.filter((data) => data.status)
