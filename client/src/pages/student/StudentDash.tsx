@@ -59,8 +59,10 @@ export default function StudentDash() {
   const filteredCourseData = coursesFiltered?.map((course) => ({
     courseName: course?.courseName,
     courseid: course?.courseid,
-    credithour: course?.credithour,
+    credithour: course?.year,
   }))
+
+  // console.log(courses)
 
   const filteredTableData = gradeHistory?.map((history) => ({
     instructor: history.instructor,
