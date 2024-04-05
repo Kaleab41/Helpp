@@ -125,8 +125,7 @@ export default function AdminDash() {
           <a
             ref={downloadRecipt}
             hidden={true}
-            href={`http://localhost:8000/uploads/payments/${verifiedPayments ? verifiedPayments[hrefIndex].paymentReceipt : ""
-              }`}
+            href={`http://localhost:8000/uploads/payments/${verifiedPayments ? verifiedPayments[hrefIndex]?.paymentReceipt : ""}`}
           >
             download
           </a>
