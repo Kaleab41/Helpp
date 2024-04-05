@@ -27,6 +27,13 @@ const DashboardTable = ({
   SetSearchTerm,
 }: DashboardProps) => {
   const [filteredData, SetFilteredData] = useState<typeof tableData>(tableData)
+  //:TODO Test Logs
+
+  const TaggedTableData = tableData.map((row, index) => {
+    row['tag'] = index
+    return row
+  })
+
   useEffect(() => {
     if (!searchBy) return
     if (searchTerm === "") {
@@ -35,11 +42,7 @@ const DashboardTable = ({
     }
 
     SetFilteredData(
-      tableData.filter((row: typeof tableData) => row[searchBy] ? row[searchBy].toLowerCase().includes(searchTerm?.toLowerCase()) : "")
-      // Remove this and substitute for tableData.filter((row: typeof tableData) => row[searchBy].toLowerCase().includes(searchTerm?.toLowerCase()) )
-      // I used the above so that the program doesn't crash if any of the objects have undefined fields
-      // In the real app, I don't think we'll have undefined fields ( I hope )
-
+      TaggedTableData.filter((row: typeof tableData) => row[searchBy] ? row[searchBy].toLowerCase().includes(searchTerm?.toLowerCase()) : "")
     )
   }, [searchTerm])
 
@@ -47,7 +50,7 @@ const DashboardTable = ({
 
   let dataToRender
   if (searchBy && searchTerm !== "") dataToRender = filteredData
-  else dataToRender = tableData
+  else dataToRender = TaggedTableData
 
 
 
@@ -90,7 +93,7 @@ const DashboardTable = ({
                       outline
                       size={"sm"}
                       onClick={() => {
-                        ButtonClicked(index, filteredData, searchBy)
+                        ButtonClicked(row.tag, filteredData, searchBy)
                       }}
                     >
                       {buttonLabel}
