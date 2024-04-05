@@ -3,22 +3,22 @@ import { ITeacher } from "../api/types/teacher.type";
 
 export function useTeacherAuth() {
 
-    const [teacher, setUser] = useState<ITeacher | null>(null);
+  const [teacher, setUser] = useState<ITeacher | null>(null);
 
-    useEffect(() => {
-        const savedUser = localStorage.getItem('teacher');
-        setUser(savedUser && JSON.parse(savedUser));
-    }, []);
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    setUser(savedUser && JSON.parse(savedUser));
+  }, []);
 
-    const saveLoggedInUser = (loggedInUser: ITeacher) => {
-        localStorage.setItem('teacher', JSON.stringify(loggedInUser));
-        setUser(loggedInUser);
-    };
-    const logoutUser = () => {
-        localStorage.removeItem('teacher');
-        setUser(null);
-    };
+  const saveLoggedInUser = (loggedInUser: ITeacher) => {
+    localStorage.setItem('user', JSON.stringify(loggedInUser));
+    setUser(loggedInUser);
+  };
+  const logoutUser = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+  };
 
-    return { teacher, saveLoggedInUser, logoutUser };
+  return { teacher, saveLoggedInUser, logoutUser };
 };
 

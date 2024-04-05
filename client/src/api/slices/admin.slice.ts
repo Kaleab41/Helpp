@@ -48,6 +48,12 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
         body,
       }),
     }),
+    unblockStudent: builder.mutation<{ message: string }, { id: string }>({
+      query: (body) => ({
+        url: '/admin/unblockstudent',
+        body,
+      }),
+    }),
     verifyPayment: builder.mutation<{ message: string }, { paymentId: string }>({
       query: (body) => ({
         url: '/admin/verifypayment',
@@ -170,6 +176,7 @@ export const {
   useAssignCourseMutation,
   useVerifyTeacherMutation,
   useVerifyStudentMutation,
+  useUnblockStudentMutation,
   useVerifyPaymentMutation,
   useRestrictStudentMutation,
   useAddCourseMutation,
