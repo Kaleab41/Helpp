@@ -18,6 +18,7 @@ export interface IChangeGradeRequest {
     mid?: number;
     final?: number;
     assessment?: number;
+    attendance?: string;
     message: string;
 }
 

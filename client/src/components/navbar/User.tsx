@@ -6,7 +6,6 @@ import { useState } from "react"
 import { Input, VInput } from "../form"
 import { useChangePasswordMutation } from "../../api/slices/student.slice"
 import { toast } from "react-toastify"
-import { IStudent } from "../../api/types/student.type"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingButton from "../shared/LoadingButton";

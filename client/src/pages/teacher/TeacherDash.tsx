@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FileInput, Select, Textarea } from "../../components/form";
 import { useGetUniqueBatchesQuery } from "../../api/slices/admin.slice";
 import { useTeacherAuth } from "../../hooks/teacher.auth";
+import { toast } from "react-toastify";
 
 
 
@@ -27,27 +28,43 @@ export default function TeacherDash() {
   const { data: batches } = useGetUniqueBatchesQuery();
   const [selectedBatch, SetSelectedBatchForCourseAssignment] = useState("")
 
-  const handleUpload = (type: string) => {
+  const handleUpload = async (type: string) => {
     switch (type) {
       case "grades": {
         if (!grades) return;
-        uploadGrades(grades);
-        setGrades(null);
+        try {
+          const response = await uploadGrades(grades);
+          setGrades(null);
+          if (response) toast.success("Upload Successful")
+        } catch (error: any) {
+          toast.error(error?.data.error)
+        }
         break;
       }
       case "attendance": {
         if (!attendance) return;
-        uploadAttendance(attendance);
+        try {
+          const response = await uploadAttendance(attendance);
+          if (response) toast.success("Upload Successful")
+        } catch (error: any) {
+          toast.error(error?.data.error)
+        }
         break;
       }
       case "material": {
         if (!material) return;
-        uploadMaterial({
-          batch: selectedBatch,
-          file: material,
-          message: message,
-          sender: teacher?.name || "Kaleab Mesfin"
-        })
+        try {
+          const response = await
+            uploadMaterial({
+              batch: selectedBatch,
+              file: material,
+              message: message,
+              sender: teacher?.name || "Teacher"
+            })
+          if (response) toast.success("Upload Successful")
+        } catch (error: any) {
+          toast.error(error?.data.error)
+        }
       }
     }
   }

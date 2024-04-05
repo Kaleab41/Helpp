@@ -19,6 +19,7 @@ const RequestForm = ({ Open, onClose, student, ButtonClicked }: RequestForm) => 
     setMid(student?.mid ?? 0);
     setFinal(student?.final ?? 0);
     setAssessment(student?.assessment ?? 0);
+    setAttendance(student?.attendance[0]?.status ?? "");
     setGrade(student?.grade ?? "")
   }, [student])
 
@@ -31,6 +32,7 @@ const RequestForm = ({ Open, onClose, student, ButtonClicked }: RequestForm) => 
   const [final, setFinal] = useState<number>(student?.final ?? 0);
   const [assessment, setAssessment] = useState<number>(student?.assessment ?? 0);
   const [grade, setGrade] = useState<string>(student?.grade ?? "");
+  const [attendance, setAttendance] = useState<string>(student?.attendance[0]?.status ?? "");
   const [message, setMessage] = useState<string>("");
 
   const Close = () => {
@@ -45,6 +47,7 @@ const RequestForm = ({ Open, onClose, student, ButtonClicked }: RequestForm) => 
       <Input name="Final" type="number" value={final} setValue={setFinal as any} />
       <Input name="Assessment" type="number" value={assessment} setValue={setAssessment as any} />
       <Input name="Grade" type="text" value={grade} setValue={setGrade as any} />
+      <Input name="Attendance" type="number" value={attendance} setValue={setAttendance as any} />
       <Textarea name="Request message" placeholder="purpose of request..." value={message} SetValue={setMessage} />
 
       <Button className="mt-4 w-full" onClick={() => ButtonClicked({
@@ -54,6 +57,7 @@ const RequestForm = ({ Open, onClose, student, ButtonClicked }: RequestForm) => 
         mid: mid,
         final: final,
         assessment: assessment,
+        attendance: attendance,
         message: message
       })}>
         Send Request

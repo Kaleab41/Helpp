@@ -122,6 +122,7 @@ export default function AdminDash() {
               SetOpenModal(true)
             }}
           />
+
           <a
             ref={downloadRecipt}
             hidden={true}
@@ -129,6 +130,7 @@ export default function AdminDash() {
           >
             download
           </a>
+
           <DashboardTable
             tableTitle="Verfied Payments"
             headers={PaymentTableHead}

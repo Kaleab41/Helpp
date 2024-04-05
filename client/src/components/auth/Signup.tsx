@@ -56,8 +56,8 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
         case "student": {
           const response = await studentSignup({ ...data }).unwrap()
           if (response) {
+            toast.success("Signup Successful")
             onCloseModal()
-            history.push("/my-route")
           }
 
           break
@@ -65,6 +65,7 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
         case "teacher": {
           const response = await teacherSignup({ email: data.id, password: data.password }).unwrap()
           if (response) {
+            toast.success("Signup Successful")
             onCloseModal()
           }
           break
@@ -73,9 +74,8 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
           break
       }
     } catch (error) {
-      toast.error(error.data.error)
+      toast.error(error!.data.error)
       const _error = (error as any).data.error
-      console.error({ _error })
     }
   }
 
@@ -104,7 +104,7 @@ export default function Signup({ openSignupModal, SetSignupModal }: SinginProp) 
                 error={errors.password?.message}
                 register={register}
               />
-              <LoadingButton type="submit" label="Sign In" loading={isSubmitting} />
+              <LoadingButton type="submit" label="Sign Up" loading={isSubmitting} />
             </div>
             <RoleMenu
               value={role}
