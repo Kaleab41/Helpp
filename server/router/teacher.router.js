@@ -321,6 +321,33 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+const getHashedPassword = (password) => {
+  const sha256 = crypto.createHash("sha256");
+  const hash = sha256.update(password).digest("base64");
+  return hash;
+};
+
+
+router.patch("/changePassword", async (req, res) => {
+  try {
+    const email = req.body.email;
+    const hashedPassword = getHashedPassword(req.body.password);
+
+    // Update the password for the user
+    const result = await teacherModel.findOneAndUpdate(
+      { email: email },
+      { password: hashedPassword }
+    )
+
+    if (!result) throw new Error("User doesn't exist!");
+    return res.status(200).json({ message: "Password changed successfully" });
+
+  } catch (err) {
+    return res.status(400).json({ message: "Something went wrong" });
+
+  }
+
+})
 const courseModel = require("../model/course.model");
 router.get("/allocatedCourses", async (req, res) => {
   try {

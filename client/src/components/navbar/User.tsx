@@ -10,6 +10,8 @@ import { IStudent } from "../../api/types/student.type"
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import LoadingButton from "../shared/LoadingButton";
+import { useChangeTeacherPasswordMutation } from "../../api/slices/teacher.slice";
+import { useChangeAdminPasswordMutation } from "../../api/slices/admin.slice";
 
 export default function NavItems() {
   const { logoutUser } = useUserAuth()
@@ -19,6 +21,8 @@ export default function NavItems() {
 
   const [openModal, setOpenModal] = useState(false)
   const [updatePassword] = useChangePasswordMutation();
+  const [updateTeacherPassword] = useChangeTeacherPasswordMutation();
+  const [updateAdminPassword] = useChangeAdminPasswordMutation();
 
   const ZPasswordReset = z.object({
     password: z.string().min(8, 'Password must be at least 8 characters long').max(25, 'Password must not exceed 25 characters'),
@@ -38,18 +42,39 @@ export default function NavItems() {
   const onSubmit = async (data: IPassordReset) => {
     if (!user) return;
     //new password can be found in data.password
+    // thxs ❤️❤️
+    try {
+      switch ((user as any).role) {
+        case "student": {
+          let response = await updatePassword({ password: data.password, id: (user as any).id }).unwrap();
+          if (response) {
+            toast.success("Password updated successfully");
+            setOpenModal(false)
+          }
+          break;
+        }
 
-    // if ((user as any).role !== "Student") return;
-    // try {
-    //   const response = await updatePassword({ password: Password, id: (user as any).id }).unwrap();
-    //   if (response) {
-    //     toast.success("Password updated successfully");
-    //     setOpenModal(false)
-    //   }
-    // } catch (error: any) {
-    //   toast.error(error.error);
-    //
-    // }
+        case "teacher": {
+          let response = await updateTeacherPassword({ password: data.password, email: (user as any).email }).unwrap();
+          if (response) {
+            toast.success("Password updated successfully");
+            setOpenModal(false)
+          }
+          break;
+        }
+
+        case "admin":
+          let response = await updateAdminPassword({ password: data.password, email: (user as any).email }).unwrap();
+          if (response) {
+            toast.success("Password updated successfully");
+            setOpenModal(false)
+          }
+        default:
+          break;
+      }
+    } catch (error: any) {
+      toast.error(error.error);
+    }
   }
 
   if (!user) return <></>

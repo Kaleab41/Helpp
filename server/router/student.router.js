@@ -167,6 +167,27 @@ router.post("/register", upload.single("academicRecord"), (req, res) => {
     });
 });
 
+router.patch("/changePassword", async (req, res) => {
+  try {
+    const id = req.body.id;
+    const hashedPassword = getHashedPassword(req.body.password);
+
+    // Update the password for the user
+    const result = await studentModel.findOneAndUpdate(
+      { id: id },
+      { password: hashedPassword }
+    )
+
+    if (!result) throw new Error("User doesn't exist!");
+    return res.status(200).json({ message: "Password changed successfully" });
+
+  } catch (err) {
+    return res.status(400).json({ message: "Something went wrong" });
+
+  }
+
+})
+
 //TODO: Make sure to add frontend comparison of password and confirmation
 router.post("/signup", async (req, res) => {
   try {

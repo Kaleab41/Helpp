@@ -114,6 +114,14 @@ const teacherApiSlice = studentManagementApi.injectEndpoints({
         teacherId,
       }),
     }),
+
+    changeTeacherPassword: builder.mutation<{ message: string }, { email: string, password: string }>({
+      query: ({ email, password }: { email: string, password: string }) => ({
+        url: '/teacher/changePassword',
+        method: 'PATCH',
+        body: { email, password },
+      }),
+    })
   })
 })
 
@@ -128,4 +136,5 @@ export const {
   useSendNotificationMutation,
   useGetAllocatedCoursesQuery,
   useGetGradeChangeRequestsQuery,
+  useChangeTeacherPasswordMutation,
 } = teacherApiSlice

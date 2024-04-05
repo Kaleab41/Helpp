@@ -154,6 +154,13 @@ const adminApiSlice = studentManagementApi.injectEndpoints({
       }),
       invalidatesTags: ['courses']
     }),
+    changeAdminPassword: builder.mutation<{ message: string }, { email: string, password: string }>({
+      query: ({ email, password }: { email: string, password: string }) => ({
+        url: '/admin/changePassword',
+        method: 'PATCH',
+        body: { email, password },
+      }),
+    })
   })
 })
 
@@ -184,4 +191,5 @@ export const {
   useDeleteCourseMutation,
   useRejectPaymentMutation,
   useGetUnRestrictedStudentsInBatchQuery,
+  useChangeAdminPasswordMutation,
 } = adminApiSlice

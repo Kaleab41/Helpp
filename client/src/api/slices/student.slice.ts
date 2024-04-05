@@ -108,7 +108,7 @@ const studentApiSlice = studentManagementApi.injectEndpoints({
             query: (studentId) => `/student/courses?id=${studentId}`,
             providesTags: ['courses']
         }),
-        changePassword: builder.mutation<IStudent, { id: string, password: string }>({
+        changePassword: builder.mutation<{ message: string }, { id: string, password: string }>({
             query: ({ id, password }: { id: string, password: string }) => ({
                 url: '/student/changePassword',
                 method: 'PATCH',
