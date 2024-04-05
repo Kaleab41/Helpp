@@ -122,14 +122,18 @@ export default function AdminDash() {
               SetOpenModal(true)
             }}
           />
-          <a
-            ref={downloadRecipt}
-            hidden={true}
-            href={`http://localhost:8000/uploads/payments/${verifiedPayments ? verifiedPayments[hrefIndex].paymentReceipt : ""
-              }`}
-          >
-            download
-          </a>
+          {
+            verifiedPayments &&
+            verifiedPayments[hrefIndex] &&
+            <a
+              ref={downloadRecipt}
+              hidden={true}
+              href={`http://localhost:8000/uploads/payments/${verifiedPayments ? verifiedPayments[hrefIndex].paymentReceipt : ""
+                }`}
+            >
+              download
+            </a>
+          }
           <DashboardTable
             tableTitle="Verfied Payments"
             headers={PaymentTableHead}
