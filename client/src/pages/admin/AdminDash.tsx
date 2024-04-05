@@ -41,9 +41,9 @@ export default function AdminDash() {
       studentName: payment.studentName,
     })) || []
 
-  const RejectPayment = async (paymentId: string) => {
+  const RejectPayment = async (paymentId: string, studentId: string) => {
     try {
-      const response = await deletePayment({ paymentId }).unwrap()
+      const response = await deletePayment({ paymentId, studentId }).unwrap()
       if (response) {
         toast.success(response.message)
         SetOpenModal(false)
@@ -99,7 +99,7 @@ export default function AdminDash() {
                 Approve
               </button>
               <button
-                onClick={() => RejectPayment(pendingPayment!.paymentId)}
+                onClick={() => RejectPayment(pendingPayment!.paymentId, pendingPayment.id)}
                 className="text-red-500 border-2 rounded-lg p-2 px-4 hover:border-red-500 "
               >
                 Reject

@@ -47,7 +47,7 @@ export default function Payment() {
         toast.success("Payment Added Successful")
       }
     } catch (error: any) {
-      toast.errord(error.error)
+      toast.error(error.error)
     }
   }
   const paymentstest = [
