@@ -788,7 +788,11 @@ router.get("/generatetranscript", async (req, res) => {
           align: "center",
           lineBreak: false,
         });
-        doc.text(grade.creditHour || "", startX + cellWidth * 2, yPos + 15, {
+        const { year } = await courseModel
+          .findOne({ courseid: grade.course })
+          .select("year");
+
+        doc.text(year || "", startX + cellWidth * 2, yPos + 15, {
           width: cellWidth,
           align: "center",
           lineBreak: false,
