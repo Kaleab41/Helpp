@@ -18,29 +18,12 @@ export default function NavItems() {
   else user = null
 
   const [openModal, setOpenModal] = useState(false)
-  const [Password, setPassword] = useState("")
   const [updatePassword] = useChangePasswordMutation();
-  const handleChangePassword = async () => {
-    if (!user) return;
-    if ((user as any).role !== "Student") return;
-    try {
-      const response = await updatePassword({ password: Password, id: (user as any).id }).unwrap();
-      if (response) {
-        toast.success("Password updated successfully");
-        setOpenModal(false)
-      }
-    } catch (error: any) {
-      toast.error(error.error);
-
-    }
-  }
 
   const ZPasswordReset = z.object({
     password: z.string().min(8, 'Password must be at least 8 characters long').max(25, 'Password must not exceed 25 characters'),
-    confirmPassword: z.string().min(8, 'Password must be at least 8 characters long').max(25, 'Password must not exceed 25 characters').refine((value) => value !== ZPasswordReset.password, {
-      message: "Passwords must match", path: ['confirmPassword']
-    })
-  })
+    confirmPassword: z.string().min(8, 'Password must be at least 8 characters long').max(25, 'Password must not exceed 25 characters')
+  }).refine(data => data.password === data.confirmPassword, { message: "Passwords must match", path: ['confirmPassword'] })
   type IPassordReset = z.infer<typeof ZPasswordReset>
 
 
@@ -53,7 +36,20 @@ export default function NavItems() {
   } = useForm<IPassordReset>({ mode: "onChange", resolver: zodResolver(ZPasswordReset) })
 
   const onSubmit = async (data: IPassordReset) => {
-    console.log(data)
+    if (!user) return;
+    //new password can be found in data.password
+
+    // if ((user as any).role !== "Student") return;
+    // try {
+    //   const response = await updatePassword({ password: Password, id: (user as any).id }).unwrap();
+    //   if (response) {
+    //     toast.success("Password updated successfully");
+    //     setOpenModal(false)
+    //   }
+    // } catch (error: any) {
+    //   toast.error(error.error);
+    //
+    // }
   }
 
   if (!user) return <></>
@@ -77,6 +73,7 @@ export default function NavItems() {
       <Navbar.Toggle />
 
       <ModalForm title="Change Password" openModal={openModal} className="w-full" onCloseModal={() => {
+        reset()
         setOpenModal(false)
       }}>
         <form onSubmit={handleSubmit(onSubmit)} onError={console.log(errors)}>
