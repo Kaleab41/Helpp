@@ -431,10 +431,19 @@ router.post("/uploadattendance", upload.single("file"), async (req, res) => {
     }
 
     const fileName = req.file.originalname;
-    const fileNameParts = fileName.split("_");
-    const instructorName = fileNameParts[0].trim();
-    const courseCode = fileNameParts[1].trim();
-    const batch = fileNameParts[2].trim().split(".")[0];
+    const fileNameParts = fileName.split("-");
+    if (fileNameParts.length < 3) {
+      return res.status(400).json({ error: "Invalid filename format." });
+    }
+
+    const instructorName = fileNameParts[0]?.trim();
+    const courseCode = fileNameParts[1]?.trim();
+    const batch = fileNameParts[2]?.trim()?.split(".")[0];
+
+    // Check if any part of the filename is undefined or empty
+    if (!instructorName || !courseCode || !batch) {
+      return res.status(400).json({ error: "Invalid filename format." });
+    }
 
     // Load the attendance Excel file
     const workbook = xlsx.readFile(req.file.path);

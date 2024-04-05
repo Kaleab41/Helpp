@@ -526,140 +526,6 @@ router.get("/getnotification", (req, res) => {
 const fs = require("fs");
 const path = require("path");
 
-router.get("/generatetranscript", async (req, res) => {
-  try {
-    const { id } = req.query;
-
-    // Find the student by ID
-    const student = await studentModel.findOne({ id });
-
-    if (!student) {
-      return res.status(404).json({ error: "Student not found" });
-    }
-
-    // Find grades for the student
-    const studentGrades = await gradeModel.find({ id });
-
-    if (studentGrades.length === 0) {
-      return res.status(404).json({ error: "No grades found for the student" });
-    }
-
-    // Fetch course details for each grade
-    for (const grade of studentGrades) {
-      const course = await courseModel.findOne({ courseid: grade.course });
-      if (course) {
-        grade.courseName = course.courseName;
-        grade.creditHour = course.credithour;
-      }
-    }
-
-    // Create a new PDF document
-    const doc = new PDFDocument();
-
-    // Set response headers for PDF
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${id}_transcript.pdf"`
-    );
-
-    // Pipe PDF document to response
-    doc.pipe(res);
-
-    // Add fancy header
-    doc.fontSize(24).text("HiLCoE School of Computer Science and Technology", {
-      align: "center",
-    });
-    doc.moveDown(0.5);
-    doc
-      .fontSize(14)
-      .text("Location: 4 Kilo Addis Ababa, Ethiopia", { align: "center" });
-    doc.text("Phone: +251-115-51265", { align: "center" });
-    doc.text("Student Transcript", { align: "center" });
-    doc.moveDown(0.5);
-
-    // Add student information
-    doc.text(`Student ID: ${student.id}`, { align: "left" });
-    doc.text(`Student Name: ${student.name}`, { align: "left" });
-    doc.text(`Student Email: ${student.email}`, { align: "left" });
-    // Add any additional student information as needed
-
-    // Add transcript table to PDF
-    const tableWidth = 500;
-    const startX = (doc.page.width - tableWidth) / 2;
-    const startY = doc.y;
-    const cellWidth = tableWidth / 4;
-    const cellHeight = 30;
-
-    // Header row
-    doc
-      .rect(startX, startY, tableWidth, cellHeight)
-      .fillAndStroke("#666666", "#000000");
-    doc.fillColor("#FFFFFF").text("Course Code", startX, startY + 15, {
-      width: cellWidth,
-      align: "center",
-      lineBreak: false,
-    });
-    doc.text("Course Name", startX + cellWidth, startY + 15, {
-      width: cellWidth,
-      align: "center",
-      lineBreak: false,
-    });
-    doc.text("Credit Hour", startX + cellWidth * 2, startY + 15, {
-      width: cellWidth,
-      align: "center",
-      lineBreak: false,
-    });
-    doc.text("Grade", startX + cellWidth * 3, startY + 15, {
-      width: cellWidth,
-      align: "center",
-      lineBreak: false,
-    });
-
-    // Middle lines and data rows
-    for (let i = 0; i <= studentGrades.length; i++) {
-      const yPos = startY + (i + 1) * cellHeight;
-      doc
-        .moveTo(startX, yPos)
-        .lineTo(startX + tableWidth, yPos)
-        .stroke();
-
-      if (i < studentGrades.length) {
-        const grade = studentGrades[i];
-        doc.fillColor("#000000").text(grade.course, startX, yPos + 15, {
-          width: cellWidth,
-          align: "center",
-          lineBreak: false,
-        });
-        doc.text(grade.courseName || "", startX + cellWidth, yPos + 15, {
-          width: cellWidth,
-          align: "center",
-          lineBreak: false,
-        });
-        doc.text(grade.creditHour || "", startX + cellWidth * 2, yPos + 15, {
-          width: cellWidth,
-          align: "center",
-          lineBreak: false,
-        });
-        doc.text(grade.grade || "", startX + cellWidth * 3, yPos + 15, {
-          width: cellWidth,
-          align: "center",
-          lineBreak: false,
-        });
-      }
-    }
-
-    // Add signature section
-    doc.moveDown(2);
-    doc.text("Verified by:", { align: "center" });
-
-    // Finalize PDF
-    doc.end();
-  } catch (error) {
-    console.error("Error generating transcript:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
 // router.get("/generatetranscript", async (req, res) => {
 //   try {
 //     const { id } = req.query;
@@ -690,35 +556,169 @@ router.get("/generatetranscript", async (req, res) => {
 //     // Create a new PDF document
 //     const doc = new PDFDocument();
 
-//     // Set file path to save the PDF
-//     const filePath = path.join(
-//       __dirname,
-//       "../uploads/transcript",
-//       `${id}_transcript.pdf`
+//     // Set response headers for PDF
+//     res.setHeader("Content-Type", "application/pdf");
+//     res.setHeader(
+//       "Content-Disposition",
+//       `attachment; filename="${id}_transcript.pdf"`
 //     );
 
-//     // Pipe PDF document to file stream
-//     const fileStream = fs.createWriteStream(filePath);
-//     doc.pipe(fileStream);
+//     // Pipe PDF document to response
+//     doc.pipe(res);
 
-//     // Add content to the PDF document
+//     // Add fancy header
 //     doc.fontSize(24).text("HiLCoE School of Computer Science and Technology", {
 //       align: "center",
 //     });
-//     // Add more content here as needed...
+//     doc.moveDown(0.5);
+//     doc
+//       .fontSize(14)
+//       .text("Location: 4 Kilo Addis Ababa, Ethiopia", { align: "center" });
+//     doc.text("Phone: +251-115-51265", { align: "center" });
+//     doc.text("Student Transcript", { align: "center" });
+//     doc.moveDown(0.5);
+
+//     // Add student information
+//     doc.text(`Student ID: ${student.id}`, { align: "left" });
+//     doc.text(`Student Name: ${student.name}`, { align: "left" });
+//     doc.text(`Student Email: ${student.email}`, { align: "left" });
+//     // Add any additional student information as needed
+
+//     // Add transcript table to PDF
+//     const tableWidth = 500;
+//     const startX = (doc.page.width - tableWidth) / 2;
+//     const startY = doc.y;
+//     const cellWidth = tableWidth / 4;
+//     const cellHeight = 30;
+
+//     // Header row
+//     doc
+//       .rect(startX, startY, tableWidth, cellHeight)
+//       .fillAndStroke("#666666", "#000000");
+//     doc.fillColor("#FFFFFF").text("Course Code", startX, startY + 15, {
+//       width: cellWidth,
+//       align: "center",
+//       lineBreak: false,
+//     });
+//     doc.text("Course Name", startX + cellWidth, startY + 15, {
+//       width: cellWidth,
+//       align: "center",
+//       lineBreak: false,
+//     });
+//     doc.text("Credit Hour", startX + cellWidth * 2, startY + 15, {
+//       width: cellWidth,
+//       align: "center",
+//       lineBreak: false,
+//     });
+//     doc.text("Grade", startX + cellWidth * 3, startY + 15, {
+//       width: cellWidth,
+//       align: "center",
+//       lineBreak: false,
+//     });
+
+//     // Middle lines and data rows
+//     for (let i = 0; i <= studentGrades.length; i++) {
+//       const yPos = startY + (i + 1) * cellHeight;
+//       doc
+//         .moveTo(startX, yPos)
+//         .lineTo(startX + tableWidth, yPos)
+//         .stroke();
+
+//       if (i < studentGrades.length) {
+//         const grade = studentGrades[i];
+//         doc.fillColor("#000000").text(grade.course, startX, yPos + 15, {
+//           width: cellWidth,
+//           align: "center",
+//           lineBreak: false,
+//         });
+//         doc.text(grade.courseName || "", startX + cellWidth, yPos + 15, {
+//           width: cellWidth,
+//           align: "center",
+//           lineBreak: false,
+//         });
+//         doc.text(grade.creditHour || "", startX + cellWidth * 2, yPos + 15, {
+//           width: cellWidth,
+//           align: "center",
+//           lineBreak: false,
+//         });
+//         doc.text(grade.grade || "", startX + cellWidth * 3, yPos + 15, {
+//           width: cellWidth,
+//           align: "center",
+//           lineBreak: false,
+//         });
+//       }
+//     }
+
+//     // Add signature section
+//     doc.moveDown(2);
+//     doc.text("Verified by:", { align: "center" });
 
 //     // Finalize PDF
 //     doc.end();
-
-//     // Wait for PDF creation to complete
-//     fileStream.on("finish", () => {
-//       // Return relative URL of the saved PDF
-//       const relativeUrl = path.relative(__dirname, filePath);
-//       res.status(200).json({ url: relativeUrl });
-//     });
 //   } catch (error) {
 //     console.error("Error generating transcript:", error);
 //     res.status(500).json({ error: "Internal server error" });
 //   }
 // });
+router.get("/generatetranscript", async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    // Find the student by ID
+    const student = await studentModel.findOne({ id });
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    // Find grades for the student
+    const studentGrades = await gradeModel.find({ id });
+
+    if (studentGrades.length === 0) {
+      return res.status(404).json({ error: "No grades found for the student" });
+    }
+
+    // Fetch course details for each grade
+    for (const grade of studentGrades) {
+      const course = await courseModel.findOne({ courseid: grade.course });
+      if (course) {
+        grade.courseName = course.courseName;
+        grade.creditHour = course.credithour;
+      }
+    }
+
+    // Create a new PDF document
+    const doc = new PDFDocument();
+
+    // Set file path to save the PDF
+    const filePath = path.join(
+      __dirname,
+      "../uploads/transcript",
+      `${id}_transcript.pdf`
+    );
+
+    // Pipe PDF document to file stream
+    const fileStream = fs.createWriteStream(filePath);
+    doc.pipe(fileStream);
+
+    // Add content to the PDF document
+    doc.fontSize(24).text("HiLCoE School of Computer Science and Technology", {
+      align: "center",
+    });
+    // Add more content here as needed...
+
+    // Finalize PDF
+    doc.end();
+
+    // Wait for PDF creation to complete
+    fileStream.on("finish", () => {
+      // Return relative URL of the saved PDF
+      const relativeUrl = path.relative(__dirname, filePath);
+      res.status(200).json({ url: relativeUrl });
+    });
+  } catch (error) {
+    console.error("Error generating transcript:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 module.exports = router;
