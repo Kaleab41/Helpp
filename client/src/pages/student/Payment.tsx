@@ -110,7 +110,7 @@ export default function Payment() {
                   </span>
                 ) : (
                   <span className="bg-red-200 p-2 text-center font-bold uppercase rounded-lg w-fit">
-                    canceled
+                    pending
                   </span>
                 )}
               </div>
