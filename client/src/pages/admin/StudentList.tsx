@@ -12,8 +12,10 @@ import {
   useGetUnRestrictedStudentsInBatchQuery,
   useGetUniqueBatchesQuery,
   useRejectStudentMutation,
+  useRestrictStudentMutation,
   useVerifyStudentMutation,
 } from "../../api/slices/admin.slice"
+import { toast } from "react-toastify"
 
 export default function StudentList() {
   const [restrictedSearchTerm, SetRestrictedSearchTerm] = useState<string>("")
@@ -27,6 +29,7 @@ export default function StudentList() {
 
   const { data: restrictedStudents } = useGetRestrictedAccountsQuery()
   const [verifyStudent] = useVerifyStudentMutation()
+  const [restrictStudent] = useRestrictStudentMutation()
   const [rejectStudent] = useRejectStudentMutation()
   const [generateBatchExcel] = useGenerateBatchExcelMutation()
   const [generateAttendanceExcel] = useGenerateAttendanceExcelMutation()
@@ -59,8 +62,18 @@ export default function StudentList() {
     SetOpenModal(true)
   }
 
-  const DelteStudent = (email: string | undefined) => {
-    console.log({ email }, "DelteStudent")
+  const DelteStudent = async (id: string) => {
+    if (!id) return
+    const response = await rejectStudent({
+      id,
+    }).unwrap()
+    if (response) {
+      toast.success("Deleted Student")
+      SetOpenModal(false)
+    }
+    else {
+      toast.error("Student Deletion Failed, Please try again.")
+    }
   }
   const ActivateStudent = async (id: string | undefined) => {
     if (!id) return
@@ -68,14 +81,24 @@ export default function StudentList() {
       id,
     }).unwrap()
     if (response) {
+      toast.success("Activated Student")
+      SetOpenModal(false)
+    }
+    else {
+      toast.error("Student Activation Failed, Please try again.")
     }
   }
   const DeactivateStudent = async (id: string | undefined) => {
     if (!id) return
-    const response = await rejectStudent({
+    const response = await restrictStudent({
       id,
     }).unwrap()
     if (response) {
+      toast.success("Deactivated Student")
+      SetOpenModal(false)
+    }
+    else {
+      toast.error("Student Deactivation Failed, Please try again.")
     }
   }
   const GenerateAttendance = async () => {
@@ -98,6 +121,7 @@ export default function StudentList() {
   }
 
   return (
+
     <LeftRightPageLayout
       leftChildren={
         <>
@@ -129,24 +153,31 @@ export default function StudentList() {
               }
             />
             <div className="flex justify-around mt-5">
-              <button
-                onClick={() => ActivateStudent(student?.id)}
-                className="text-green-500 border-2 rounded-lg p-2 hover:border-green-500 "
-              >
-                Activate
-              </button>
-              <button
-                onClick={() => DeactivateStudent(student?.id)}
-                className="text-red-500 border-2 rounded-lg p-2 hover:border-red-500 "
-              >
-                Deactivate
-              </button>
-              {/* <button
-                onClick={() => DelteStudent(student?.id)}
-                className="text-red-500 border-red-500 border-2 rounded-lg p-2 hover:bg-red-100 "
-              >
-                Delete
-              </button> */}
+              {!student?.restricted &&
+                <button
+                  onClick={() => DeactivateStudent(student?.id)}
+                  className="text-red-500 border-2 rounded-lg p-2 hover:border-red-500 "
+                >
+                  Deactivate
+                </button>
+              }
+              {student?.restricted &&
+                <>
+                  <button
+                    onClick={() => ActivateStudent(student?.id)}
+                    className="text-green-500 border-2 rounded-lg p-2 hover:border-green-500 "
+                  >
+                    Activate
+                  </button>
+                  <button
+                    onClick={() => DelteStudent(student?.id)}
+                    className="text-red-500 border-red-500 border-2 rounded-lg p-2 hover:bg-red-100 "
+                  >
+                    Delete
+                  </button>
+                </>
+              }
+
             </div>
           </ModalForm>
           <DashboardTable

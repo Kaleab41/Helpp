@@ -366,17 +366,15 @@ router.post("/verifyteacher", async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     console.log(
-      `${
-        !teacher.restricted ? "Acceptance" : "Rejection"
+      `${!teacher.restricted ? "Acceptance" : "Rejection"
       } email sent to teacher:`,
       teacher.email
     );
 
     // Send response
     return res.status(200).json({
-      message: `Teacher ${
-        !teacher.restricted ? "accepted" : "rejected"
-      } successfully`,
+      message: `Teacher ${!teacher.restricted ? "accepted" : "rejected"
+        } successfully`,
     });
   } catch (error) {
     console.error("Error verifying teacher:", error);
@@ -795,7 +793,7 @@ router.post("/rejectstudent", async (req, res) => {
   try {
     const { id } = req.body;
 
-    // Find the teacher by email
+    // Find the student by id
     const student = await studentModel.findOne({ id });
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
@@ -824,10 +822,10 @@ router.post("/rejectstudent", async (req, res) => {
     };
 
     // Send rejection email
-    await transporter.sendMail(mailOptions);
+    transporter.sendMail(mailOptions);
 
-    // Delete the teacher document
-    await studentModel.deleteOne({ _id: student._id });
+    // Delete the student document
+    await studentModel.deleteOne({ id: student.id });
 
     return res.status(200).json({
       message:
