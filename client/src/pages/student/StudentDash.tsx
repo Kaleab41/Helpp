@@ -8,17 +8,18 @@ import {
   useGetNotificationsQuery,
 } from "../../api/slices/student.slice"
 import RequestForm from "../../components/modals/RequestForm"
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { IChangeGradeRequest, IStudentGrade } from "../../api/types/grade.types"
 import Notifications from "./Notifications"
 import { Card, LeftRightPageLayout } from "../../components/shared"
-import { Spinner } from "flowbite-react"
+import { Button, Spinner } from "flowbite-react"
 import { INotificationStudent } from "../../api/types/student.type"
 import { toast } from "react-toastify"
 import { useUserAuth } from "../../hooks/user.auth"
 
 export default function StudentDash() {
   const { user: student } = useUserAuth()
+  const DownloadTranscript = useRef(null)
   const {
     data: gradeHistory,
     isLoading: gettingGradeHistory,
@@ -31,6 +32,9 @@ export default function StudentDash() {
     isLoading: gettingNotiications,
     isSuccess: gotNotifications,
   } = useGetNotificationsQuery(student?.id || "")
+  const {
+    data: generateTranscript
+  } = useGenerateTranscriptQuery(student?.id || "")
   const {
     data: courses,
     isLoading: gettingCourses,
@@ -145,9 +149,16 @@ export default function StudentDash() {
             {gotNotifications && <Notifications notifications={notificationsArray} />}
           </div>
           <Card cardTitle="Generate Transcript">
-            <a className="border-2 px-4 py-1 rounded-md border-teal-600 hover:bg-teal-700 hover:text-white" href={`http://localhost:8000/uploads/transcript/${student?.id}_transcript.pdf`} target="_blank">
-              Generate Transcript
-            </a>
+            <Button onClick={async () => {
+              try {
+                const response = await generateTranscript[student.id]
+                DownloadTranscript!.current.click();
+                if (response) toast.success("Transcript Generated")
+              } catch (error) {
+                toast.error("Transcript Generation Failed")
+              }
+            }}>Generate Transcript</Button>
+            <a hidden ref={DownloadTranscript} className="border-2 px-4 py-1 rounded-md border-teal-600 hover:bg-teal-700 hover:text-white" href={`http://localhost:8000/uploads/transcript/${student?.id}_transcript.pdf`} target="_blank"></a>
           </Card>
         </div>
       }
