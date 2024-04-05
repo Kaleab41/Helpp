@@ -34,7 +34,7 @@ export default function StudentDash() {
   } = useGetNotificationsQuery(student?.id || "")
   const {
     data: generateTranscript
-  } = useGenerateTranscriptQuery(student?.id || "")
+  } = useGenerateTranscriptQuery({id: student?.id || ""})
   const {
     data: courses,
     isLoading: gettingCourses,
@@ -151,9 +151,8 @@ export default function StudentDash() {
           <Card cardTitle="Generate Transcript">
             <Button onClick={async () => {
               try {
-                const response = await generateTranscript[student.id]
                 DownloadTranscript!.current.click();
-                if (response) toast.success("Transcript Generated")
+                if (generateTranscript) toast.success("Transcript Generated")
               } catch (error) {
                 toast.error("Transcript Generation Failed")
               }
