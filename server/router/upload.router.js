@@ -54,5 +54,15 @@ router.get("/payments/:filename", (req, res) => {
   );
   res.sendFile(filePath);
 });
+router.get("/transcript/:filename", (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(
+    path.resolve(__dirname, ".."),
+    "uploads",
+    "transcript",
+    filename
+  );
+  res.sendFile(filePath);
+});
 
 module.exports = router;
