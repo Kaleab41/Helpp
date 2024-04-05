@@ -21,26 +21,36 @@ export default function StudentDash() {
   const { user: student } = useUserAuth()
   const { data: transcript, isLoading: gettingTranscript, isSuccess: gotTranscript } = useGenerateTranscriptQuery({ id: student ? student.id : "" })
 
+  const [transcriptlink, setTranscriptlink] = useState<string | null>(null);
   const handleTranscript = () => {
+
+    function escapeRegExp(string: string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+    }
+
+    function replaceAll(str: string, find: string, replace: string) {
+      return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+    }
 
     try {
       if (transcript) {
         const fixedFilePath = transcript.url.startsWith('../') ? transcript.url.slice(3) : transcript.url;
-        const url = `localhost:8000/${fixedFilePath}`;
-        window.open(url);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'transcript.pdf';   
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const url = `localhost:8000${fixedFilePath.replace('..', "")}`;
+        // window.open(url);
+        setTranscriptlink("http://" + url.replace(new RegExp(escapeRegExp("\\"), 'g'), "/"))
+        // const link = document.createElement('a');
+        // link.href = url;
+        // link.download = 'transcript.pdf';
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
       }
     } catch (error) {
       console.error('Failed to fetch transcript PDF:', error);
     }
   }
 
-  
+
 
   const {
     data: gradeHistory,
@@ -49,7 +59,7 @@ export default function StudentDash() {
     error: gradesError,
   } = useGetGradeHistoryQuery(student?.id as any)
 
-  
+
   const {
     data: notifications,
     isLoading: gettingNotiications,
@@ -71,7 +81,7 @@ export default function StudentDash() {
   // make the WI1830 Id dynamic by fetching it for the current user within the session instead of feeding it to the query manually like I did up here.
   // use QO1203 for requesting change of grades ( it's the only one that retrieves grade history with the instructor's id included. )
 
-  const [createRequest, {}] = useChangeGradeRequestMutation()
+  const [createRequest, { }] = useChangeGradeRequestMutation()
   // const response = useGenerateTranscriptQuery({ id: student ? student.id : "" });
 
   // console.log(generateTranscript({ id: student?.id || ""}), "hello")
@@ -119,7 +129,7 @@ export default function StudentDash() {
             </div>
           )}
 
-         
+
 
           {gotGradeHistory && (
             <>
@@ -157,7 +167,7 @@ export default function StudentDash() {
             />
           )}
 
-          
+
         </div>
       }
       rightChildren={
@@ -174,13 +184,17 @@ export default function StudentDash() {
           <Card cardTitle="Generate Transcript">
             {/* TODO: Get student id from session and set it here */}
 
-            
+
             <Button
               outline
               onClick={handleTranscript}
             >
               Generate Transcript
             </Button>
+
+            {transcriptlink ? <a href={transcriptlink} target={"_blank"} type={"application/octet-stream"} download={"Transcript"}>
+              Download
+            </a> : null}
 
 
           </Card>
