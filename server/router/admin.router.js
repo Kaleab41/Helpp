@@ -14,13 +14,11 @@ const teacherModel = require("../model/teacher.model");
 const nodemailer = require("nodemailer");
 const paymentModel = require("../model/payment.model");
 
-
 const getHashedPassword = (password) => {
   const sha256 = crypto.createHash("sha256");
   const hash = sha256.update(password).digest("base64");
   return hash;
 };
-
 
 router.patch("/changePassword", async (req, res) => {
   try {
@@ -31,17 +29,14 @@ router.patch("/changePassword", async (req, res) => {
     const result = await adminModel.findOneAndUpdate(
       { email: email },
       { password: hashedPassword }
-    )
+    );
 
     if (!result) throw new Error("User doesn't exist!");
     return res.status(200).json({ message: "Password changed successfully" });
-
   } catch (err) {
     return res.status(400).json({ message: "Something went wrong" });
-
   }
-
-})
+});
 
 router.post("/verifypayment", (req, res) => {
   const paymentId = req.body.paymentId;
@@ -446,15 +441,17 @@ router.post("/verifyteacher", async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     console.log(
-      `${!teacher.restricted ? "Acceptance" : "Rejection"
+      `${
+        !teacher.restricted ? "Acceptance" : "Rejection"
       } email sent to teacher:`,
       teacher.email
     );
 
     // Send response
     return res.status(200).json({
-      message: `Teacher ${!teacher.restricted ? "accepted" : "rejected"
-        } successfully`,
+      message: `Teacher ${
+        !teacher.restricted ? "accepted" : "rejected"
+      } successfully`,
     });
   } catch (error) {
     console.error("Error verifying teacher:", error);
@@ -974,7 +971,7 @@ router.get("/dashboard", async (req, res) => {
       restricted: false,
     });
     const teachers = await teacherModel.countDocuments({
-      restricted: true | false,
+      restricted: false,
     });
     const course = await courseModel.countDocuments();
     const uniqueBatches = await studentModel.distinct("batch");
