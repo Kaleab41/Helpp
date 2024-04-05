@@ -61,6 +61,7 @@ export const ZSignupStudentSchema = z.object({
 
 export interface INotificationStudent {
   sender: string,
+  tone?: string;
   message: string,
   time: Date,
   id: string

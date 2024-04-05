@@ -843,6 +843,7 @@ router.post("/rejectPayment", async (req, res) => {
     // Add a notification to the student's notifications array
     student.notifications.push({
       sender: "System",
+      tone: "Negative",
       message: "Your payment has been rejected",
       file: null, // You can add the file URL here if applicable
       time: new Date(),
