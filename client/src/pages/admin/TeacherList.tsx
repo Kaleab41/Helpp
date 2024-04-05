@@ -6,6 +6,7 @@ import ModalForm from "../../components/modals/ModalForm";
 import { ReadOnly } from "../../components/form";
 import { ITeacher } from "../../api/types/teacher.type";
 import Empty from "../Empty";
+import { toast } from "react-toastify";
 
 const TeacherList = () => {
 
@@ -39,7 +40,15 @@ const TeacherList = () => {
   }
   2
 
-
+  const DeleteTeacher = async (id: string) => {
+    try {
+      const response = await rejectTeacher({ id }).unwrap()
+      console.log(response)
+      if (response) toast.success("Teacher Deleted")
+    } catch (error) {
+      toast.error("Deletion Failed, Please try agian.")
+    }
+  }
   return (
     <div>
       {gettingTeachers &&
@@ -93,7 +102,9 @@ const TeacherList = () => {
                 </Button>
               :
 
-              <Button color={"failure"} onClick={() => rejectTeacher({ id: teacher?.id })}>Reject</Button>
+              <div className="flex justify-center">
+                <Button outline color={"failure"} onClick={() => DeleteTeacher(teacher!.id)}>Delete</Button>
+              </div>
             }
           </ModalForm>
         </>

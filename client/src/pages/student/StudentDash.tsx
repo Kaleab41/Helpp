@@ -12,51 +12,17 @@ import { useState } from "react"
 import { IChangeGradeRequest, IStudentGrade } from "../../api/types/grade.types"
 import Notifications from "./Notifications"
 import { Card, LeftRightPageLayout } from "../../components/shared"
-import { Button, Spinner } from "flowbite-react"
+import { Spinner } from "flowbite-react"
 import { INotificationStudent } from "../../api/types/student.type"
 import { toast } from "react-toastify"
 import { useUserAuth } from "../../hooks/user.auth"
 
 export default function StudentDash() {
   const { user: student } = useUserAuth()
-  const { data: transcript, isLoading: gettingTranscript, isSuccess: gotTranscript } = useGenerateTranscriptQuery({ id: student ? student.id : "" })
-
-  const [transcriptlink, setTranscriptlink] = useState<string | null>(null);
-  const handleTranscript = () => {
-
-    function escapeRegExp(string: string) {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-    }
-
-    function replaceAll(str: string, find: string, replace: string) {
-      return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
-    }
-
-    try {
-      if (transcript) {
-        const fixedFilePath = transcript.url.startsWith('../') ? transcript.url.slice(3) : transcript.url;
-        const url = `localhost:8000/${fixedFilePath.replace('..', "")}`;
-        // window.open(url);
-        setTranscriptlink("http://" + url.replace(new RegExp(escapeRegExp("\\"), 'g'), "/"))
-        // const link = document.createElement('a');
-        // link.href = url;
-        // link.download = 'transcript.pdf';
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
-      }
-    } catch (error) {
-      console.error('Failed to fetch transcript PDF:', error);
-    }
-  }
-
-
-
   const {
     data: gradeHistory,
     isLoading: gettingGradeHistory,
     isSuccess: gotGradeHistory,
-    error: gradesError,
   } = useGetGradeHistoryQuery(student?.id as any)
 
 
@@ -82,9 +48,6 @@ export default function StudentDash() {
   // use QO1203 for requesting change of grades ( it's the only one that retrieves grade history with the instructor's id included. )
 
   const [createRequest, { }] = useChangeGradeRequestMutation()
-  // const response = useGenerateTranscriptQuery({ id: student ? student.id : "" });
-
-  // console.log(generateTranscript({ id: student?.id || ""}), "hello")
 
   const [triggerModal, setTriggerModal] = useState<boolean>(false)
   const [studentGrade, setStudentGrade] = useState<IStudentGrade | null>(null)
@@ -182,21 +145,9 @@ export default function StudentDash() {
             {gotNotifications && <Notifications notifications={notificationsArray} />}
           </div>
           <Card cardTitle="Generate Transcript">
-            {/* TODO: Get student id from session and set it here */}
-
-
-            <Button
-              outline
-              onClick={handleTranscript}
-            >
+            <a className="border-2 px-4 py-1 rounded-md border-teal-600 hover:bg-teal-700 hover:text-white" href={`http://localhost:8000/uploads/transcript/${student?.id}_transcript.pdf`} target="_blank">
               Generate Transcript
-            </Button>
-
-            {transcriptlink ? <a href={transcriptlink} target={"_blank"} type={"application/octet-stream"} download={"Transcript"}>
-              Download
-            </a> : null}
-
-
+            </a>
           </Card>
         </div>
       }
