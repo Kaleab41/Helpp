@@ -28,10 +28,14 @@ const DashboardTable = ({
 }: DashboardProps) => {
   const [filteredData, SetFilteredData] = useState<typeof tableData>(tableData)
   //:TODO Test Logs
-
+  
   const TaggedTableData = tableData.map((row, index) => {
-    row['tag'] = index
-    return row
+    // console.log(row)
+    // row['tag'] = index // pretty amazing solution, me like very much! ❤️
+    return {
+      ...row,
+      tag: index
+    }
   })
 
   useEffect(() => {
@@ -84,7 +88,7 @@ const DashboardTable = ({
               <Table.Row key={index} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                 {Object.keys(row).map((key) => (
                   <Table.Cell key={key} className="odd:font-bold odd:text-sm text-black">
-                    {row[key]}
+                    {key === "tag" ? "" : row[key]}
                   </Table.Cell>
                 ))}
                 <Table.Cell>
