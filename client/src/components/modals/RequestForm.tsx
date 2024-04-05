@@ -24,7 +24,6 @@ const RequestForm = ({ Open, onClose, student, ButtonClicked }: RequestForm) => 
 
   const { student: _student } = useStudentAuth();
 
-  console.log(student, "student")
 
   const [studentId, setStudentId] = useState<string>(_student?.id || "");
   const [teacherId, setTeacherId] = useState<string>();

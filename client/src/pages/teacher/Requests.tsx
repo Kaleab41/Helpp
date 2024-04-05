@@ -7,6 +7,7 @@ import { IGrade } from "../../api/types/grade.types";
 import { Button, Spinner } from "flowbite-react";
 import { useTeacherAuth } from "../../hooks/teacher.auth";
 import LoadingButton from "../../components/shared/LoadingButton";
+import { toast } from "react-toastify";
 
 const Requests = () => {
 
@@ -21,9 +22,13 @@ const Requests = () => {
 
     const handleApprove = () => {
         approveGrade({
-            teacherId: teacher?.id || "TRAG8336",
+            teacherId: teacher?.id || "",
             requestId: request ? request.requestId : ""
         })
+
+        toast.success("Grades Approved Successfully!")
+        {gradeApproved && SetOpen(false)}
+        
     }
 
 

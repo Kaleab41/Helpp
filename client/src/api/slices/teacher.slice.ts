@@ -92,6 +92,7 @@ const teacherApiSlice = studentManagementApi.injectEndpoints({
         method: 'POST',
         body,
       }),
+      invalidatesTags: ['grade']
     }),
     sendNotification: builder.mutation<{ message: string }, ISendNotificationRequest>({
       query: (body) => ({
@@ -113,6 +114,7 @@ const teacherApiSlice = studentManagementApi.injectEndpoints({
         method: 'GET',
         teacherId,
       }),
+      providesTags: ['grade']
     }),
 
     changeTeacherPassword: builder.mutation<{ message: string }, { email: string, password: string }>({
