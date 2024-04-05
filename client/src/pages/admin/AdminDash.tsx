@@ -99,7 +99,7 @@ export default function AdminDash() {
                 Approve
               </button>
               <button
-                onClick={() => RejectPayment(pendingPayment!.paymentId, pendingPayment.id)}
+                onClick={() => RejectPayment(pendingPayment!.paymentId, pendingPayment!.id.trim())}
                 className="text-red-500 border-2 rounded-lg p-2 px-4 hover:border-red-500 "
               >
                 Reject

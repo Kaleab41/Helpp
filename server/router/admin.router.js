@@ -366,17 +366,15 @@ router.post("/verifyteacher", async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     console.log(
-      `${
-        !teacher.restricted ? "Acceptance" : "Rejection"
+      `${!teacher.restricted ? "Acceptance" : "Rejection"
       } email sent to teacher:`,
       teacher.email
     );
 
     // Send response
     return res.status(200).json({
-      message: `Teacher ${
-        !teacher.restricted ? "accepted" : "rejected"
-      } successfully`,
+      message: `Teacher ${!teacher.restricted ? "accepted" : "rejected"
+        } successfully`,
     });
   } catch (error) {
     console.error("Error verifying teacher:", error);
@@ -783,11 +781,8 @@ router.post("/rejectPayment", async (req, res) => {
       return res.status(404).json({ error: "Payment not found" });
     }
 
-    // Delete the payment
-    await paymentModel.deleteOne({ paymentId });
-
     // Find the student by studentId
-    const student = await studentModel.findOne({ studentId });
+    const student = await studentModel.findOne({ id: studentId });
     if (!student) {
       return res.status(404).json({ error: "Student not found" });
     }
@@ -802,6 +797,10 @@ router.post("/rejectPayment", async (req, res) => {
 
     // Save the updated student object
     await student.save();
+
+    // Delete the payment
+    await paymentModel.deleteOne({ paymentId });
+
 
     return res.status(200).json({
       message: "Payment successfully rejected",

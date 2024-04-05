@@ -109,7 +109,7 @@ export default function Payment() {
                     Verfied
                   </span>
                 ) : (
-                  <span className="bg-green-100 p-2 text-center font-bold uppercase rounded-lg w-fit">
+                  <span className="bg-red-200 p-2 text-center font-bold uppercase rounded-lg w-fit">
                     canceled
                   </span>
                 )}
