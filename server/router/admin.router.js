@@ -437,7 +437,9 @@ router.post("/verifyteacher", async (req, res) => {
 // Function to fetch student data based on batch
 async function getStudentsByBatch(batch) {
   try {
-    const students = await studentModel.find({ batch: batch }).lean(); // Assuming batch is a field in your student model
+    const students = await studentModel
+      .find({ batch: batch, restricted: false })
+      .lean(); // Assuming batch and restricted are fields in your student model
     return students;
   } catch (error) {
     console.error("Error fetching students:", error);
@@ -501,6 +503,7 @@ router.post("/generateExcel", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 // Route to assign courses to a teacher
 router.post("/assignCourses", async (req, res) => {
   try {

@@ -14,7 +14,7 @@ const Notifications = ({ notifications }: { notifications: INotificationStudent[
           <ul className="flex flex-col mt-10 divide-y divide-gray-200 dark:divide-gray-700">
             {notifications.map((notification, index) => (
               <div className={`flex mb-2 p-1 items-center w-fit ${notification.tone === "Negative" ? ' bg-red-50  rounded-lg' : ''}`}>
-                <li key={index} className="py-3 mr-8">
+                <li key={index} className="py-2 px-2 mr-10">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-gray-900 dark:text-white">
                       {notification.sender}
