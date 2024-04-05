@@ -327,7 +327,6 @@ const getHashedPassword = (password) => {
   return hash;
 };
 
-
 router.patch("/changePassword", async (req, res) => {
   try {
     const email = req.body.email;
@@ -337,17 +336,14 @@ router.patch("/changePassword", async (req, res) => {
     const result = await teacherModel.findOneAndUpdate(
       { email: email },
       { password: hashedPassword }
-    )
+    );
 
     if (!result) throw new Error("User doesn't exist!");
     return res.status(200).json({ message: "Password changed successfully" });
-
   } catch (err) {
     return res.status(400).json({ message: "Something went wrong" });
-
   }
-
-})
+});
 const courseModel = require("../model/course.model");
 router.get("/allocatedCourses", async (req, res) => {
   try {
@@ -503,7 +499,7 @@ router.post("/uploadattendance", upload.single("file"), async (req, res) => {
 
 router.post("/approveGradeChangeRequest", async (req, res) => {
   try {
-    const { requestId } = req.body;
+    const { requestId, teacherId, course } = req.body;
 
     // Find the teacher by ID
     const teacher = await teacherModel.findOne({ id: req.body.teacherId });
@@ -518,6 +514,8 @@ router.post("/approveGradeChangeRequest", async (req, res) => {
     if (!changeRequest) {
       return res.status(404).json({ error: "Grade change request not found" });
     }
+    console.log("Sender:", changeRequest);
+    console.log("Course:", course);
 
     // Fetch the existing grade from the grade model
     const existingGrade = await gradeModel.findOne({
