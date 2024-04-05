@@ -112,7 +112,7 @@ export default function Signin({ openSigninModal, SetSigninModal }: SinginProp) 
               <VInput
                 name="id"
                 label={role === "student" ? "ID" : "Email"}
-                placeholder={`Enter your ${role === "Student" ? "Id" : "Email"}`}
+                placeholder={`Enter your ${role === "student" ? "Id" : "Email"}`}
                 error={errors.id?.message}
                 register={register}
               />

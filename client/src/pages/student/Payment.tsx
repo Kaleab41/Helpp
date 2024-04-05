@@ -39,7 +39,7 @@ export default function Payment() {
   const uploadPayment = async () => {
     try {
       const response = await uploadReceipt({
-        id: studentId,
+        id: student?.id,
         paymentReceipt: receipt,
       }).unwrap()
       setOpen(false)
@@ -50,16 +50,6 @@ export default function Payment() {
       toast.error(error.error)
     }
   }
-  const paymentstest = [
-    {
-      id: "FN8840",
-      paymentId: "PREPRU1986",
-      paymentReceipt: "1712221398022-wallhaven-qzj5ll.jpg",
-      verified: true,
-      createdAt: "2024-04-04T09:03:18.267Z",
-      updatedAt: "2024-04-04T09:03:18.267Z",
-    },
-  ]
 
   return (
     <>
@@ -101,7 +91,7 @@ export default function Payment() {
         )}
       </ModalForm>
       {gotPayments &&
-        paymentstest?.map((payment) => (
+        payments?.map((payment) => (
           <div className="flex w-full justify-center mb-2">
             <Card
               className="w-full"
