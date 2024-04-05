@@ -4,7 +4,6 @@ import ModalForm from "./ModalForm";
 import { IChangeGradeRequest, IStudentGrade } from "../../api/types/grade.types";
 import { Button } from "flowbite-react";
 import { useStudentAuth } from "../../hooks/student.auth";
-import { useListTeachersQuery } from "../../api/slices/admin.slice";
 
 type RequestForm = {
   Open: boolean;
@@ -25,6 +24,7 @@ const RequestForm = ({ Open, onClose, student, ButtonClicked }: RequestForm) => 
 
   const { student: _student } = useStudentAuth();
 
+  console.log(student, "student")
 
   const [studentId, setStudentId] = useState<string>(_student?.id || "");
   const [teacherId, setTeacherId] = useState<string>();
@@ -51,13 +51,14 @@ const RequestForm = ({ Open, onClose, student, ButtonClicked }: RequestForm) => 
       <Textarea name="Request message" placeholder="purpose of request..." value={message} SetValue={setMessage} />
 
       <Button className="mt-4 w-full" onClick={() => ButtonClicked({
-        studentId: studentId,
-        teacherId: student?.instructorID ?? "TRUX9279",
+        studentId: student?.id ?? "",
+        teacherId: student?.instructorID ?? "",
         grade: grade,
         mid: mid,
         final: final,
         assessment: assessment,
         attendance: attendance,
+        course: student?.course,
         message: message
       })}>
         Send Request

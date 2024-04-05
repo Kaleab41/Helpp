@@ -6,6 +6,7 @@ import { ReadOnly, Textarea } from "../../components/form";
 import { IGrade } from "../../api/types/grade.types";
 import { Button, Spinner } from "flowbite-react";
 import { useTeacherAuth } from "../../hooks/teacher.auth";
+import LoadingButton from "../../components/shared/LoadingButton";
 
 const Requests = () => {
 
@@ -27,7 +28,7 @@ const Requests = () => {
 
 
 
-    const [approveGrade, { }] = useApproveGradeChangeMutation();
+    const [approveGrade, { isLoading: approvingGrade, isSuccess: gradeApproved }] = useApproveGradeChangeMutation();
     const { data: requests, isLoading: gettingRequests, isSuccess: gotRequests } = useGetGradeChangeRequestsQuery(teacher?.id || "TRAG8336");
 
     const notApprovedRequestsFilteredCols = requests?.map(request => ({
@@ -62,9 +63,13 @@ const Requests = () => {
                         <ReadOnly label="Grade" value={request?.grade} />
                         <Textarea name="Student's message" value={request?.message} disable />
                         <div className="flex">
-                            <Button className="w-full m-2 rounded-md" onClick={handleApprove}>
-                                Approve
-                            </Button>
+                            {approvingGrade ?
+                                <LoadingButton label="Approve" loading={approvingGrade} type="button" />
+                                :
+                                <Button className="w-full m-2 rounded-md" onClick={handleApprove}>
+                                    Approve
+                                </Button>
+                            }
                         </div>
                     </ModalForm>
                 </>
