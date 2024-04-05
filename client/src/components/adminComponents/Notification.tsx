@@ -4,6 +4,7 @@ import { Button } from "flowbite-react"
 import { Card } from "../shared"
 import { useSendNotificationMutation } from "../../api/slices/teacher.slice"
 import { useGetUniqueBatchesQuery } from "../../api/slices/admin.slice"
+import { toast } from "react-toastify"
 export default function Notification({ sender }: { sender?: string | null }) {
   const [notification, SetNotification] = useState("")
   const [_sender, SetSender] = useState(sender || "")
@@ -22,6 +23,7 @@ export default function Notification({ sender }: { sender?: string | null }) {
     if (response) {
       SetNotification("")
       SetSender("")
+      toast.success("Notification sent!")
     }
   }
   return (
