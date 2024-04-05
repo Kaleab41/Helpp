@@ -14,7 +14,7 @@ export default function TeacherDash() {
   const { teacher } = useTeacherAuth();
   //TODO: if teacher is not logged in, redirect to login
 
-  const { data: allocatedCourses, isSuccess: gotAllocatedCourses, isLoading: gettingAllocatedCourses } = useGetAllocatedCoursesQuery(teacher?.email|| "");
+  const { data: allocatedCourses, isSuccess: gotAllocatedCourses, isLoading: gettingAllocatedCourses } = useGetAllocatedCoursesQuery(teacher?.email || "Abebehilcoe@gmail.com");
   const [uploadGrades, { isLoading: sendingGrades }] = useUploadGradeMutation();
   const [uploadAttendance, { isLoading: sendingAttendance }] = useUploadAttendanceMutation();
   const [uploadMaterial, { isLoading: sendingMaterial }] = useUploadMaterialMutation();
