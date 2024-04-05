@@ -106,7 +106,7 @@ export default function Payment() {
               <div className="flex flex-col">
                 {payment.verified ? (
                   <span className="bg-green-200 p-2 text-center font-bold uppercase rounded-lg w-fit">
-                    Verfied
+                    Verifed
                   </span>
                 ) : (
                   <span className="bg-red-200 p-2 text-center font-bold uppercase rounded-lg w-fit">
