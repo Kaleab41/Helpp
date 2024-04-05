@@ -366,15 +366,17 @@ router.post("/verifyteacher", async (req, res) => {
     // Send email
     await transporter.sendMail(mailOptions);
     console.log(
-      `${!teacher.restricted ? "Acceptance" : "Rejection"
+      `${
+        !teacher.restricted ? "Acceptance" : "Rejection"
       } email sent to teacher:`,
       teacher.email
     );
 
     // Send response
     return res.status(200).json({
-      message: `Teacher ${!teacher.restricted ? "accepted" : "rejected"
-        } successfully`,
+      message: `Teacher ${
+        !teacher.restricted ? "accepted" : "rejected"
+      } successfully`,
     });
   } catch (error) {
     console.error("Error verifying teacher:", error);
@@ -773,22 +775,43 @@ router.post("/rejectteacher", async (req, res) => {
 });
 router.post("/rejectPayment", async (req, res) => {
   try {
-    const { paymentId } = req.body;
+    const { paymentId, studentId } = req.body;
 
-    const deletePayment = await paymentModel.deleteOne(paymentId);
-
-    if (deletePayment.deletedCount === 0) {
+    // Find the payment by paymentId
+    const payment = await paymentModel.findOne({ paymentId });
+    if (!payment) {
       return res.status(404).json({ error: "Payment not found" });
     }
 
+    // Delete the payment
+    await paymentModel.deleteOne({ paymentId });
+
+    // Find the student by studentId
+    const student = await studentModel.findOne({ studentId });
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    // Add a notification to the student's notifications array
+    student.notifications.push({
+      sender: "System",
+      message: "Your payment has been rejected",
+      file: null, // You can add the file URL here if applicable
+      time: new Date(),
+    });
+
+    // Save the updated student object
+    await student.save();
+
     return res.status(200).json({
-      message: "Deleted suffessfully",
+      message: "Payment successfully rejected",
     });
   } catch (error) {
     console.error("Error rejecting payment:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
 router.post("/rejectstudent", async (req, res) => {
   try {
     const { id } = req.body;
