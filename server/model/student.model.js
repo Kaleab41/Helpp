@@ -25,6 +25,7 @@ const newSchema = new mongoose.Schema({
     {
 
       sender: String,
+      tone: String,
       message: String,
       file: String,
       time: {
