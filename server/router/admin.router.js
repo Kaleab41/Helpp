@@ -110,11 +110,17 @@ router.post("/verifystudent", async (req, res) => {
     await student.save();
 
     // Send congratulatory email with student's ID
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true,
       auth: {
-        user: process.env.email,
-        pass: process.env.pass,
+        type: "OAuth2",
+        user: process.env.Email,
+        clientId: process.env.clientId,
+        clientSecret: process.env.clientSecret,
+        accessToken: process.env.accessToken,
+        refreshToken: process.env.refreshToken,
       },
     });
 
