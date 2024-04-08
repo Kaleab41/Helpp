@@ -7,6 +7,10 @@ import { toast } from "react-toastify"
 import { useUserAuth } from "../../hooks/user.auth"
 
 export default function Payment() {
+  
+  const appURL = process.env.REACT_APP_URL;
+
+  console.log(appURL);
   const { user: student } = useUserAuth()
 
   const formatDate = (date: string) => {
@@ -96,9 +100,9 @@ export default function Payment() {
             <Card
               className="w-full"
               imgAlt="payment Receipt"
-              imgSrc={`http://localhost:8000/uploads/payments/${payment?.paymentReceipt}`}
+              imgSrc={`${appURL}/uploads/payments/${payment?.paymentReceipt}`}
             >
-              {/* <img src={`localhost:8000/uploads/payments/${payment?.paymentReceipt}`} alt="something" /> */}
+              {/* <img src={`${appURL}/uploads/payments/${payment?.paymentReceipt}`} alt="something" /> */}
               <span className="font-bold mb-2 mt-4">
                 {" "}
                 created at: {formatDate(payment.createdAt)}

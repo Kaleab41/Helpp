@@ -9,7 +9,9 @@ import { useUserAuth } from "../../hooks/user.auth";
 
 export default function Material() {
 
+  const appURL = process.env.REACT_APP_URL;
   const { user: student } = useUserAuth();
+
 
   const handleClick = (index: number) => {
     setShowDetail(true);
@@ -43,7 +45,7 @@ export default function Material() {
         <ModalForm className="flex flex-col gap-4" openModal={showDetail} onCloseModal={() => setShowDetail(false)} title="Material Detail">
           <ReadOnly label="From" value={materialDetail?.sender} />
           <Textarea disable name="Message" value={materialDetail?.message} SetValue={() => { }} placeholder="" />
-          <a target="_blank" href={`localhost:8000/${materialDetail?.file}`}>
+          <a target="_blank" href={`${appURL}/${materialDetail?.file}`}>
             <Button size={"md"}>
               Download: {materialDetail?.file.split("\\").pop()}
             </Button>

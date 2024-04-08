@@ -29,7 +29,7 @@ const DashboardTable = ({
   const [filteredData, SetFilteredData] = useState<typeof tableData>(tableData)
   //:TODO Test Logs
   
-  const TaggedTableData = tableData.map((row, index) => {
+  const TaggedTableData = tableData.map((row: any, index: number) => {
     // console.log(row)
     // row['tag'] = index // pretty amazing solution, me like very much! ❤️
     return {

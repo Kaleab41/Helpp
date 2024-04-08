@@ -4,7 +4,7 @@ type TextareaProp = {
   placeholder: string
   value: string | any
   disable: boolean
-  SetValue: (value: string) => void
+  SetValue?: (value: string) => void
 }
 
 export default function Textarea({ name, placeholder, value, disable, SetValue }: TextareaProp) {
@@ -16,7 +16,7 @@ export default function Textarea({ name, placeholder, value, disable, SetValue }
       <Textarea_
         className="disabled:cursor-text"
         onChange={(event) => {
-          SetValue(event.currentTarget.value)
+          SetValue && SetValue(event.currentTarget.value)
         }}
         id={name}
         value={value}

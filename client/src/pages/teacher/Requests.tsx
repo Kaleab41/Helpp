@@ -8,12 +8,13 @@ import { Button, Spinner } from "flowbite-react";
 import { useTeacherAuth } from "../../hooks/teacher.auth";
 import LoadingButton from "../../components/shared/LoadingButton";
 import { toast } from "react-toastify";
+import Empty from "../Empty";
 
 const Requests = () => {
 
     const { teacher } = useTeacherAuth();
     //TODO: if teacher is not logged in, redirect to login
-    console.log({ id: teacher?.id });
+    // console.log({ id: teacher?.id });
 
     const handleClick = (index: number) => {
         if (requests) setRequest(requests[index]);
@@ -34,7 +35,7 @@ const Requests = () => {
 
 
     const [approveGrade, { isLoading: approvingGrade, isSuccess: gradeApproved }] = useApproveGradeChangeMutation();
-    const { data: requests, isLoading: gettingRequests, isSuccess: gotRequests } = useGetGradeChangeRequestsQuery(teacher?.id || "TRAG8336");
+    const { data: requests, isLoading: gettingRequests, isSuccess: gotRequests } = useGetGradeChangeRequestsQuery(teacher?.id || "");
 
     const notApprovedRequestsFilteredCols = requests?.map(request => ({
         sender: request.sender,
@@ -57,6 +58,15 @@ const Requests = () => {
                     <span>Loading...</span>
                 </div>
             }
+
+            {!requests &&
+                <div className="flex items-center justify-center h-[600px] w-full p-20">
+                    <Empty />
+                </div>
+            }
+
+            {console.log(requests, "?????")}
+
             {gotRequests &&
                 <>
                     <DashboardTable tableTitle="Grade Change Requests" headers={["sender", "course", "mid", "final", "assessment", "grade"]} tableData={notApprovedRequestsFilteredCols} buttonLabel="show detail" ButtonClicked={(index) => handleClick(index)} />
@@ -66,7 +76,7 @@ const Requests = () => {
                         <ReadOnly label="Final" value={request?.final} />
                         <ReadOnly label="Assessment" value={request?.assessment} />
                         <ReadOnly label="Grade" value={request?.grade} />
-                        <Textarea name="Student's message" value={request?.message} disable />
+                        <Textarea name="Student's message" placeholder="Type in your message here..." value={request?.message} disable />
                         <div className="flex">
                             {approvingGrade ?
                                 <LoadingButton label="Approve" loading={approvingGrade} type="button" />

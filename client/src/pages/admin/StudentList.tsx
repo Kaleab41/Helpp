@@ -18,6 +18,9 @@ import {
 import { toast } from "react-toastify"
 
 export default function StudentList() {
+  
+  const appURL = process.env.REACT_APP_URL;
+
   const [restrictedSearchTerm, SetRestrictedSearchTerm] = useState<string>("")
   const [nonRestrictedSearchTerm, SetNonRestrictedSearchTerm] = useState<string>("")
   const [openModal, SetOpenModal] = useState<boolean>(false)
@@ -145,9 +148,9 @@ export default function StudentList() {
             }
             <ReadOnly
               label="Academic Record"
-              link={`http://localhost:8000/uploads/files/${student?.academicRecord}`}
+              link={`${appURL}/uploads/files/${student?.academicRecord}`}
               value={
-                <a href={`http://localhost:8000/uploads/files/${student?.academicRecord}`} download>
+                <a href={`${appURL}/uploads/files/${student?.academicRecord}`} download>
                   Record
                 </a>
               }
@@ -224,9 +227,9 @@ export default function StudentList() {
             {batchForAttendance ? (
               <ReadOnly
                 label="Academic Record"
-                link={`http://localhost:8000/uploads/attendance/${batchForAttendance}`}
+                link={`${appURL}/uploads/attendance/${batchForAttendance}`}
                 value={
-                  <a href={`http://localhost:8000/uploads/generate/${batchForAttendance}`} download>
+                  <a href={`${appURL}/uploads/generate/${batchForAttendance}`} download>
                     Download
                   </a>
                 }
@@ -247,10 +250,10 @@ export default function StudentList() {
             {batchForExcelBatchFile ? (
               <ReadOnly
                 label="Academic Record"
-                link={`http://localhost:8000/uploads/generate/${batchForExcelBatchFile}`}
+                link={`${appURL}/uploads/generate/${batchForExcelBatchFile}`}
                 value={
                   <a
-                    href={`http://localhost:8000/uploads/generate/${batchForExcelBatchFile}`}
+                    href={`${appURL}/uploads/generate/${batchForExcelBatchFile}`}
                     download
                   >
                     Download

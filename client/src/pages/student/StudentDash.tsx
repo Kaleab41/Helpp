@@ -18,6 +18,9 @@ import { toast } from "react-toastify"
 import { useUserAuth } from "../../hooks/user.auth"
 
 export default function StudentDash() {
+
+  const appURL = process.env.REACT_APP_URL;
+
   const { user: student } = useUserAuth()
   const DownloadTranscript = useRef(null)
   const {
@@ -159,7 +162,7 @@ export default function StudentDash() {
                 toast.error("Transcript Generation Failed")
               }
             }}>Generate Transcript</Button>
-            <a hidden ref={DownloadTranscript} className="border-2 px-4 py-1 rounded-md border-teal-600 hover:bg-teal-700 hover:text-white" href={`http://localhost:8000/uploads/transcript/${student?.id}_transcript.pdf`} target="_blank"></a>
+            <a hidden ref={DownloadTranscript} className="border-2 px-4 py-1 rounded-md border-teal-600 hover:bg-teal-700 hover:text-white" href={`${appURL}/uploads/transcript/${student?.id}_transcript.pdf`} target="_blank"></a>
           </Card>
         </div>
       }

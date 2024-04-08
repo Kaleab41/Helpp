@@ -13,6 +13,9 @@ import { ReadOnly } from "../../components/form"
 import { useRef, useState } from "react"
 import { toast } from "react-toastify"
 export default function AdminDash() {
+
+  const appURL = process.env.REACT_APP_API_URL;
+
   const [openModal, SetOpenModal] = useState<boolean>(false)
   const [pendingPayment, SetPendingPayment] = useState<IPayment | null>(null)
   const { data, isSuccess } = useGetDashboardDataQuery()
@@ -81,10 +84,10 @@ export default function AdminDash() {
             <ReadOnly label="Verified" value={"Pending"} />
             <ReadOnly
               label="Recipt"
-              link={`http://localhost:8000/uploads/files/${pendingPayment?.paymentReceipt}`}
+              link={`${appURL}/uploads/files/${pendingPayment?.paymentReceipt}`}
               value={
                 <a
-                  href={`http://localhost:8000/uploads/files/${pendingPayment?.paymentReceipt}`}
+                  href={`${appURL}/uploads/files/${pendingPayment?.paymentReceipt}`}
                   download
                 >
                   Download Recipt
@@ -126,7 +129,7 @@ export default function AdminDash() {
           <a
             ref={downloadRecipt}
             hidden={true}
-            href={`http://localhost:8000/uploads/payments/${verifiedPayments ? verifiedPayments[hrefIndex]?.paymentReceipt : ""}`}
+            href={`${appURL}/uploads/payments/${verifiedPayments ? verifiedPayments[hrefIndex]?.paymentReceipt : ""}`}
           >
             download
           </a>
